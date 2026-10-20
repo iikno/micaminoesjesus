@@ -462,7 +462,7 @@ const rawRetreats = [
   },
   {
     id: 'emmanuel', category: 'Retiro', sequence: null, sequenceStep: null, sequenceTheme: null,
-    derej: 'jaim', codigo: 'JAIM-EMMANUEL', estado: 'proximamente',
+    derej: 'jaim', codigo: 'JAIM-EMMANUEL', estado: 'disponible',
     season: 'adviento', seasonSecondary: null,
     title: 'Emmanuel', basadoEn: 'las profecías mesiánicas del Antiguo Testamento',
     conceptoCentral: 'La promesa más antigua de la humanidad estaba a punto de cumplirse: Dios mismo vendría a rescatarnos.',
