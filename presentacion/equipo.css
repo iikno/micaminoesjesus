@@ -1,0 +1,179 @@
+:root{
+  --bg:#FAF6EF; --bg-alt:#F1ECE0; --ink:#14293A; --ink-2:#0E1F2C; --red:#8B1E2B;
+  --gold:#C79A2B; --cream:#F3E4BB; --gray:#6B6B6B; --white:#fff;
+  --ordinario:#3F7D4D; --adviento:#4B3F72; --cuaresma:#7A2E4D; --pascua:#8A6403; --pentecostes:#C1272D;
+  --W:540px; --H:960px; --pad:40px;
+}
+@page{ size:540px 960px; margin:0 }
+*{ box-sizing:border-box; margin:0; padding:0 }
+html,body{ background:#888 }
+body{ font-family:'Manrope',sans-serif; color:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact }
+.s{ width:var(--W); height:var(--H); position:relative; overflow:hidden; background:var(--bg);
+    padding:var(--pad); padding-bottom:60px; display:flex; flex-direction:column; break-after:page }
+.s.dark{ background:var(--ink); color:var(--bg) }
+.s.cream{ background:var(--bg-alt) }
+.top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:26px }
+.top img{ height:44px }
+.top .num{ font:700 12px 'Space Grotesk'; letter-spacing:.18em; color:var(--gold) }
+.foot{ position:absolute; left:var(--pad); right:var(--pad); bottom:24px; display:flex; justify-content:space-between;
+       font:600 9.5px 'Manrope'; letter-spacing:.16em; text-transform:uppercase; color:var(--gray) }
+.dark .foot{ color:rgba(250,246,239,.45) }
+.eyebrow{ font:700 11.5px 'Space Grotesk'; letter-spacing:.24em; text-transform:uppercase; color:var(--red); margin-bottom:12px; display:flex; align-items:center; gap:10px }
+.eyebrow::before{ content:''; width:26px; height:2px; background:var(--gold) }
+.dark .eyebrow{ color:var(--gold) }
+h1,h2{ font-family:'Space Grotesk',sans-serif; text-transform:uppercase; letter-spacing:-.01em; line-height:.98 }
+h2{ font-size:36px; font-weight:700; margin-bottom:18px }
+h2 em{ font-style:normal; color:var(--red) }
+.dark h2 em{ color:var(--gold) }
+p{ font-size:15px; line-height:1.55 }
+.muted{ color:var(--gray) }
+.dark .muted{ color:rgba(250,246,239,.72) }
+.note{ font-size:12.5px; color:var(--gray); line-height:1.45 }
+.sub-h{ font:700 12px 'Space Grotesk'; letter-spacing:.12em; text-transform:uppercase; margin:16px 0 10px; color:var(--ink) }
+
+/* cover */
+.cover{ padding:0; background:var(--ink); color:var(--bg) }
+.cover .photo{ height:470px; background:center/cover; position:relative }
+.cover .photo::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(20,41,58,.1) 0%,rgba(20,41,58,.5) 55%,var(--ink) 100%) }
+.cover .body{ padding:0 var(--pad); margin-top:-120px; position:relative; z-index:2 }
+.cover .iso{ width:104px; margin-bottom:16px }
+.cover .pre{ font:600 13px 'Manrope'; letter-spacing:.2em; text-transform:uppercase; color:var(--cream); margin-bottom:6px }
+.cover h1{ font-size:56px; font-weight:700 }
+.cover h1 span{ color:var(--gold) }
+.cover .tag{ display:inline-block; margin-top:16px; font:700 12px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; background:var(--red); color:#fff; padding:8px 12px; border-radius:6px }
+.cover-p{ margin-top:18px; color:rgba(250,246,239,.8); font-size:16px; max-width:420px }
+
+/* letter */
+.letter{ background:var(--white); border-radius:18px; padding:24px 24px 8px; box-shadow:0 12px 30px -20px rgba(20,41,58,.4) }
+.letter p{ margin-bottom:14px; font-size:15.5px; line-height:1.6 }
+.letter b{ color:var(--red) }
+.sign{ display:flex; gap:12px; align-items:center; margin-top:20px }
+.sign img{ width:46px }
+.sign b{ display:block; font:700 14px 'Manrope' } .sign span{ font-size:12.5px; color:var(--gray) }
+.verse-mini{ margin-top:auto; align-self:flex-start; font:700 12px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); border:1.5px solid var(--gold); padding:9px 14px; border-radius:99px }
+
+/* cards */
+.card{ background:var(--white); border-radius:16px; padding:18px 20px; position:relative; overflow:hidden; box-shadow:0 10px 26px -18px rgba(20,41,58,.35) }
+.card::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--gold) }
+.card.r::before{ background:var(--red) }
+.card .lbl{ font:700 11px 'Space Grotesk'; letter-spacing:.22em; text-transform:uppercase; color:var(--red); margin-bottom:6px }
+.card p{ font-size:14.5px }
+.flow{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.flow>div{ border-radius:14px; padding:14px; min-height:76px }
+.flow>i{ display:none }
+.flow b{ display:block; font:700 15px 'Space Grotesk'; text-transform:uppercase } .flow span{ font-size:12px; opacity:.85 }
+.f1{ background:var(--cream) } .f2{ background:var(--red); color:#fff } .f3{ background:var(--ink); color:#fff } .f4{ background:var(--gold) }
+
+/* stats */
+.stats{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px }
+.stat{ background:var(--white); border-radius:16px; padding:16px }
+.stat b{ display:block; font:700 44px 'Space Grotesk'; color:var(--red); line-height:1 }
+.stat span{ display:block; font-size:12.5px; font-weight:600; margin-top:6px }
+.stat.dk{ background:var(--ink) } .stat.dk b{ color:var(--gold) } .stat.dk span{ color:var(--bg) }
+.stat.ok{ background:var(--ordinario) } .stat.ok b,.stat.ok span{ color:#fff }
+.ready{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.ready li{ background:var(--white); border-radius:12px; padding:10px 12px; border-left:4px solid var(--ordinario) }
+.ready b{ display:block; font:700 13px 'Manrope'; line-height:1.25 } .ready span{ font-size:11px; color:var(--gray) }
+
+/* asks */
+.asks{ display:flex; flex-direction:column }
+.ask{ display:grid; grid-template-columns:42px 1fr; gap:12px; padding:13px 0; border-top:1px solid rgba(250,246,239,.14) }
+.ask:last-child{ border-bottom:1px solid rgba(250,246,239,.14) }
+.ask .k{ font:700 26px 'Space Grotesk'; color:var(--gold); line-height:1 }
+.ask b{ display:block; font:700 16px 'Space Grotesk'; text-transform:uppercase; margin-bottom:3px }
+.ask span{ font-size:13.5px; line-height:1.45; color:rgba(250,246,239,.8) }
+.ask .hl{ display:inline; font:700 13.5px 'Manrope'; text-transform:none; color:var(--cream) }
+
+/* how */
+.steps{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px }
+.steps div{ background:var(--white); border-radius:12px; padding:10px 6px; text-align:center; border-top:4px solid var(--gold) }
+.steps div:nth-child(even){ border-top-color:var(--red) }
+.steps b{ display:block; font:700 20px 'Space Grotesk'; color:var(--red) } .steps span{ font-size:11px; font-weight:600; line-height:1.25; display:block }
+.ficha{ width:100%; border-collapse:separate; border-spacing:0; background:var(--white); border-radius:14px; overflow:hidden; font-size:13.5px; margin-bottom:8px }
+.ficha th{ background:var(--ink); color:var(--cream); font:700 10.5px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; padding:9px 12px; text-align:left }
+.ficha td{ padding:9px 12px; border-top:1px solid var(--bg-alt) }
+.pipe{ display:flex; align-items:center; gap:5px; flex-wrap:nowrap }
+.pipe span{ background:var(--cream); border-radius:8px; padding:8px 8px; font:700 11.5px 'Manrope'; text-align:center; flex:1 }
+.pipe span.ok{ background:var(--ordinario); color:#fff }
+.pipe i{ font-style:normal; color:var(--gold); font-weight:800 }
+
+/* map */
+.map{ display:flex; flex-direction:column; gap:9px }
+.mp{ display:grid; grid-template-columns:50px 1fr 54px; gap:12px; align-items:center; background:rgba(250,246,239,.06); border:1px solid rgba(250,246,239,.12); border-radius:14px; padding:11px 13px }
+.ic{ width:50px; height:50px; border-radius:12px; display:grid; place-items:center; font:700 12.5px 'Space Grotesk' }
+.ic.g{ background:var(--gold); color:var(--ink) } .ic.r{ background:var(--red); color:var(--bg) }
+.mp-t b{ display:block; font:700 15px 'Space Grotesk'; text-transform:uppercase } .mp-t span{ font-size:12px; color:rgba(250,246,239,.7) }
+.bar{ height:5px; background:rgba(250,246,239,.15); border-radius:9px; margin-top:7px; overflow:hidden } .bar i{ display:block; height:100%; background:var(--gold) }
+.mp-n{ text-align:right } .mp-n b{ font:700 18px 'Space Grotesk'; color:var(--gold); display:block } .mp-n span{ font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:rgba(250,246,239,.6) }
+
+/* dérej slide */
+.dj-slide{ padding-top:32px }
+.dj-slide .top{ margin-bottom:16px }
+.dj-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px; border-radius:16px; padding:16px 18px; color:#fff }
+.dj-head.red{ background:var(--red) } .dj-head.gold{ background:var(--ink) }
+.dj-head h2{ font-size:30px; margin:4px 0 4px; color:#fff }
+.dj-k{ font:700 10px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; color:var(--cream) }
+.dj-sub{ font-size:12.5px; color:rgba(255,255,255,.85) } .dj-sub i{ color:var(--cream) }
+.dj-head.gold .dj-k,.dj-head.gold .dj-sub i{ color:var(--gold) }
+.dj-count{ text-align:center; background:rgba(255,255,255,.12); border-radius:12px; padding:8px 12px; flex:none }
+.dj-count b{ font:700 30px 'Space Grotesk'; line-height:1 } .dj-count small{ font-size:15px; opacity:.7 }
+.dj-count span{ display:block; font:700 9px 'Space Grotesk'; letter-spacing:.16em; text-transform:uppercase; opacity:.85 }
+.dj-meta{ display:flex; gap:6px; margin:10px 0 8px; flex-wrap:wrap }
+.dj-meta span{ font:700 10.5px 'Manrope'; background:var(--cream); color:var(--ink); padding:5px 9px; border-radius:99px }
+.dj-meta span:last-child{ background:transparent; border:1px solid rgba(20,41,58,.25) }
+.dj-why{ font-size:13px; line-height:1.5; color:var(--gray); margin-bottom:10px }
+.items{ display:flex; flex-direction:column; gap:5px }
+.it{ display:grid; grid-template-columns:24px 1fr auto; gap:9px; align-items:center; background:var(--white); border-radius:11px; padding:7px 10px; border-left:3px solid transparent }
+.it.is-ok{ border-left-color:var(--ordinario) }
+.pn{ font:700 16px 'Space Grotesk'; color:var(--red); text-align:center } .pn.dot{ color:var(--gold) }
+.tt{ font:700 13px 'Manrope'; line-height:1.2 }
+.mt{ font-size:10.5px; color:var(--gray); display:flex; align-items:center; gap:5px; margin-top:1px }
+.cc{ display:block; font-size:11px; line-height:1.35; color:var(--ink); opacity:.75; margin-top:2px }
+.items.dense .it{ padding:5px 10px } .items.dense .cc{ display:none }
+.items.dense .it.compact .mt{ margin-top:0 }
+.sd{ width:8px; height:8px; border-radius:50%; display:inline-block; flex:none }
+.sd-ordinario{ background:var(--ordinario) } .sd-adviento{ background:var(--adviento) } .sd-cuaresma{ background:var(--cuaresma) } .sd-pascua{ background:var(--pascua) } .sd-pentecostes{ background:var(--pentecostes) }
+.st{ font:700 8.5px 'Space Grotesk'; letter-spacing:.1em; text-transform:uppercase; padding:4px 7px; border-radius:99px; border:1px solid rgba(20,41,58,.2); color:var(--gray); white-space:nowrap }
+.st.ok{ background:var(--ordinario); color:#fff; border-color:var(--ordinario) }
+.phase{ font:700 9.5px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:4px 0 0 2px }
+.tip{ margin-top:auto; background:var(--cream); border-radius:12px; padding:10px 14px; font-size:12.5px; line-height:1.45 }
+.tip b{ display:block; font:700 9.5px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; color:var(--red); margin-bottom:2px }
+
+/* calendar */
+.cals{ display:flex; flex-direction:column; gap:10px }
+.cal{ background:var(--white); border-radius:14px; overflow:hidden }
+.cal-h{ display:flex; justify-content:space-between; padding:9px 14px; color:#fff; font:700 13px 'Space Grotesk'; letter-spacing:.12em; text-transform:uppercase }
+.cal-adviento .cal-h{ background:var(--adviento) } .cal-cuaresma .cal-h{ background:var(--cuaresma) } .cal-pascua .cal-h{ background:var(--pascua) } .cal-pentecostes .cal-h{ background:var(--pentecostes) }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; padding:11px 12px }
+.chips span{ font-size:11.5px; font-weight:600; padding:5px 9px; border-radius:99px; background:var(--bg-alt) }
+.chips span.ok{ background:var(--ordinario); color:#fff }
+
+/* allies + mini asks */
+.mini-asks{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.mini-asks div{ background:var(--bg-alt); border-radius:12px; padding:12px; border-top:3px solid var(--red) }
+.mini-asks b{ display:block; font:700 13px 'Space Grotesk'; text-transform:uppercase; line-height:1.15; margin-bottom:3px } .mini-asks span{ font-size:11.5px; color:var(--gray) }
+.allies{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px }
+.allies div{ background:var(--white); border-radius:14px; padding:12px; text-align:center; box-shadow:0 8px 20px -16px rgba(20,41,58,.4) }
+.allies img{ width:72px; height:72px; object-fit:contain; border-radius:12px; background:var(--bg-alt); margin-bottom:8px }
+.allies b{ display:block; font:700 13px 'Space Grotesk'; text-transform:uppercase } .allies span{ font-size:11px; color:var(--gray) }
+
+/* team */
+.team{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+.tm{ background:var(--white); border-radius:16px; padding:12px; text-align:center }
+.tm img{ width:100%; aspect-ratio:1; object-fit:cover; object-position:center 22%; border-radius:12px; margin-bottom:8px; display:block }
+.tm b{ display:block; font:700 13px 'Manrope'; line-height:1.25 }
+.tm span{ display:block; font:700 9.5px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); margin-top:4px }
+
+/* close */
+.close{ background:var(--ink); color:var(--bg); align-items:center; text-align:center; justify-content:center }
+.close .logo{ width:260px; margin-bottom:30px; background:var(--bg); border-radius:22px; padding:20px 24px }
+.verse{ font:700 36px 'Space Grotesk'; text-transform:uppercase; line-height:1.05; margin-bottom:8px }
+.verse span{ color:var(--gold) }
+.ref{ font:600 12px 'Manrope'; letter-spacing:.24em; text-transform:uppercase; color:var(--cream); margin-bottom:26px }
+.thanks-big{ font-size:17px; line-height:1.55; max-width:400px; font-style:italic; color:var(--cream); margin-bottom:22px }
+.thanks{ font-size:14.5px; color:rgba(250,246,239,.78); max-width:380px }
+.hash{ margin-top:18px; font:700 12px 'Space Grotesk'; letter-spacing:.1em; color:var(--gold) }
+
+.it.nonum{ grid-template-columns:1fr auto; padding-left:14px }
+.band{ margin-top:auto; height:230px; border-radius:18px; background:url(assets/images/nosotros.webp) center 35%/cover; position:relative; overflow:hidden }
+.band::after{ content:'NADIE RECORRE ESTE CAMINO SOLO'; position:absolute; left:14px; bottom:12px; font:700 10.5px 'Space Grotesk'; letter-spacing:.2em; color:#fff; background:rgba(139,30,43,.92); padding:6px 10px; border-radius:6px }

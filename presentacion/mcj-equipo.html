@@ -1,0 +1,434 @@
+<!doctype html>
+<html lang="es"><head><meta charset="utf-8"><title>MCJ · Equipo</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>:root{
+  --bg:#FAF6EF; --bg-alt:#F1ECE0; --ink:#14293A; --ink-2:#0E1F2C; --red:#8B1E2B;
+  --gold:#C79A2B; --cream:#F3E4BB; --gray:#6B6B6B; --white:#fff;
+  --ordinario:#3F7D4D; --adviento:#4B3F72; --cuaresma:#7A2E4D; --pascua:#8A6403; --pentecostes:#C1272D;
+  --W:540px; --H:960px; --pad:40px;
+}
+@page{ size:540px 960px; margin:0 }
+*{ box-sizing:border-box; margin:0; padding:0 }
+html,body{ background:#888 }
+body{ font-family:'Manrope',sans-serif; color:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact }
+.s{ width:var(--W); height:var(--H); position:relative; overflow:hidden; background:var(--bg);
+    padding:var(--pad); padding-bottom:60px; display:flex; flex-direction:column; break-after:page }
+.s.dark{ background:var(--ink); color:var(--bg) }
+.s.cream{ background:var(--bg-alt) }
+.top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:26px }
+.top img{ height:44px }
+.top .num{ font:700 12px 'Space Grotesk'; letter-spacing:.18em; color:var(--gold) }
+.foot{ position:absolute; left:var(--pad); right:var(--pad); bottom:24px; display:flex; justify-content:space-between;
+       font:600 9.5px 'Manrope'; letter-spacing:.16em; text-transform:uppercase; color:var(--gray) }
+.dark .foot{ color:rgba(250,246,239,.45) }
+.eyebrow{ font:700 11.5px 'Space Grotesk'; letter-spacing:.24em; text-transform:uppercase; color:var(--red); margin-bottom:12px; display:flex; align-items:center; gap:10px }
+.eyebrow::before{ content:''; width:26px; height:2px; background:var(--gold) }
+.dark .eyebrow{ color:var(--gold) }
+h1,h2{ font-family:'Space Grotesk',sans-serif; text-transform:uppercase; letter-spacing:-.01em; line-height:.98 }
+h2{ font-size:36px; font-weight:700; margin-bottom:18px }
+h2 em{ font-style:normal; color:var(--red) }
+.dark h2 em{ color:var(--gold) }
+p{ font-size:15px; line-height:1.55 }
+.muted{ color:var(--gray) }
+.dark .muted{ color:rgba(250,246,239,.72) }
+.note{ font-size:12.5px; color:var(--gray); line-height:1.45 }
+.sub-h{ font:700 12px 'Space Grotesk'; letter-spacing:.12em; text-transform:uppercase; margin:16px 0 10px; color:var(--ink) }
+
+/* cover */
+.cover{ padding:0; background:var(--ink); color:var(--bg) }
+.cover .photo{ height:470px; background:center/cover; position:relative }
+.cover .photo::after{ content:''; position:absolute; inset:0; background:linear-gradient(180deg,rgba(20,41,58,.1) 0%,rgba(20,41,58,.5) 55%,var(--ink) 100%) }
+.cover .body{ padding:0 var(--pad); margin-top:-120px; position:relative; z-index:2 }
+.cover .iso{ width:104px; margin-bottom:16px }
+.cover .pre{ font:600 13px 'Manrope'; letter-spacing:.2em; text-transform:uppercase; color:var(--cream); margin-bottom:6px }
+.cover h1{ font-size:56px; font-weight:700 }
+.cover h1 span{ color:var(--gold) }
+.cover .tag{ display:inline-block; margin-top:16px; font:700 12px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; background:var(--red); color:#fff; padding:8px 12px; border-radius:6px }
+.cover-p{ margin-top:18px; color:rgba(250,246,239,.8); font-size:16px; max-width:420px }
+
+/* letter */
+.letter{ background:var(--white); border-radius:18px; padding:24px 24px 8px; box-shadow:0 12px 30px -20px rgba(20,41,58,.4) }
+.letter p{ margin-bottom:14px; font-size:15.5px; line-height:1.6 }
+.letter b{ color:var(--red) }
+.sign{ display:flex; gap:12px; align-items:center; margin-top:20px }
+.sign img{ width:46px }
+.sign b{ display:block; font:700 14px 'Manrope' } .sign span{ font-size:12.5px; color:var(--gray) }
+.verse-mini{ margin-top:auto; align-self:flex-start; font:700 12px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); border:1.5px solid var(--gold); padding:9px 14px; border-radius:99px }
+
+/* cards */
+.card{ background:var(--white); border-radius:16px; padding:18px 20px; position:relative; overflow:hidden; box-shadow:0 10px 26px -18px rgba(20,41,58,.35) }
+.card::before{ content:''; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--gold) }
+.card.r::before{ background:var(--red) }
+.card .lbl{ font:700 11px 'Space Grotesk'; letter-spacing:.22em; text-transform:uppercase; color:var(--red); margin-bottom:6px }
+.card p{ font-size:14.5px }
+.flow{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.flow>div{ border-radius:14px; padding:14px; min-height:76px }
+.flow>i{ display:none }
+.flow b{ display:block; font:700 15px 'Space Grotesk'; text-transform:uppercase } .flow span{ font-size:12px; opacity:.85 }
+.f1{ background:var(--cream) } .f2{ background:var(--red); color:#fff } .f3{ background:var(--ink); color:#fff } .f4{ background:var(--gold) }
+
+/* stats */
+.stats{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:18px }
+.stat{ background:var(--white); border-radius:16px; padding:16px }
+.stat b{ display:block; font:700 44px 'Space Grotesk'; color:var(--red); line-height:1 }
+.stat span{ display:block; font-size:12.5px; font-weight:600; margin-top:6px }
+.stat.dk{ background:var(--ink) } .stat.dk b{ color:var(--gold) } .stat.dk span{ color:var(--bg) }
+.stat.ok{ background:var(--ordinario) } .stat.ok b,.stat.ok span{ color:#fff }
+.ready{ list-style:none; display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.ready li{ background:var(--white); border-radius:12px; padding:10px 12px; border-left:4px solid var(--ordinario) }
+.ready b{ display:block; font:700 13px 'Manrope'; line-height:1.25 } .ready span{ font-size:11px; color:var(--gray) }
+
+/* asks */
+.asks{ display:flex; flex-direction:column }
+.ask{ display:grid; grid-template-columns:42px 1fr; gap:12px; padding:13px 0; border-top:1px solid rgba(250,246,239,.14) }
+.ask:last-child{ border-bottom:1px solid rgba(250,246,239,.14) }
+.ask .k{ font:700 26px 'Space Grotesk'; color:var(--gold); line-height:1 }
+.ask b{ display:block; font:700 16px 'Space Grotesk'; text-transform:uppercase; margin-bottom:3px }
+.ask span{ font-size:13.5px; line-height:1.45; color:rgba(250,246,239,.8) }
+.ask .hl{ display:inline; font:700 13.5px 'Manrope'; text-transform:none; color:var(--cream) }
+
+/* how */
+.steps{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px }
+.steps div{ background:var(--white); border-radius:12px; padding:10px 6px; text-align:center; border-top:4px solid var(--gold) }
+.steps div:nth-child(even){ border-top-color:var(--red) }
+.steps b{ display:block; font:700 20px 'Space Grotesk'; color:var(--red) } .steps span{ font-size:11px; font-weight:600; line-height:1.25; display:block }
+.ficha{ width:100%; border-collapse:separate; border-spacing:0; background:var(--white); border-radius:14px; overflow:hidden; font-size:13.5px; margin-bottom:8px }
+.ficha th{ background:var(--ink); color:var(--cream); font:700 10.5px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; padding:9px 12px; text-align:left }
+.ficha td{ padding:9px 12px; border-top:1px solid var(--bg-alt) }
+.pipe{ display:flex; align-items:center; gap:5px; flex-wrap:nowrap }
+.pipe span{ background:var(--cream); border-radius:8px; padding:8px 8px; font:700 11.5px 'Manrope'; text-align:center; flex:1 }
+.pipe span.ok{ background:var(--ordinario); color:#fff }
+.pipe i{ font-style:normal; color:var(--gold); font-weight:800 }
+
+/* map */
+.map{ display:flex; flex-direction:column; gap:9px }
+.mp{ display:grid; grid-template-columns:50px 1fr 54px; gap:12px; align-items:center; background:rgba(250,246,239,.06); border:1px solid rgba(250,246,239,.12); border-radius:14px; padding:11px 13px }
+.ic{ width:50px; height:50px; border-radius:12px; display:grid; place-items:center; font:700 12.5px 'Space Grotesk' }
+.ic.g{ background:var(--gold); color:var(--ink) } .ic.r{ background:var(--red); color:var(--bg) }
+.mp-t b{ display:block; font:700 15px 'Space Grotesk'; text-transform:uppercase } .mp-t span{ font-size:12px; color:rgba(250,246,239,.7) }
+.bar{ height:5px; background:rgba(250,246,239,.15); border-radius:9px; margin-top:7px; overflow:hidden } .bar i{ display:block; height:100%; background:var(--gold) }
+.mp-n{ text-align:right } .mp-n b{ font:700 18px 'Space Grotesk'; color:var(--gold); display:block } .mp-n span{ font-size:10px; text-transform:uppercase; letter-spacing:.1em; color:rgba(250,246,239,.6) }
+
+/* dérej slide */
+.dj-slide{ padding-top:32px }
+.dj-slide .top{ margin-bottom:16px }
+.dj-head{ display:flex; justify-content:space-between; align-items:flex-end; gap:12px; border-radius:16px; padding:16px 18px; color:#fff }
+.dj-head.red{ background:var(--red) } .dj-head.gold{ background:var(--ink) }
+.dj-head h2{ font-size:30px; margin:4px 0 4px; color:#fff }
+.dj-k{ font:700 10px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; color:var(--cream) }
+.dj-sub{ font-size:12.5px; color:rgba(255,255,255,.85) } .dj-sub i{ color:var(--cream) }
+.dj-head.gold .dj-k,.dj-head.gold .dj-sub i{ color:var(--gold) }
+.dj-count{ text-align:center; background:rgba(255,255,255,.12); border-radius:12px; padding:8px 12px; flex:none }
+.dj-count b{ font:700 30px 'Space Grotesk'; line-height:1 } .dj-count small{ font-size:15px; opacity:.7 }
+.dj-count span{ display:block; font:700 9px 'Space Grotesk'; letter-spacing:.16em; text-transform:uppercase; opacity:.85 }
+.dj-meta{ display:flex; gap:6px; margin:10px 0 8px; flex-wrap:wrap }
+.dj-meta span{ font:700 10.5px 'Manrope'; background:var(--cream); color:var(--ink); padding:5px 9px; border-radius:99px }
+.dj-meta span:last-child{ background:transparent; border:1px solid rgba(20,41,58,.25) }
+.dj-why{ font-size:13px; line-height:1.5; color:var(--gray); margin-bottom:10px }
+.items{ display:flex; flex-direction:column; gap:5px }
+.it{ display:grid; grid-template-columns:24px 1fr auto; gap:9px; align-items:center; background:var(--white); border-radius:11px; padding:7px 10px; border-left:3px solid transparent }
+.it.is-ok{ border-left-color:var(--ordinario) }
+.pn{ font:700 16px 'Space Grotesk'; color:var(--red); text-align:center } .pn.dot{ color:var(--gold) }
+.tt{ font:700 13px 'Manrope'; line-height:1.2 }
+.mt{ font-size:10.5px; color:var(--gray); display:flex; align-items:center; gap:5px; margin-top:1px }
+.cc{ display:block; font-size:11px; line-height:1.35; color:var(--ink); opacity:.75; margin-top:2px }
+.items.dense .it{ padding:5px 10px } .items.dense .cc{ display:none }
+.items.dense .it.compact .mt{ margin-top:0 }
+.sd{ width:8px; height:8px; border-radius:50%; display:inline-block; flex:none }
+.sd-ordinario{ background:var(--ordinario) } .sd-adviento{ background:var(--adviento) } .sd-cuaresma{ background:var(--cuaresma) } .sd-pascua{ background:var(--pascua) } .sd-pentecostes{ background:var(--pentecostes) }
+.st{ font:700 8.5px 'Space Grotesk'; letter-spacing:.1em; text-transform:uppercase; padding:4px 7px; border-radius:99px; border:1px solid rgba(20,41,58,.2); color:var(--gray); white-space:nowrap }
+.st.ok{ background:var(--ordinario); color:#fff; border-color:var(--ordinario) }
+.phase{ font:700 9.5px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; color:var(--red); margin:4px 0 0 2px }
+.tip{ margin-top:auto; background:var(--cream); border-radius:12px; padding:10px 14px; font-size:12.5px; line-height:1.45 }
+.tip b{ display:block; font:700 9.5px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; color:var(--red); margin-bottom:2px }
+
+/* calendar */
+.cals{ display:flex; flex-direction:column; gap:10px }
+.cal{ background:var(--white); border-radius:14px; overflow:hidden }
+.cal-h{ display:flex; justify-content:space-between; padding:9px 14px; color:#fff; font:700 13px 'Space Grotesk'; letter-spacing:.12em; text-transform:uppercase }
+.cal-adviento .cal-h{ background:var(--adviento) } .cal-cuaresma .cal-h{ background:var(--cuaresma) } .cal-pascua .cal-h{ background:var(--pascua) } .cal-pentecostes .cal-h{ background:var(--pentecostes) }
+.chips{ display:flex; flex-wrap:wrap; gap:6px; padding:11px 12px }
+.chips span{ font-size:11.5px; font-weight:600; padding:5px 9px; border-radius:99px; background:var(--bg-alt) }
+.chips span.ok{ background:var(--ordinario); color:#fff }
+
+/* allies + mini asks */
+.mini-asks{ display:grid; grid-template-columns:1fr 1fr; gap:8px }
+.mini-asks div{ background:var(--bg-alt); border-radius:12px; padding:12px; border-top:3px solid var(--red) }
+.mini-asks b{ display:block; font:700 13px 'Space Grotesk'; text-transform:uppercase; line-height:1.15; margin-bottom:3px } .mini-asks span{ font-size:11.5px; color:var(--gray) }
+.allies{ display:grid; grid-template-columns:repeat(3,1fr); gap:8px }
+.allies div{ background:var(--white); border-radius:14px; padding:12px; text-align:center; box-shadow:0 8px 20px -16px rgba(20,41,58,.4) }
+.allies img{ width:72px; height:72px; object-fit:contain; border-radius:12px; background:var(--bg-alt); margin-bottom:8px }
+.allies b{ display:block; font:700 13px 'Space Grotesk'; text-transform:uppercase } .allies span{ font-size:11px; color:var(--gray) }
+
+/* team */
+.team{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+.tm{ background:var(--white); border-radius:16px; padding:12px; text-align:center }
+.tm img{ width:100%; aspect-ratio:1; object-fit:cover; object-position:center 22%; border-radius:12px; margin-bottom:8px; display:block }
+.tm b{ display:block; font:700 13px 'Manrope'; line-height:1.25 }
+.tm span{ display:block; font:700 9.5px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); margin-top:4px }
+
+/* close */
+.close{ background:var(--ink); color:var(--bg); align-items:center; text-align:center; justify-content:center }
+.close .logo{ width:260px; margin-bottom:30px; background:var(--bg); border-radius:22px; padding:20px 24px }
+.verse{ font:700 36px 'Space Grotesk'; text-transform:uppercase; line-height:1.05; margin-bottom:8px }
+.verse span{ color:var(--gold) }
+.ref{ font:600 12px 'Manrope'; letter-spacing:.24em; text-transform:uppercase; color:var(--cream); margin-bottom:26px }
+.thanks-big{ font-size:17px; line-height:1.55; max-width:400px; font-style:italic; color:var(--cream); margin-bottom:22px }
+.thanks{ font-size:14.5px; color:rgba(250,246,239,.78); max-width:380px }
+.hash{ margin-top:18px; font:700 12px 'Space Grotesk'; letter-spacing:.1em; color:var(--gold) }
+
+.it.nonum{ grid-template-columns:1fr auto; padding-left:14px }
+.band{ margin-top:auto; height:230px; border-radius:18px; background:url(assets/images/nosotros.webp) center 35%/cover; position:relative; overflow:hidden }
+.band::after{ content:'NADIE RECORRE ESTE CAMINO SOLO'; position:absolute; left:14px; bottom:12px; font:700 10.5px 'Space Grotesk'; letter-spacing:.2em; color:#fff; background:rgba(139,30,43,.92); padding:6px 10px; border-radius:6px }
+</style></head><body>
+<section class="s cover">
+  <div class="photo" style="background-image:url(assets/images/hero.webp)"></div>
+  <div class="body">
+    <img class="iso" src="assets/logos/isotipo-bn.png" alt="MCJ">
+    <div class="pre">Para el equipo de</div>
+    <h1>MI CAMINO<br>ES <span>JESÚS</span></h1>
+    <div class="tag">Hacia dónde caminamos juntos</div>
+    <p class="cover-p">Lo que somos, lo que ya tenemos, a qué nos vamos a dedicar y cómo lo vamos a hacer.</p>
+  </div>
+  <div class="foot"><span>Equipo MCJ</span><span>Noviembre 2026</span></div>
+</section>
+
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">02 / 18</span></div>
+  <div class="eyebrow">Antes de empezar</div>
+  <h2>GRACIAS POR <em>DECIR QUE SÍ</em></h2>
+  <div class="letter">
+    <p>Este proyecto no existe por un logo ni por un catálogo. Existe porque cada uno de ustedes decidió regalar su tiempo, su talento y su fe para que otros se encuentren con Jesús.</p>
+    <p>Empezamos en nuestra parroquia. En agosto dimos el primer paso fuera, con <b>Levántate y Sé Hombre</b>. Ahora toca crecer, y nadie recorre este camino solo.</p>
+    <p>Esta presentación es para que todos veamos el mismo mapa: qué tenemos, qué falta y dónde cabe cada quien.</p>
+  </div>
+  <div class="sign"><img src="assets/logos/isotipo.png" alt=""><div><b>Equipo fundador</b><span>Pbro. Cristopher Cortés · Jehosua Castañeda</span></div></div>
+  <div class="verse-mini">“Sé fuerte y valiente” · Josué 1:6</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">03 / 18</span></div>
+  <div class="eyebrow">Nuestra identidad</div>
+  <h2>LO QUE <em>SOMOS</em>, EN CORTO</h2>
+  <div class="card"><div class="lbl">Misión</div><p>Formar discípulos misioneros, jóvenes y adultos, que vivan, anuncien y sirvan el Evangelio con alegría, siendo un punto de quiebre para el mundo actual.</p></div>
+  <div class="card r" style="margin-top:12px"><div class="lbl">Visión</div><p>Ser una escuela de referencia en la Nueva Evangelización, donde cada persona, sin importar su edad, encuentre un camino claro de encuentro, formación y misión con Jesucristo.</p></div>
+  <div class="eyebrow" style="margin-top:24px">Los 4 pilares de toda experiencia</div>
+  <div class="flow">
+    <div class="f1"><b>Encuentro</b><span>con Cristo vivo</span></div><i>→</i>
+    <div class="f2"><b>Formación</b><span>estudio, oración, sacramentos</span></div><i>→</i>
+    <div class="f3"><b>Comunidad</b><span>nadie camina solo</span></div><i>→</i>
+    <div class="f4"><b>Misión</b><span>anunciar lo vivido</span></div>
+  </div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">04 / 18</span></div>
+  <div class="eyebrow">Dónde estamos hoy</div>
+  <h2>TENEMOS EL MAPA, <em>FALTA RECORRERLO</em></h2>
+  <div class="stats">
+    <div class="stat dk"><b>48</b><span>Experiencias diseñadas en el catálogo XP Lev</span></div>
+    <div class="stat ok"><b>7</b><span>Listas para vivirse hoy</span></div>
+    <div class="stat"><b>41</b><span>En preparación: falta redactar su material</span></div>
+    <div class="stat"><b>6</b><span>Dérej (caminos), uno por público</span></div>
+  </div>
+  <div class="eyebrow" style="margin-top:4px">Lo que ya está listo</div>
+  <ul class="ready"><li><b>Levántate y Sé Hombre</b><span>Dérej Guibor · Retiro</span></li><li><b>Emmanuel</b><span>Dérej Jaím · Retiro</span></li><li><b>Camino a Belén</b><span>Dérej Jaím · Adoración</span></li><li><b>Emaús</b><span>Dérej Oz · Taller</span></li><li><b>Pedro, el discípulo firme</b><span>Dérej Oz · Taller</span></li><li><b>Juan, el discípulo amado</b><span>Dérej Oz · Taller</span></li><li><b>Jesucristo Nuestra Esperanza</b><span>Dérej Jaím · Hora Santa</span></li></ul>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s dark">
+  <div class="top"><img src="assets/logos/isotipo-bn.png" alt=""><span class="num">05 / 18</span></div>
+  <div class="eyebrow">A qué nos vamos a dedicar</div>
+  <h2>CINCO <em>FOCOS</em> PARA LOS PRÓXIMOS MESES</h2>
+  <p class="muted" style="font-size:13.5px;margin-bottom:6px">Propuesta para platicar y aterrizar juntos.</p>
+  <div class="asks">
+    <div class="ask"><div class="k">01</div><div><b>Vivir el Adviento</b><span>Empieza el 29 de noviembre. <b class="hl">Emmanuel</b> y <b class="hl">Camino a Belén</b> ya están listos: es nuestra próxima oportunidad.</span></div></div>
+    <div class="ask"><div class="k">02</div><div><b>Dar continuidad a Guibor</b><span>Los hombres de “Levántate y Sé Hombre” esperan el paso 2: <b class="hl">Sansón</b>.</span></div></div>
+    <div class="ask"><div class="k">03</div><div><b>Arrancar Dérej Oz</b><span>Pedro, Juan y Emaús están listos y son de Pascua: base para lanzar la pastoral juvenil.</span></div></div>
+    <div class="ask"><div class="k">04</div><div><b>Formar servidores</b><span>Mesharét es lo que nos permite multiplicarnos: más servidores, más retiros.</span></div></div>
+    <div class="ask"><div class="k">05</div><div><b>Caminar con la Arquidiócesis</b><span>Presentar MCJ a Mons. Patrón Wong y buscar su respaldo.</span></div></div>
+  </div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">06 / 18</span></div>
+  <div class="eyebrow">Cómo lo vamos a hacer</div>
+  <h2>CADA EXPERIENCIA SE CONSTRUYE <em>IGUAL</em></h2>
+  <div class="sub-h">1 · Cada tema sigue la misma estructura</div>
+  <div class="steps">
+    <div><b>1</b><span>Evocación bíblica</span></div>
+    <div><b>2</b><span>Actividad introductoria</span></div>
+    <div><b>3</b><span>Contenido</span></div>
+    <div><b>4</b><span>Símbolos</span></div>
+    <div><b>5</b><span>Reflexión</span></div>
+  </div>
+  <div class="sub-h">2 · Cada formato tiene su ficha técnica</div>
+  <table class="ficha">
+    <tr><th></th><th>Duración</th><th>Personas</th></tr>
+    <tr><td><b>Retiro</b></td><td>2 a 3 días</td><td>25 a 80</td></tr>
+    <tr><td><b>Taller</b></td><td>4 a 6 horas</td><td>15 a 40</td></tr>
+    <tr><td><b>Hora Santa</b></td><td>1 a 3 horas</td><td>30 a 120</td></tr>
+  </table>
+  <p class="note">Espacio: capilla con Sagrario y salón con sillas móviles para dinámicas.</p>
+  <div class="sub-h">3 · De la idea al catálogo</div>
+  <div class="pipe"><span>Redactar</span><i>→</i><span>Revisión espiritual</span><i>→</i><span>Piloto en parroquia</span><i>→</i><span class="ok">Lista</span></div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s dark">
+  <div class="top"><img src="assets/logos/isotipo-bn.png" alt=""><span class="num">07 / 18</span></div>
+  <div class="eyebrow">Método XP Lev</div>
+  <h2>LOS 6 <em>DÉREJ</em> DE UN VISTAZO</h2>
+  <p class="muted" style="font-size:14px;margin-bottom:16px"><b style="color:var(--cream)">Dérej</b> significa “camino” en hebreo. Cada uno es una ruta pensada para una etapa concreta de la vida. La barra muestra cuánto tenemos ya listo.</p>
+  <div class="map"><div class="mp"><div class="ic r">GBR</div><div class="mp-t"><b>Dérej Guibor</b><span>Hombres · Secuencial</span><div class="bar"><i style="width:17%"></i></div></div><div class="mp-n"><b>1/6</b><span>listas</span></div></div><div class="mp"><div class="ic g">KVD</div><div class="mp-t"><b>Dérej Kavod</b><span>Mujeres · Secuencial</span><div class="bar"><i style="width:2%"></i></div></div><div class="mp-n"><b>0/6</b><span>listas</span></div></div><div class="mp"><div class="ic r">OZ</div><div class="mp-t"><b>Dérej Oz</b><span>Jóvenes 13-30 años · 10 hitos</span><div class="bar"><i style="width:30%"></i></div></div><div class="mp-n"><b>3/10</b><span>listas</span></div></div><div class="mp"><div class="ic g">SMJ</div><div class="mp-t"><b>Dérej Simjá</b><span>Niños hasta 12 años · Estaciones</span><div class="bar"><i style="width:2%"></i></div></div><div class="mp-n"><b>0/5</b><span>listas</span></div></div><div class="mp"><div class="ic r">MSH</div><div class="mp-t"><b>Dérej Mesharét</b><span>Servidores y ministerios · Catálogo abierto</span><div class="bar"><i style="width:2%"></i></div></div><div class="mp-n"><b>0/9</b><span>listas</span></div></div><div class="mp"><div class="ic g">JM</div><div class="mp-t"><b>Dérej Jaím</b><span>Comunidad general · Catálogo abierto</span><div class="bar"><i style="width:25%"></i></div></div><div class="mp-n"><b>3/12</b><span>listas</span></div></div></div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">08 / 18</span></div>
+  <div class="dj-head red">
+    <div><div class="dj-k">Dérej 1 de 6 · Hombres</div><h2>DÉREJ GUIBOR</h2><div class="dj-sub">Camino del Guerrero · <i>Guibor = guerrero, valiente</i></div></div>
+    <div class="dj-count"><b>1<small>/6</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Ruta Hombría Bíblica</span><span>Secuencial · 6 retiros en orden</span></div>
+  <p class="dj-why">Un itinerario para hombres que recorre, paso a paso, lo que significa ser hombre a la luz de Cristo: identidad, fortaleza, familia, amistad, paternidad y herencia. Cada retiro se apoya en un hombre de la Biblia.</p>
+  <div class="items "><div class="it is-ok concept "><b class="pn">1</b><div class="tx"><div class="tt">Levántate y Sé Hombre</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">El rescate de la masculinidad en un mundo que la tiene confundida.</span></div><span class="st ok">Lista</span></div><div class="it  concept "><b class="pn">2</b><div class="tx"><div class="tt">Sansón</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La fuerza no es el músculo: es saber a quién perteneces.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">3</b><div class="tx"><div class="tt">Tobías</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La familia no se hereda perfecta, se construye con fe en el camino.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">4</b><div class="tx"><div class="tt">Jonatán</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La amistad real se mide en lo que estás dispuesto a perder por el otro.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">5</b><div class="tx"><div class="tt">José de Nazaret</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La verdadera hombría se demuestra en el silencio de quien sostiene sin pedir reconocimiento.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">6</b><div class="tx"><div class="tt">Josué</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">Heredar la promesa no es suerte: es esfuerzo, valentía y obediencia sin atajos.</span></div><span class="st">En preparación</span></div></div>
+  <div class="tip"><b>Dato clave</b>El orden importa: cada paso construye sobre el anterior. Quien vivió “Levántate” espera el paso 2.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Guibor</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">09 / 18</span></div>
+  <div class="dj-head gold">
+    <div><div class="dj-k">Dérej 2 de 6 · Mujeres</div><h2>DÉREJ KAVOD</h2><div class="dj-sub">Camino de Dignidad · <i>Kavod = gloria, dignidad, peso</i></div></div>
+    <div class="dj-count"><b>0<small>/6</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Ruta Mujer Nueva</span><span>Secuencial · 6 retiros en orden</span></div>
+  <p class="dj-why">Una secuencia de autodescubrimiento y sanación para mujeres: la dignidad original, la lealtad, la sed de amor verdadero, el servicio y la valentía. Cada retiro se apoya en una mujer de la Biblia.</p>
+  <div class="items "><div class="it  concept "><b class="pn">1</b><div class="tx"><div class="tt">Fuiste Hecha Mujer</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">El genio femenino como obra maestra y pilar de la creación.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">2</b><div class="tx"><div class="tt">Eva</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">Antes de la caída, hubo una obra maestra: entender tu dignidad original.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">3</b><div class="tx"><div class="tt">Rut</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La audacia de la lealtad y el salto de fe hacia lo desconocido.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">4</b><div class="tx"><div class="tt">Sicar</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Retiro · Cuaresma</div><span class="cc">Dejar de buscar en pozos equivocados el amor que solo Dios puede saciar.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">5</b><div class="tx"><div class="tt">Betania</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">Servir con las manos y creer con el corazón no son caminos distintos.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">6</b><div class="tx"><div class="tt">Judit</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La valentía de una mujer decidida puede rescatar a todo un pueblo.</span></div><span class="st">En preparación</span></div></div>
+  <div class="tip"><b>Dato clave</b>Aún no hay ningún paso listo: es el Dérej que más necesita manos para redactar.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Kavod</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">10 / 18</span></div>
+  <div class="dj-head red">
+    <div><div class="dj-k">Dérej 3 de 6 · Jóvenes 13-30 años</div><h2>DÉREJ OZ</h2><div class="dj-sub">Camino de la Fortaleza · <i>Oz = fortaleza</i></div></div>
+    <div class="dj-count"><b>3<small>/10</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Del llamado a la misión</span><span>10 hitos · orden sugerido, no obligatorio</span></div>
+  <p class="dj-why">Pastoral juvenil (13–30 años) en tres movimientos: el llamado (1–3), el discipulado (4–8) y el envío (9–10). Cada parroquia puede tomarlos de forma modular según su ciclo anual.</p>
+  <div class="items dense"><div class="phase">Llamado</div><div class="it  concept "><b class="pn">1</b><div class="tx"><div class="tt">Zaqueo</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">No hace falta que te vean para que Cristo te llame por tu nombre.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">2</b><div class="tx"><div class="tt">Bartimeo</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">El grito que no se calla, aunque la multitud mande callar.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">3</b><div class="tx"><div class="tt">Camino a Damasco</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La conversión más radical de la Biblia, para quien viene de frente en contra.</span></div><span class="st">En preparación</span></div><div class="phase">Discipulado</div><div class="it is-ok concept "><b class="pn">4</b><div class="tx"><div class="tt">Pedro, el discípulo firme</div><div class="mt"><i class="sd sd-pascua" title="Pascua"></i>Taller · Pascua</div><span class="cc">La fuerza no está en no caer, sino en dejarse llamar de nuevo cada vez que se cae.</span></div><span class="st ok">Lista</span></div><div class="it is-ok concept "><b class="pn">5</b><div class="tx"><div class="tt">Juan, el discípulo amado</div><div class="mt"><i class="sd sd-pascua" title="Pascua"></i>Taller · Pascua</div><span class="cc">Quedarse hasta el final, al pie de la cruz, es la medida más honda de la amistad con Cristo.</span></div><span class="st ok">Lista</span></div><div class="it  concept "><b class="pn">6</b><div class="tx"><div class="tt">El joven rico</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">Cumplir todo y aun así irse triste porque hay una cosa que no se suelta.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">7</b><div class="tx"><div class="tt">Tomás</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">La duda no se castiga: se invita a tocar la herida.</span></div><span class="st">En preparación</span></div><div class="it is-ok concept "><b class="pn">8</b><div class="tx"><div class="tt">Emaús</div><div class="mt"><i class="sd sd-pascua" title="Pascua"></i>Taller · Pascua</div><span class="cc">La oración no es un monólogo: es el camino en que Jesús nos alcanza, camina con nosotros y se nos revela partiendo el pan.</span></div><span class="st ok">Lista</span></div><div class="phase">Envío</div><div class="it  concept "><b class="pn">9</b><div class="tx"><div class="tt">Getsemaní</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Hora Santa · Cuaresma</div><span class="cc">Acompañar el sufrimiento de Cristo, no solo recibir de Él.</span></div><span class="st">En preparación</span></div><div class="it  concept "><b class="pn">10</b><div class="tx"><div class="tt">Pentecostés</div><div class="mt"><i class="sd sd-pentecostes" title="Pentecostés"></i>Hora Santa · Pentecostés</div><span class="cc">El fuego que se recibe no se guarda: se manda a compartir.</span></div><span class="st">En preparación</span></div></div>
+  <div class="tip"><b>Dato clave</b>Ya hay 3 hitos listos y los tres son de Pascua: base natural para arrancar Oz.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Oz</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">11 / 18</span></div>
+  <div class="dj-head gold">
+    <div><div class="dj-k">Dérej 4 de 6 · Niños hasta 12 años</div><h2>DÉREJ SIMJÁ</h2><div class="dj-sub">Camino de la Alegría · <i>Simjá = alegría</i></div></div>
+    <div class="dj-count"><b>0<small>/5</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Infancia misionera y catequesis</span><span>Estaciones · formato no lineal</span></div>
+  <p class="dj-why">Pedagogía bíblica, asombro y oración para niños de hasta 12 años, en dos cortes: Kínder (4–6) y Primaria (7–12). Cada actividad es un circuito de estaciones alrededor de un pasaje.</p>
+  <div class="items "><div class="it  concept nonum"><div class="tx"><div class="tt">La Barca de Pedro</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Estaciones · Ordinario · Primaria</div><span class="cc">Aunque no encuentres nada por tus propias fuerzas, si confías en Jesús la red se llena.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">El Arca de Noé: Refugio Seguro</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Estaciones · Ordinario · Kínder</div><span class="cc">Dios cuida de mí y cumple sus promesas.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">El Buen Pastor y la Ovejita Perdida</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Estaciones · Ordinario · Kínder y Primaria</div><span class="cc">La Iglesia nunca deja de buscar a nadie.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Los Cinco Panes y Dos Peces</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Estaciones · Ordinario · Primaria</div><span class="cc">Lo poco que tengo, puesto en manos de Jesús, alcanza para todos.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Zaqueo se Sube al Árbol</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Estaciones · Ordinario · Primaria</div><span class="cc">Aunque seas pequeño y nadie te vea, Jesús te busca y te llama por tu nombre.</span></div><span class="st">En preparación</span></div></div>
+  <div class="tip"><b>Dato clave</b>Ideal para catequesis parroquial: módulos cortos que se insertan en lo que ya existe.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Simjá</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">12 / 18</span></div>
+  <div class="dj-head red">
+    <div><div class="dj-k">Dérej 5 de 6 · Servidores y ministerios</div><h2>DÉREJ MESHARÉT</h2><div class="dj-sub">Camino del Servidor · <i>Mesharét = el que sirve</i></div></div>
+    <div class="dj-count"><b>0<small>/9</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Formación de servidores</span><span>Catálogo abierto · módulos independientes</span></div>
+  <p class="dj-why">Talleres para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor. Un módulo por ministerio: predicación, intercesión, hospitalidad, monaguillos, catequesis y técnica.</p>
+  <div class="items dense"><div class="it  concept nonum"><div class="tx"><div class="tt">Shemá Bar · Adoración en movimiento</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div><span class="cc">La adoración no es un pasatiempo dominical; es una posición de combate.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Esclava del Señor</div><div class="mt"><i class="sd sd-adviento" title="Adviento"></i>Taller · Adviento</div><span class="cc">La fuerza arrolladora de la obediencia.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Sabios del Oriente</div><div class="mt"><i class="sd sd-adviento" title="Adviento"></i>Taller · Adviento</div><span class="cc">La sabiduría de dar lo mejor que tienes en la vida ordinaria.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">El Carbón Encendido · Formación de Predicadores</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">Nadie tiene derecho a hablar en nombre de Dios por mérito propio: primero hay que dejarse purificar.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Los Brazos que no se Cansan · Intercesión y Oración</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">Interceder no es orar en solitario: es sostener los brazos de otro hasta que la batalla termine.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">El Altar de la Puerta Abierta · Hospitalidad</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">La persona que recibes en la puerta puede ser Cristo disfrazado de desconocido.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">En la Casa de mi Padre · Monaguillos</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">El altar no es una tarea que se cumple: es la casa donde uno se siente en casa.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Lo que Oíste de Mí, Encomiéndalo · Catequistas</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">Enseñar la fe no es dar opinión propia: es custodiar y entregar fielmente lo que se recibió.</span></div><span class="st">En preparación</span></div><div class="it  concept nonum"><div class="tx"><div class="tt">Manos Llenas del Espíritu · Betsalel</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Taller · Ordinario</div><span class="cc">El trabajo técnico hecho con excelencia también es ministerio ungido, no apoyo secundario.</span></div><span class="st">En preparación</span></div></div>
+  <div class="tip"><b>Dato clave</b>Es la clave para crecer: sin servidores formados, no hay forma de multiplicar los retiros.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Mesharét</span></div>
+</section>
+
+<section class="s dj-slide">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">13 / 18</span></div>
+  <div class="dj-head gold">
+    <div><div class="dj-k">Dérej 6 de 6 · Comunidad general</div><h2>DÉREJ JAÍM</h2><div class="dj-sub">Camino de Vida · <i>Jaím = vida</i></div></div>
+    <div class="dj-count"><b>3<small>/12</small></b><span>listas</span></div>
+  </div>
+  <div class="dj-meta"><span>Para toda la comunidad</span><span>Catálogo abierto · por tiempo litúrgico</span></div>
+  <p class="dj-why">Retiros de impacto, talleres y Horas Santas temáticas para la comunidad parroquial en general, organizados según el calendario de la Iglesia.</p>
+  <div class="items dense"><div class="it  compact nonum"><div class="tx"><div class="tt">Samuel</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Tengo Sed</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Retiro · Cuaresma</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">El Último Rey</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div></div><span class="st">En preparación</span></div><div class="it is-ok compact nonum"><div class="tx"><div class="tt">Emmanuel</div><div class="mt"><i class="sd sd-adviento" title="Adviento"></i>Retiro · Adviento</div></div><span class="st ok">Lista</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Dos Hermanos</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Retiro · Ordinario</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Barrabás</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Retiro · Cuaresma</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Gólgota</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Taller · Cuaresma</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Alabastro Roto</div><div class="mt"><i class="sd sd-cuaresma" title="Cuaresma"></i>Retiro · Cuaresma</div></div><span class="st">En preparación</span></div><div class="it is-ok compact nonum"><div class="tx"><div class="tt">Camino a Belén</div><div class="mt"><i class="sd sd-adviento" title="Adviento"></i>Adoración · Adviento</div></div><span class="st ok">Lista</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Belén</div><div class="mt"><i class="sd sd-adviento" title="Adviento"></i>Retiro · Adviento</div></div><span class="st">En preparación</span></div><div class="it  compact nonum"><div class="tx"><div class="tt">Cenáculo</div><div class="mt"><i class="sd sd-pascua" title="Pascua"></i>Adoración · Pascua</div></div><span class="st">En preparación</span></div><div class="it is-ok compact nonum"><div class="tx"><div class="tt">Jesucristo Nuestra Esperanza</div><div class="mt"><i class="sd sd-ordinario" title="Ordinario"></i>Hora Santa · Ordinario</div></div><span class="st ok">Lista</span></div></div>
+  <div class="tip"><b>Dato clave</b>Aquí está lo que ya podemos ofrecer este Adviento: Emmanuel y Camino a Belén.</div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev · Dérej Jaím</span></div>
+</section>
+
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">14 / 18</span></div>
+  <div class="eyebrow">Calendario litúrgico</div>
+  <h2>QUÉ VIVIR EN <em>CADA TIEMPO</em></h2>
+  <p class="muted" style="font-size:14px;margin-bottom:14px">Los tiempos fuertes marcan nuestro año. <b>✓</b> = lista para vivirse.</p>
+  <div class="cals"><div class="cal cal-adviento"><div class="cal-h"><b>Adviento</b><span>5</span></div><div class="chips"><span class="ok">✓ Emmanuel</span><span class="">Esclava del Señor</span><span class="">Sabios del Oriente</span><span class="ok">✓ Camino a Belén</span><span class="">Belén</span></div></div><div class="cal cal-cuaresma"><div class="cal-h"><b>Cuaresma</b><span>6</span></div><div class="chips"><span class="">Sicar</span><span class="">Tengo Sed</span><span class="">Barrabás</span><span class="">Gólgota</span><span class="">Alabastro Roto</span><span class="">Getsemaní</span></div></div><div class="cal cal-pascua"><div class="cal-h"><b>Pascua</b><span>4</span></div><div class="chips"><span class="">Cenáculo</span><span class="ok">✓ Emaús</span><span class="ok">✓ Pedro, el discípulo firme</span><span class="ok">✓ Juan, el discípulo amado</span></div></div><div class="cal cal-pentecostes"><div class="cal-h"><b>Pentecostés</b><span>1</span></div><div class="chips"><span class="">Pentecostés</span></div></div></div>
+  <p class="note" style="margin-top:12px">Las otras 32 experiencias se pueden vivir en cualquier momento del Tiempo Ordinario.</p>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">15 / 18</span></div>
+  <div class="eyebrow">Más allá de la escuela</div>
+  <h2>NO CAMINAMOS <em>SOLOS</em></h2>
+  <div class="sub-h">Lo que pediremos a la Arquidiócesis</div>
+  <div class="mini-asks">
+    <div><b>Reconocimiento formal</b><span>como escuela de Nueva Evangelización</span></div>
+    <div><b>Difusión en parroquias</b><span>recomendación a párrocos y decanatos</span></div>
+    <div><b>Vinculación pastoral</b><span>con Pastoral Juvenil, Familiar y Catequesis</span></div>
+    <div><b>Espacios y sedes</b><span>casas de retiro y templos</span></div>
+  </div>
+  <div class="sub-h">Proyectos aliados</div>
+  <div class="allies">
+    <div><img src="assets/images/karposhub.png" alt=""><b>Karpos Hub</b><span>Red profesional católica</span></div>
+    <div><img src="assets/images/proyecto-ignis.webp" alt=""><b>Ignis</b><span>Ropa urbana católica</span></div>
+    <div><img src="assets/images/proyecto-ignis-et-logos.webp" alt=""><b>Ignis et Logos</b><span>Evangelización en redes</span></div>
+  </div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">16 / 18</span></div>
+  <div class="eyebrow">Nuestro equipo</div>
+  <h2>QUIÉNES <em>HOY</em> LO HACEN POSIBLE</h2>
+  <div class="team">
+    <div class="tm"><img src="assets/images/p-cristopher.jpeg" alt=""><b>Pbro. Cristopher Cortés Pliego</b><span>Fundador · Asesor espiritual</span></div>
+    <div class="tm"><img src="assets/images/jehosua.jpg" alt=""><b>Jehosua A. Castañeda Ortiz</b><span>Fundador · Eq. pastoral</span></div>
+    <div class="tm"><img src="assets/images/maribel.jpeg" alt=""><b>Maribel Pinto Corona</b><span>Equipo pastoral</span></div>
+    <div class="tm"><img src="assets/images/angy.jpeg" alt=""><b>Angélica M. Romero Hernández</b><span>Equipo pastoral</span></div>
+  </div>
+  <p class="note" style="margin-top:14px;text-align:center">…y el siguiente lugar en esta lámina puede ser el tuyo.</p>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s dark">
+  <div class="top"><img src="assets/logos/isotipo-bn.png" alt=""><span class="num">17 / 18</span></div>
+  <div class="eyebrow">Próximos pasos</div>
+  <h2>LO QUE <em>NECESITAMOS</em> DE TI</h2>
+  <div class="asks">
+    <div class="ask"><div class="k">01</div><div><b>Adopta un Dérej</b><span>Un responsable por camino que cuide su avance y su calidad.</span></div></div>
+    <div class="ask"><div class="k">02</div><div><b>Ayuda a redactar</b><span>Hay 41 experiencias esperando su material. Tu talento cabe en alguna.</span></div></div>
+    <div class="ask"><div class="k">03</div><div><b>Sirve en Adviento</b><span>Emmanuel y Camino a Belén necesitan manos: logística, música, intercesión, hospitalidad.</span></div></div>
+    <div class="ask"><div class="k">04</div><div><b>Ora y comparte</b><span>Invita a alguien y comparte @micaminoesjesus. Cada persona cuenta.</span></div></div>
+  </div>
+  <div class="band"></div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Equipo MCJ</span></div>
+</section>
+
+<section class="s close">
+  <img class="logo" src="assets/logos/logotipo.png" alt="Mi Camino es Jesús">
+  <div class="verse">“SÉ FUERTE<br>Y <span>VALIENTE</span>”</div>
+  <div class="ref">Josué 1:6</div>
+  <p class="thanks-big">No tengas miedo ni te acobardes, porque el Señor tu Dios estará contigo dondequiera que vayas.</p>
+  <p class="thanks">Gracias por caminar con nosotros. Lo mejor de MCJ todavía no ha pasado.</p>
+  <div class="hash">#micaminoesjesus #equipomcj #xplev</div>
+  <div class="foot"><span>18 / 18</span><span>© 2026 Mi Camino es Jesús</span></div>
+</section></body></html>
