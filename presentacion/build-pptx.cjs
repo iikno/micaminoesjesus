@@ -31,7 +31,10 @@ const PLAN = {
   'Barrabás': 'Semana Santa 2027',
   'El Arca de Noé: Refugio Seguro': 'Fin dic · Angélica',
   'Esclava del Señor': 'Fin ene · Maribel',
+  'Belén': 'Fin ene · P. Cristopher',
 };
+// Listas según el equipo aunque el sitio aún no las marque como publicadas.
+const READY_OVERRIDE = new Set(['Gólgota']);
 
 (async () => {
   // ---------------- Datos del catálogo ----------------
@@ -41,7 +44,7 @@ const PLAN = {
   const { retreats, DEREJ, CORTES_SIMJA } = await import('data:text/javascript,' + encodeURIComponent(code));
 
   const READY = new Set(['publicado', 'disponible']);
-  const isReady = (r) => READY.has(r.estado);
+  const isReady = (r) => READY.has(r.estado) || READY_OVERRIDE.has(r.title);
   const TIPO = { Retiro: 'Retiro', Taller: 'Taller', 'Adoración': 'Adoración', retiro: 'Retiro', taller: 'Taller', hora_santa: 'Hora Santa', estaciones: 'Estaciones' };
   const tipoOf = (r) => TIPO[r.category] || TIPO[r.tipo] || '—';
   const SEASON = { ordinario: 'Ordinario', adviento: 'Adviento', cuaresma: 'Cuaresma', pascua: 'Pascua', pentecostes: 'Pentecostés' };
@@ -207,11 +210,11 @@ const PLAN = {
     });
     label(s, 'LO QUE YA ESTÁ LISTO', 520, 166, 380, 5);
     ready.forEach((r, i) => {
-      const y = 190 + i * 40.5, g = 6 + i;
-      box(s, 520, y, 392, 35, HEX.white, { r: 0.2, g });
-      box(s, 534, y + 12, 11, 11, HEX.green, { r: 0.5, g });
-      txt(s, r.title, 556, y, 210, 35, { size: 12, bold: true, valign: 'middle', g });
-      txt(s, `${DEREJ[r.derej].name} · ${tipoOf(r)}`, 760, y, 140, 35, { size: 10, color: HEX.gray, align: 'right', valign: 'middle', g });
+      const y = 190 + i * 37, g = 6 + i;
+      box(s, 520, y, 392, 32, HEX.white, { r: 0.2, g });
+      box(s, 534, y + 10.5, 11, 11, HEX.green, { r: 0.5, g });
+      txt(s, r.title, 556, y, 210, 32, { size: 12, bold: true, valign: 'middle', g });
+      txt(s, `${DEREJ[r.derej].name} · ${tipoOf(r)}`, 760, y, 140, 32, { size: 10, color: HEX.gray, align: 'right', valign: 'middle', g });
     });
   }
 
@@ -226,7 +229,7 @@ const PLAN = {
       ['ARRANCAR DÉREJ KAVOD', 'Fuiste Hecha Mujer: piloto en enero, exclusivo para las mujeres del equipo, y retiro abierto en marzo.'],
       ['DAR CONTINUIDAD A GUIBOR', 'Segunda edición de Levántate y Sé Hombre en febrero; Sansón (paso 2) en abril o mayo.'],
       ['SEMANA SANTA CON LA COMUNIDAD', 'Barrabás será el retiro de Semana Santa para la comunidad (Dérej Jaím).'],
-      ['NUEVOS MATERIALES', 'El Arca de Noé (Angélica) a finales de diciembre y Esclava del Señor (Maribel) a finales de enero.'],
+      ['NUEVOS MATERIALES', 'El Arca de Noé (Angélica) a fin de diciembre; Esclava del Señor (Maribel) y Belén (P. Cristopher) a fin de enero.'],
       ['LANZAR PEREGRINOS', 'Nueva dimensión de peregrinaciones por México y el mundo, a cargo de Silvia “Silber” Ponce.'],
       ['CAMINAR CON LA ARQUIDIÓCESIS', 'Presentar MCJ a Mons. Patrón Wong y buscar su respaldo.'],
     ];
@@ -246,7 +249,7 @@ const PLAN = {
     const RT = [
       ['FIN DIC 2026', 'Entrega: El Arca de Noé', 'Dérej Simjá · Angélica', HEX.gold],
       ['ENE 2027', 'Piloto: Fuiste Hecha Mujer', 'Dérej Kavod · solo mujeres del equipo', HEX.red],
-      ['FIN ENE 2027', 'Entrega: Esclava del Señor', 'Dérej Mesharét · Maribel', HEX.gold],
+      ['FIN ENE 2027', 'Entregas: Esclava del Señor y Belén', 'Mesharét · Maribel\nJaím · P. Cristopher', HEX.gold],
       ['FEB 2027', 'Levántate y Sé Hombre · 2ª edición', 'Dérej Guibor · paso 1', HEX.red],
       ['MAR 2027', 'Fuiste Hecha Mujer', 'Dérej Kavod · paso 1', HEX.red],
       ['SEMANA SANTA', 'Barrabás · retiro para la comunidad', 'Dérej Jaím · 21 al 27 de marzo', HEX.cuaresma],
@@ -306,9 +309,31 @@ const PLAN = {
     oz: { code: 'OZ', color: HEX.red, heb: 'Oz = fortaleza', route: 'Del llamado a la misión', esq: '10 hitos · orden sugerido', why: 'Pastoral juvenil (13–30 años) en tres movimientos: el llamado (1–3), el discipulado (4–8) y el envío (9–10). Cada parroquia puede tomarlos de forma modular.', tip: 'Ya hay 3 hitos listos (Pedro, Juan y Emaús), los tres de Pascua: base natural para arrancar Oz.', phases: { 1: 'LLAMADO', 4: 'DISCIPULADO', 9: 'ENVÍO' } },
     simja: { code: 'SMJ', color: HEX.ink, heb: 'Simjá = alegría', route: 'Infancia misionera y catequesis', esq: 'Estaciones · no lineal', why: 'Pedagogía bíblica, asombro y oración para niños de hasta 12 años, en dos cortes: Kínder (4–6) y Primaria (7–12). Cada actividad es un circuito de estaciones.', tip: 'Angélica presenta El Arca de Noé a finales de diciembre: será la primera experiencia lista para niños.', corte: true },
     mesharet: { code: 'MSH', color: HEX.red, heb: 'Mesharét = el que sirve', route: 'Formación de servidores', esq: 'Catálogo abierto · módulos', why: 'Talleres para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor. Un módulo por ministerio.', tip: 'Maribel presenta Esclava del Señor a finales de enero. Sin servidores formados no hay forma de multiplicar los retiros.' },
-    jaim: { code: 'JM', color: HEX.ink, heb: 'Jaím = vida', route: 'Para toda la comunidad', esq: 'Catálogo abierto · litúrgico', why: 'Retiros de impacto, talleres y Horas Santas temáticas para la comunidad parroquial en general, según el calendario de la Iglesia.', tip: 'Barrabás es el retiro de Semana Santa para la comunidad. Emmanuel y Camino a Belén ya están listos para Adviento.' },
+    jaim: { code: 'JM', color: HEX.ink, heb: 'Jaím = vida', route: 'Para toda la comunidad', esq: 'Catálogo abierto · litúrgico', why: 'Retiros de impacto, talleres y Horas Santas temáticas para la comunidad parroquial en general, según el calendario de la Iglesia.', tip: 'Gólgota ya está listo y Barrabás será el retiro de Semana Santa. El P. Cristopher entrega Belén a finales de enero.' },
   };
   const ORDER = ['guibor', 'kavod', 'oz', 'simja', 'mesharet', 'jaim'];
+
+  // LOGO XP LEV
+  {
+    const s = slide('MCJ_CLARO', 'Los 6 Dérej', 'fadeSlow', 'XP Lev: el Ji-Rho es el monograma de Cristo; Lev significa corazón en hebreo. La franja diagonal es el camino (Dérej) con los colores de MCJ.');
+    head(s, 'Nuestro método', ['XP LEV: ', { em: 'CRISTO EN EL CORAZÓN' }]);
+    box(s, L, 166, 300, 300, HEX.bgAlt, { r: 0.25, g: 1, fx: 'zoom' });
+    pic(s, 'images/xp-lev.png', L + 24, 190, 252, 252, { contain: true, g: 1, fx: 'zoom' });
+    const B = [
+      ['XP', 'JI-RHO · XP', 'Las dos primeras letras de “Cristo” en griego (Χριστός): uno de los monogramas cristianos más antiguos. Todo el método empieza y termina en Él.'],
+      ['LEV', 'CORAZÓN EN HEBREO', 'En la Biblia el corazón es el centro de la persona: donde se decide, se ama y se cree. XP Lev es eso: llevar a Cristo al corazón. Por eso los Dérej también llevan nombres hebreos.'],
+      ['//', 'LA FRANJA DIAGONAL', 'El camino (Dérej) que cruza la vida, en el oro y el rojo de MCJ. La misma franja aparece en Peregrinos: somos una sola familia.'],
+    ];
+    B.forEach(([ic, t, d], i) => {
+      const y = 166 + i * 104, g = 2 + i;
+      box(s, 376, y, 536, 94, HEX.white, { shadow: true, g });
+      box(s, 392, y + 18, 58, 58, i === 1 ? HEX.red : HEX.ink, { r: 0.25, g });
+      txt(s, ic, 392, y + 18, 58, 58, { size: i === 1 ? 15 : 20, bold: true, color: i === 1 ? HEX.cream : HEX.gold, align: 'center', valign: 'middle', g });
+      txt(s, t, 466, y + 14, 430, 16, { size: 10.5, bold: true, cs: 2, color: HEX.red, g });
+      txt(s, d, 466, y + 34, 432, 56, { size: 11.5, lh: 1.3, g });
+    });
+    txt(s, 'Y también se lee como lo que ofrece: experiencias (XP) que llegan al corazón.', 376, 476, 536, 18, { size: 11, italic: true, color: HEX.gray, g: 5, fx: 'fade' });
+  }
 
   // 08 MAPA
   {
@@ -386,6 +411,25 @@ const PLAN = {
 
   // ======================= SECCIÓN: PEREGRINOS =======================
   pres.addSection({ title: 'Peregrinos' });
+
+  // LOGO PEREGRINOS
+  {
+    const s = slide('MCJ_OSCURO', 'Peregrinos', 'fadeSlow', 'Logo de Peregrinos: cruz de Jerusalén, PER (del latín per, a través de), el arco del camino y la franja que lo une a XP Lev.');
+    head(s, 'Nueva dimensión', ['PEREGRINOS: ', { em: 'UN LOGO PARA EL CAMINO' }], true);
+    pic(s, path.join(HERE, 'logos', 'peregrinos.png'), L, 166, 300, 300, { contain: true, g: 1, fx: 'zoom' });
+    const B = [
+      ['CRUZ DE JERUSALÉN', 'Una cruz grande y cuatro pequeñas: Cristo y los cuatro evangelistas que llevan su Palabra a los cuatro puntos del mundo. Es la cruz tradicional de Tierra Santa y de sus peregrinos.'],
+      ['PER', 'Del latín per, “a través de”. Peregrino viene de per ager: “el que va a través de los campos”. Es la raíz misma de la palabra.'],
+      ['EL ARCO', 'Bajo las letras, el camino que se recorre y el horizonte hacia el que se va: cada viaje termina en un encuentro.'],
+      ['LA FRANJA', 'La misma diagonal de XP Lev, en tonos cobre y tierra: el polvo del camino. Peregrinos es parte de la familia MCJ.'],
+    ];
+    B.forEach(([t, d], i) => {
+      const y = 166 + i * 79, g = 2 + i;
+      box(s, 376, y, 536, 71, HEX.inkSoft, { line: '2E475B', g });
+      txt(s, t, 396, y + 12, 496, 15, { size: 10.5, bold: true, cs: 2, color: HEX.gold, g });
+      txt(s, d, 396, y + 30, 500, 38, { size: 11.5, color: HEX.bg, lh: 1.25, g });
+    });
+  }
 
   // 15 PEREGRINOS
   {
@@ -477,7 +521,7 @@ const PLAN = {
     head(s, 'Nuestro equipo', ['QUIÉNES ', { em: 'HOY' }, ' LO HACEN POSIBLE']);
     const T = [
       [FOTO('jehosua'), 'Jehosua A. Castañeda Ortiz', 'Fundador · Eq. pastoral', ''],
-      [FOTO('cristopher'), 'Pbro. Cristopher Cortés Pliego', 'Fundador · Asesor espiritual', ''],
+      [FOTO('cristopher'), 'Pbro. Cristopher Cortés Pliego', 'Fundador · Asesor espiritual', 'Belén · fin de enero'],
       [FOTO('maribel'), 'Maribel Pinto Corona', 'Equipo pastoral', 'Esclava del Señor · fin de enero'],
       [FOTO('angelica'), 'Angélica M. Romero Hernández', 'Equipo pastoral', 'El Arca de Noé · fin de diciembre'],
       [FOTO('silvia'), 'Silvia “Silber” Ponce', 'Responsable de Peregrinos', 'Agente de viajes certificada'],
@@ -500,7 +544,7 @@ const PLAN = {
     const s = slide('MCJ_OSCURO', 'Equipo y cierre', 'push');
     head(s, 'Próximos pasos', ['LO QUE ', { em: 'NECESITAMOS' }, ' DE TI'], true);
     const N = [
-      ['ADOPTA UN DÉREJ', 'Un responsable por camino que cuide su avance y su calidad, como ya lo hacen Angélica y Maribel.'],
+      ['ADOPTA UN DÉREJ', 'Un responsable por camino que cuide su avance y su calidad, como ya lo hacen el Padre, Angélica y Maribel.'],
       ['AYUDA A REDACTAR', `Hay ${total - ready.length} experiencias esperando su material. Tu talento cabe en alguna.`],
       ['SIRVE EN LOS PRÓXIMOS RETIROS', 'Levántate (feb), Fuiste Hecha Mujer (mar) y Barrabás (Semana Santa) necesitan manos.'],
       ['ORA, INVITA Y COMPARTE', 'Invita a alguien, comparte @micaminoesjesus y suma ideas para Peregrinos.'],
