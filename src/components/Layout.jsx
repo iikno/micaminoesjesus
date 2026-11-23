@@ -4,19 +4,22 @@ import Header from './Header';
 import Footer from './Footer';
 
 export default function Layout() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    const target = hash && document.getElementById(hash.slice(1));
+    if (target) target.scrollIntoView();
+    else window.scrollTo(0, 0);
+  }, [pathname, hash]);
 
   return (
-    <div className="page">
+    <>
+      <a className="skip" href="#contenido">Saltar al contenido</a>
       <Header />
-      <main>
+      <main id="contenido">
         <Outlet />
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

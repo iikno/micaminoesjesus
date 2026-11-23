@@ -8,8 +8,8 @@
   --color-cream: #F3E4BB;
   --color-gray: #6B6B6B;
   --color-gray-dark: #3d3d3d;
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-body: 'Manrope', sans-serif;
+  --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+  --font-body: 'Manrope', system-ui, sans-serif;
 
   /* Colores litúrgicos, usados para clasificar retiros/talleres/adoraciones por tiempo */
   --season-ordinario: #3F7D4D;

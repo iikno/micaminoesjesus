@@ -47,10 +47,6 @@ import simjaBuenPastor from '../assets/images/SIMJA-BUENPASTOR.jpg';
 import simjaCincoPanes from '../assets/images/SIMJA-CINCOPANES.jpg';
 import simjaZaqueo from '../assets/images/SIMJA-ZAQUEO.jpg';
 
-export const SEQUENCES = {
-  'derej-gibor': { name: 'Derej Gibor', subtitle: 'Camino del Guerrero', audience: 'Hombres', total: 6 },
-  'derej-kavod': { name: 'Derej Kavod', subtitle: 'Camino de Dignidad', audience: 'Mujeres', total: 6 },
-};
 
 // Clasificación por tiempo litúrgico. `season` es el tiempo principal de cada
 // retiro/taller/adoración; `seasonSecondary` (opcional) marca otros tiempos a
@@ -69,12 +65,12 @@ export const SEASONS = {
 // 'catalogo' (sin orden forzoso), 'catalogo_sugerido' (progresión sugerida, no
 // obligatoria) o 'estaciones' (formato no lineal, aún sin contenido publicado).
 export const DEREJ = {
-  guibor: { name: 'Dérej Guibor', subtitle: 'Camino del Guerrero', audience: 'Hombres', esquema: 'secuencial', pasoTotal: 6 },
-  kavod: { name: 'Dérej Kavod', subtitle: 'Camino de Dignidad', audience: 'Mujeres', esquema: 'secuencial', pasoTotal: 6 },
-  mesharet: { name: 'Dérej Mesharét', subtitle: 'Camino del Servidor', audience: 'Servidores y ministerios', esquema: 'catalogo', pasoTotal: null },
-  simja: { name: 'Dérej Simjá', subtitle: 'Camino de la Alegría', audience: 'Niños hasta 12 años', esquema: 'estaciones', pasoTotal: null },
-  oz: { name: 'Dérej Oz', subtitle: 'Camino de la Fortaleza', audience: 'Jóvenes 13-30 años', esquema: 'catalogo_sugerido', pasoTotal: null },
-  jaim: { name: 'Dérej Jaím', subtitle: 'Camino de Vida', audience: 'Comunidad general', esquema: 'catalogo', pasoTotal: null },
+  guibor: { name: 'Dérej Guibor', subtitle: 'Camino del Guerrero', audience: 'Hombres', esquema: 'secuencial', pasoTotal: 6, color: '#3F7D4D', foto: levantateHombre, who: 'Hombres', more: 'Camino secuencial de 6 pasos.' },
+  kavod: { name: 'Dérej Kavod', subtitle: 'Camino de Dignidad', audience: 'Mujeres', esquema: 'secuencial', pasoTotal: 6, color: '#7A2E4D', foto: fuisteMujer, who: 'Mujeres', more: 'Camino secuencial de 6 pasos.' },
+  mesharet: { name: 'Dérej Mesharét', subtitle: 'Camino del Servidor', audience: 'Servidores y ministerios', esquema: 'catalogo', pasoTotal: null, color: '#4B3F72', foto: mesharetCatequistas, who: 'Servidores', more: 'Catálogo de formación sin orden forzoso.' },
+  simja: { name: 'Dérej Simjá', subtitle: 'Camino de la Alegría', audience: 'Niños hasta 12 años', esquema: 'estaciones', pasoTotal: null, color: '#8A6403', foto: simjaBuenPastor, who: 'Niños', more: 'Kínder de 4 a 6 años y primaria de 7 a 12.' },
+  oz: { name: 'Dérej Oz', subtitle: 'Camino de la Fortaleza', audience: 'Jóvenes 13-30 años', esquema: 'catalogo_sugerido', pasoTotal: null, color: '#C1272D', foto: ozEmaus, who: '13 a 30 años', more: 'Catálogo con progresión sugerida.' },
+  jaim: { name: 'Dérej Jaím', subtitle: 'Camino de Vida', audience: 'Comunidad general', esquema: 'catalogo', pasoTotal: null, color: '#8B1E2B', foto: jaimBelenRetiro, who: 'Comunidad', more: 'Abierto a todo el que busca a Cristo.' },
 };
 
 export const TIPOS = ['taller', 'retiro', 'hora_santa', 'vivencial', 'experiencial', 'estaciones'];
@@ -171,15 +167,13 @@ function buildFichaTecnica(tipo) {
 // (category, sequence, sequenceStep, season, bloques...). Cualquier valor puesto
 // explícitamente en la entrada (ej. derej/codigo/estado) siempre gana sobre el derivado.
 function withDerivedFields(entry) {
-  const derivedDerej =
-    entry.sequence === 'derej-gibor' ? 'guibor' :
-    entry.sequence === 'derej-kavod' ? 'kavod' :
-    null;
+  // Las secuencias (guibor, kavod) comparten clave con DEREJ.
+  const derivedDerej = entry.sequence ?? null;
   const merged = {
     ...DEEP_CONTENT_DEFAULTS,
     derej: derivedDerej,
     paso: entry.sequenceStep ?? null,
-    pasoTotal: entry.sequence ? SEQUENCES[entry.sequence].total : null,
+    pasoTotal: entry.sequence ? DEREJ[entry.sequence].pasoTotal : null,
     tipo: TIPO_FROM_CATEGORY[entry.category] ?? null,
     temporadaLiturgica: entry.season ?? null,
     estado: 'publicado',
@@ -195,7 +189,7 @@ function withDerivedFields(entry) {
 const rawRetreats = [
   // --- Derej Gibor · Camino del Guerrero (secuencia para hombres) ---
   {
-    id: 'levantate-hombre', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 1, sequenceTheme: null,
+    id: 'levantate-hombre', category: 'Retiro', sequence: 'guibor', sequenceStep: 1, sequenceTheme: null,
     codigo: 'GIBOR-01-LEVANTATE',
     season: 'ordinario', seasonSecondary: null,
     title: 'Levántate y Sé Hombre', basadoEn: null,
@@ -250,7 +244,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'sanson', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 2, sequenceTheme: 'Identidad y masculinidad',
+    id: 'sanson', category: 'Retiro', sequence: 'guibor', sequenceStep: 2, sequenceTheme: 'Identidad y masculinidad',
     codigo: 'GIBOR-02-SANSON', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Sansón', basadoEn: 'Sansón, juez de Israel',
@@ -264,7 +258,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'tobias', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 3, sequenceTheme: 'Familia',
+    id: 'tobias', category: 'Retiro', sequence: 'guibor', sequenceStep: 3, sequenceTheme: 'Familia',
     codigo: 'GIBOR-03-TOBIAS', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Tobías', basadoEn: 'el libro de Tobías',
@@ -278,7 +272,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'jonatan', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 4, sequenceTheme: 'Amistad y Hermandad',
+    id: 'jonatan', category: 'Retiro', sequence: 'guibor', sequenceStep: 4, sequenceTheme: 'Amistad y Hermandad',
     codigo: 'GIBOR-04-JONATAN', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Jonatán', basadoEn: 'Jonatán, hijo de Saúl',
@@ -292,7 +286,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'jose-nazaret', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 5, sequenceTheme: 'Trabajo y Responsabilidad',
+    id: 'jose-nazaret', category: 'Retiro', sequence: 'guibor', sequenceStep: 5, sequenceTheme: 'Trabajo y Responsabilidad',
     codigo: 'GIBOR-05-JOSENAZARET', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: ['adviento'],
     title: 'José de Nazaret', basadoEn: 'San José, esposo de María',
@@ -306,7 +300,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'josue', category: 'Retiro', sequence: 'derej-gibor', sequenceStep: 6, sequenceTheme: 'Hombre espiritual Siglo XXI',
+    id: 'josue', category: 'Retiro', sequence: 'guibor', sequenceStep: 6, sequenceTheme: 'Hombre espiritual Siglo XXI',
     codigo: 'GIBOR-06-JOSUE', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Josué', basadoEn: 'el libro de Josué',
@@ -322,7 +316,7 @@ const rawRetreats = [
 
   // --- Derej Kavod · Camino de Dignidad (secuencia para mujeres) ---
   {
-    id: 'fuiste-mujer', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 1, sequenceTheme: null,
+    id: 'fuiste-mujer', category: 'Retiro', sequence: 'kavod', sequenceStep: 1, sequenceTheme: null,
     codigo: 'KAVOD-01-FUISTEMUJER', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Fuiste Hecha Mujer', basadoEn: 'más de 7 mujeres de la Biblia',
@@ -335,7 +329,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'eva', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 2, sequenceTheme: 'Identidad y dignidad',
+    id: 'eva', category: 'Retiro', sequence: 'kavod', sequenceStep: 2, sequenceTheme: 'Identidad y dignidad',
     codigo: 'KAVOD-02-EVA', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: ['cuaresma'],
     title: 'Eva', basadoEn: 'Eva, la primera mujer',
@@ -349,7 +343,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'betania', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 5, sequenceTheme: 'Trabajo y vocación',
+    id: 'betania', category: 'Retiro', sequence: 'kavod', sequenceStep: 5, sequenceTheme: 'Trabajo y vocación',
     codigo: 'KAVOD-05-BETANIA', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: ['cuaresma'],
     title: 'Betania', basadoEn: 'Marta y María, hermanas de Lázaro',
@@ -363,7 +357,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'sicar', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 4, sequenceTheme: 'Amor y afectividad',
+    id: 'sicar', category: 'Retiro', sequence: 'kavod', sequenceStep: 4, sequenceTheme: 'Amor y afectividad',
     codigo: 'KAVOD-04-SICAR', estado: 'proximamente',
     season: 'cuaresma', seasonSecondary: null,
     title: 'Sicar', basadoEn: 'la mujer samaritana en el pozo de Sicar',
@@ -377,7 +371,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'rut', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 3, sequenceTheme: 'Familia',
+    id: 'rut', category: 'Retiro', sequence: 'kavod', sequenceStep: 3, sequenceTheme: 'Familia',
     codigo: 'KAVOD-03-RUT', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Rut', basadoEn: 'el libro de Rut',
@@ -390,7 +384,7 @@ const rawRetreats = [
     chipsLabel: null, chips: null,
   },
   {
-    id: 'judit', category: 'Retiro', sequence: 'derej-kavod', sequenceStep: 6, sequenceTheme: 'Amistad, sororidad y misión',
+    id: 'judit', category: 'Retiro', sequence: 'kavod', sequenceStep: 6, sequenceTheme: 'Amistad, sororidad y misión',
     codigo: 'KAVOD-06-JUDIT', estado: 'proximamente',
     season: 'ordinario', seasonSecondary: null,
     title: 'Judit', basadoEn: 'Judit, heroína de Israel',
@@ -1272,6 +1266,8 @@ const rawRetreats = [
 ];
 
 export const retreats = rawRetreats.map(withDerivedFields);
+export const XPLEV_TOTAL = retreats.length;
+export const XPLEV_LISTAS = retreats.filter((r) => r.estado !== 'proximamente').length;
 
 export const getRetreatById = (id) => retreats.find((r) => r.id === id);
 
@@ -1285,8 +1281,8 @@ const bySequence = (key) =>
     .filter((r) => r.sequence === key)
     .sort((a, b) => a.sequenceStep - b.sequenceStep);
 
-export const derejGibor = bySequence('derej-gibor');
-export const derejKavod = bySequence('derej-kavod');
+export const derejGuibor = bySequence('guibor');
+export const derejKavod = bySequence('kavod');
 
 const byDerej = (key) =>
   retreats

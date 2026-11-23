@@ -1,28 +1,28 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
-  derejGibor, derejKavod, derejMesharet, derejSimja, derejOz, derejJaim,
-  SEQUENCES, SEASONS, DEREJ, TIPO_LABELS, TIPO_ABBR, CORTES_SIMJA,
+  derejGuibor, derejKavod, derejMesharet, derejSimja, derejOz, derejJaim,
+  SEASONS, DEREJ, TIPO_LABELS, TIPO_ABBR, CORTES_SIMJA,
 } from '../data/retreats';
 
-const TABS = [
-  { key: 'all', label: 'Todos los Caminos' },
-  { key: 'gibor', label: 'Hombres · Dérej Gibor', color: 'var(--color-red)' },
-  { key: 'kavod', label: 'Mujeres · Dérej Kavod', color: 'var(--color-gold)' },
-  { key: 'oz', label: 'Jóvenes (13-30) · Dérej Oz', color: 'var(--color-gold)' },
-  { key: 'simja', label: 'Niños · Dérej Simjá', color: 'var(--color-red)' },
-  { key: 'mesharet', label: 'Servidores · Dérej Mesharét', color: 'var(--color-gold)' },
-  { key: 'jaim', label: 'Comunidad · Dérej Jaím', color: 'var(--color-red)' },
-];
+const ITEMS = {
+  guibor: derejGuibor, kavod: derejKavod, oz: derejOz,
+  simja: derejSimja, mesharet: derejMesharet, jaim: derejJaim,
+};
+const SHORT_NAME = { all: 'Todos' };
+const CAMINOS = ['all', ...Object.keys(DEREJ)];
 
 const SEQUENCE_FOOTNOTES = {
-  'derej-gibor': { note: 'Formato pedagógico secuencial recomendado', route: 'Ruta Hombría Bíblica' },
-  'derej-kavod': { note: 'Secuencia formativa de autodescubrimiento y sanación', route: 'Ruta Mujer Nueva' },
+  guibor: { note: 'Formato pedagógico secuencial recomendado', route: 'Ruta Hombría Bíblica' },
+  kavod: { note: 'Secuencia formativa de autodescubrimiento y sanación', route: 'Ruta Mujer Nueva' },
+};
+const OPEN_DESCRIPTIONS = {
+  mesharet: 'Módulos independientes para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor.',
+  jaim: 'Gran repertorio de retiros de impacto, talleres de discernimiento bíblico y Horas Santas temáticas por calendario eclesial.',
 };
 
 function SeasonDot({ season }) {
   if (!season || !SEASONS[season]) return null;
-  return <span className={`season-dot season-dot--${season}`} title={SEASONS[season].name} />;
+  return <span className="season-dot" style={{ '--sc': `var(--season-${season})` }} title={SEASONS[season].name} />;
 }
 
 function TipoTag({ tipo, category }) {
@@ -33,433 +33,281 @@ function TipoTag({ tipo, category }) {
 }
 
 function StatusPill({ estado }) {
-  if (estado === 'proximamente') {
-    return <span className="xplev-pill xplev-pill--pending">Próximamente</span>;
-  }
-  return <span className="xplev-pill xplev-pill--available">Disponible</span>;
+  const pending = estado === 'proximamente';
+  return <span className={`xplev-pill${pending ? ' is-pending' : ''}`}>{pending ? 'Próximamente' : 'Disponible'}</span>;
 }
 
-// Agrupa una lista de estaciones por su tipo (retiro/taller/hora_santa); lo que no
-// tiene tipo asignado (contenido aún sin redactar) cae en un grupo "En preparación".
+// Agrupa por tipo (retiro/taller/hora_santa); lo sin tipo (contenido sin redactar) cae en "En preparación".
 function groupByTipo(items) {
   const order = ['retiro', 'taller', 'hora_santa'];
   const groups = order
-    .map((tipo) => ({
-      tipo,
-      label: TIPO_LABELS[tipo],
-      items: items.filter((item) => item.tipo === tipo),
-    }))
-    .filter((group) => group.items.length > 0);
-  const rest = items.filter((item) => !order.includes(item.tipo));
-  if (rest.length) {
-    groups.push({ tipo: null, label: 'En preparación', items: rest });
-  }
+    .map((tipo) => ({ tipo, label: TIPO_LABELS[tipo], items: items.filter((i) => i.tipo === tipo) }))
+    .filter((g) => g.items.length > 0);
+  const rest = items.filter((i) => !order.includes(i.tipo));
+  if (rest.length) groups.push({ tipo: null, label: 'En preparación', items: rest });
   return groups;
 }
 
-// Agrupa las estaciones de Dérej Simjá por corte de edad (kínder/primaria/ambos)
-// en lugar de por tipo, ya que todas comparten el mismo formato de Estaciones.
+// Dérej Simjá se agrupa por corte de edad en lugar de por tipo.
 function groupByCorte(items) {
-  const order = ['primaria', 'kinder', 'ambos'];
-  return order
-    .map((corte) => ({
-      corte,
-      label: CORTES_SIMJA[corte].name,
-      rango: CORTES_SIMJA[corte].rango,
-      items: items.filter((item) => item.corte === corte),
-    }))
-    .filter((group) => group.items.length > 0);
+  return ['primaria', 'kinder', 'ambos']
+    .map((corte) => ({ corte, ...CORTES_SIMJA[corte], items: items.filter((i) => i.corte === corte) }))
+    .filter((g) => g.items.length > 0);
 }
 
-// Dérej Gibor/Kavod: secuencia obligatoria de 6 pasos, mostrada como una línea de
-// tiempo vertical con nodos numerados.
-function DerejSequentialCard({ sequenceKey, colorVar, items, navigate }) {
-  const info = SEQUENCES[sequenceKey];
-  const footnote = SEQUENCE_FOOTNOTES[sequenceKey];
+function CardHead({ info, tag, children }) {
   return (
-    <section id={`xplev-${sequenceKey === 'derej-gibor' ? 'gibor' : 'kavod'}`} className="xplev-card">
-      <div className="xplev-card__header">
-        <div>
-          <span className="xplev-eyebrow" style={{ color: colorVar }}>{info.subtitle}</span>
-          <h2 className="xplev-card__title">{info.name}</h2>
-          <p className="xplev-card__audience">Audiencia: {info.audience}</p>
-        </div>
-        <span className="xplev-count-badge">{info.total} Estaciones</span>
+    <header className="xc-head">
+      <div>
+        <span className="xc-sub">{info.subtitle}</span>
+        <h2 className="d">{info.name}</h2>
+        <p>{info.audience}</p>
       </div>
-
-      <div className="xplev-timeline">
-        {items.map((item) => {
-          const isPending = item.estado === 'proximamente';
-          return (
-            <div key={item.id} className={`xplev-timeline__step${isPending ? ' is-pending' : ''}`}>
-              <span className={`xplev-timeline__node${isPending ? '' : ' is-active'}`}>{item.paso}</span>
-              <div
-                className={`xplev-timeline__content is-clickable${isPending ? '' : ' is-active'}`}
-                role="button"
-                tabIndex={0}
-                onClick={() => navigate(`/proyectos/${item.id}`)}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    navigate(`/proyectos/${item.id}`);
-                  }
-                }}
-              >
-                <div className="xplev-timeline__row">
-                  <div className="xplev-timeline__title-group">
-                    <TipoTag tipo={item.tipo} category={item.category} />
-                    <h3>{item.title}</h3>
-                  </div>
-                  <StatusPill estado={item.estado} />
-                </div>
-                <div className="xplev-timeline__meta">
-                  <SeasonDot season={item.season} />
-                  <span>{SEASONS[item.season]?.name}</span>
-                  {item.conceptoCentral && <span>• {item.conceptoCentral}</span>}
-                </div>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="xplev-card__footer">
-        <span>{footnote.note}</span>
-        <span className="xplev-card__route" style={{ color: colorVar }}>{footnote.route}</span>
-      </div>
-    </section>
+      {tag && <span className="xc-tag">{tag}</span>}
+      {children}
+    </header>
   );
 }
 
-// Dérej Oz: progresión sugerida en 10 hitos, mostrada como una cuadrícula continua
-// (no una escalera obligatoria): el orden es orientativo, no una regla dura.
-function DerejOzCard({ items, navigate }) {
-  const info = DEREJ.oz;
-  const counts = items.reduce((acc, item) => {
-    if (item.tipo) acc[item.tipo] = (acc[item.tipo] || 0) + 1;
-    return acc;
-  }, {});
-  const countsLabel = ['retiro', 'taller', 'hora_santa']
-    .filter((tipo) => counts[tipo])
-    .map((tipo) => `${counts[tipo]} ${TIPO_LABELS[tipo]}${counts[tipo] > 1 ? '' : ''}`)
-    .join(' · ');
-
+function CardFoot({ note, label = 'Solicitar para tu parroquia' }) {
   return (
-    <section id="xplev-oz" className="xplev-card xplev-card--wide">
-      <div className="xplev-oz-header">
-        <div>
-          <span className="xplev-eyebrow" style={{ color: 'var(--color-gold)' }}>{info.subtitle}</span>
-          <h2 className="xplev-card__title">{info.name} · {info.audience}</h2>
-          <p className="xplev-oz-header__desc">
-            Desde el llamado inicial y la confrontación de ideales, pasando por la maduración del
-            discipulado, hasta el fuego vivo de Pentecostés. Orden sugerido, no obligatorio.
-          </p>
-        </div>
-        {countsLabel && <span className="xplev-oz-counts">{items.length} experiencias · {countsLabel}</span>}
-      </div>
-
-      <div className="xplev-hito-grid">
-        {items.map((item) => {
-          const isPending = item.estado === 'proximamente';
-          return (
-            <div
-              key={item.id}
-              className={`xplev-hito is-clickable${isPending ? ' is-pending' : ' is-active'}`}
-              role="button"
-              tabIndex={0}
-              onClick={() => navigate(`/proyectos/${item.id}`)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                  e.preventDefault();
-                  navigate(`/proyectos/${item.id}`);
-                }
-              }}
-            >
-              <div>
-                <div className="xplev-hito__top">
-                  <span className="xplev-hito__num">{String(item.paso).padStart(2, '0')}</span>
-                  <StatusPill estado={item.estado} />
-                </div>
-                <div className="xplev-timeline__title-group">
-                  <TipoTag tipo={item.tipo} category={item.category} />
-                  <h3>{item.title}</h3>
-                </div>
-                {item.conceptoCentral && <p>{item.conceptoCentral}</p>}
-              </div>
-              <div className="xplev-hito__footer">
-                <span>{TIPO_LABELS[item.tipo] || 'Estación'}</span>
-                {isPending && <span>#{item.paso}</span>}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div className="xplev-oz-footnote">
-        <p>
-          <strong>Nota Pastoral:</strong> aunque Dérej Oz tiene un orden pedagógico sugerido, cada
-          parroquia puede implementar las estaciones de forma modular según su ciclo pastoral anual.
-        </p>
-        <button className="btn btn-dark" onClick={() => navigate('/contacto')}>
-          Solicitar Guía de Pastoral Juvenil
-        </button>
-      </div>
-    </section>
+    <footer className="xc-foot">
+      <span>{note}</span>
+      <Link to="/contacto">{label} &rarr;</Link>
+    </footer>
   );
 }
 
-// Dérej Simjá: catálogo de Estaciones para niños, agrupado por corte de edad
-// (Kínder/Primaria/Ambos) en vez de por tipo. Si aún no hay actividades cargadas
-// (items vacío), cae en el estado vacío original de "próximamente".
-function DerejSimjaCard({ items, navigate }) {
-  const info = DEREJ.simja;
-  const groups = groupByCorte(items);
-
-  if (groups.length === 0) {
-    return (
-      <section id="xplev-simja" className="xplev-card xplev-card--wide">
-        <div className="xplev-card__header" style={{ border: 'none', marginBottom: 0 }}>
-          <div>
-            <span className="xplev-eyebrow" style={{ color: 'var(--color-red)' }}>{info.subtitle}</span>
-            <h2 className="xplev-card__title">{info.name} · {info.audience}</h2>
-            <p className="xplev-card__audience">Pedagogía bíblica, asombro y oración para infancia misionera y catequesis.</p>
-          </div>
-          <span className="xplev-open-tag">En fase de diseño pedagógico</span>
-        </div>
-        <div className="xplev-empty">
-          <div className="xplev-empty__icon">🌱</div>
-          <h3>Próximamente — Estaciones en preparación</h3>
-          <p>
-            Estamos afinando experiencias lúdicas, vivenciales y eucarísticas adaptadas a la
-            sensibilidad y etapas de maduración de los más pequeños.
-          </p>
-          <button className="btn btn-outline" style={{ marginTop: 16 }} onClick={() => navigate('/contacto')}>
-            Notificarme cuando esté listo
-          </button>
-        </div>
-      </section>
-    );
-  }
-
+function ChipList({ items }) {
   return (
-    <section id="xplev-simja" className="xplev-card xplev-card--wide">
-      <div className="xplev-card__header">
-        <div>
-          <span className="xplev-eyebrow" style={{ color: 'var(--color-red)' }}>{info.subtitle}</span>
-          <h2 className="xplev-card__title">{info.name} · {info.audience}</h2>
-          <p className="xplev-card__audience">
-            Formato de Estaciones rotativas (no Taller/Retiro tradicional), organizado por corte de edad.
-          </p>
-        </div>
-        <span className="xplev-open-tag">En preparación</span>
-      </div>
-
-      {groups.map((group) => (
-        <div className="xplev-catalog-group" key={group.corte}>
-          <div className="xplev-catalog-group__label">
-            {group.label} <span style={{ fontWeight: 400 }}>({group.rango})</span>
-          </div>
-          <div className="xplev-chip-list">
-            {group.items.map((item) => {
-              const isPending = item.estado === 'proximamente';
-              return (
-                <button
-                  key={item.id}
-                  className={`xplev-chip${isPending ? ' is-pending' : ''}`}
-                  onClick={() => navigate(`/proyectos/${item.id}`)}
-                >
-                  <SeasonDot season={item.season} />
-                  {item.title}
-                  {isPending && <span className="xplev-chip__pending">Próximamente</span>}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+    <div className="xplev-chip-list">
+      {items.map((item) => (
+        <Link key={item.id} to={`/proyectos/${item.id}`} className={`xplev-chip${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
+          <SeasonDot season={item.season} />
+          {item.title}
+          {item.estado === 'proximamente' && <span className="xplev-chip__pending">Próximamente</span>}
+        </Link>
       ))}
-
-      <div className="xplev-card__footer">
-        <span>Estaciones adaptadas a la etapa de maduración de cada corte</span>
-        <button className="xplev-card__route-link" style={{ color: 'var(--color-red)' }} onClick={() => navigate('/contacto')}>
-          Solicitar para tu parroquia →
-        </button>
-      </div>
-    </section>
+    </div>
   );
 }
 
-// Dérej Mesharét / Dérej Jaím: catálogos abiertos, sin orden — agrupados por tipo
-// de experiencia (retiro / taller / hora santa) como nube de chips.
-function DerejOpenCatalogCard({ derejKey, colorVar, items, description, navigate }) {
+// Guibor/Kavod: secuencia de 6 pasos, línea de tiempo vertical con nodos numerados.
+function SequentialCard({ derejKey, items }) {
   const info = DEREJ[derejKey];
-  const groups = groupByTipo(items);
+  const foot = SEQUENCE_FOOTNOTES[derejKey];
   return (
-    <section id={`xplev-${derejKey}`} className="xplev-card">
-      <div className="xplev-card__header">
-        <div>
-          <span className="xplev-eyebrow" style={{ color: colorVar }}>{info.subtitle}</span>
-          <h2 className="xplev-card__title">{info.name}</h2>
-          <p className="xplev-card__audience">{info.audience}</p>
-        </div>
-        <span className="xplev-open-tag">Catálogo Abierto</span>
-      </div>
-
-      <p className="xplev-card__desc">{description}</p>
-
-      {groups.length === 0 && <span className="project-card__nav-empty">Contenido en preparación</span>}
-
-      {groups.map((group) => (
-        <div className="xplev-catalog-group" key={group.tipo ?? 'otros'}>
-          <div className="xplev-catalog-group__label">
-            {group.tipo && <TipoTag tipo={group.tipo} />}
-            {group.label}
-          </div>
-          <div className="xplev-chip-list">
-            {group.items.map((item) => {
-              const isPending = item.estado === 'proximamente';
-              return (
-                <button
-                  key={item.id}
-                  className={`xplev-chip${isPending ? ' is-pending' : ''}`}
-                  onClick={() => navigate(`/proyectos/${item.id}`)}
-                >
-                  <SeasonDot season={item.season} />
-                  {item.title}
-                  {isPending && <span className="xplev-chip__pending">Próximamente</span>}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      ))}
-
-      <div className="xplev-card__footer">
-        <span>Personalizable a la medida de tu comunidad</span>
-        <button className="xplev-card__route-link" style={{ color: colorVar }} onClick={() => navigate('/contacto')}>
-          Solicitar para tu parroquia →
-        </button>
-      </div>
+    <section id={`xplev-${derejKey}`} className="xc" style={{ '--dc': info.color }}>
+      <CardHead info={info} tag={`${info.pasoTotal} estaciones`} />
+      <ol className="xplev-timeline">
+        {items.map((item) => {
+          const pending = item.estado === 'proximamente';
+          return (
+            <li key={item.id} className={pending ? 'is-pending' : ''}>
+              <span className="node" aria-hidden="true">{item.paso}</span>
+              <Link to={`/proyectos/${item.id}`}>
+                <span className="row">
+                  <span className="ttl"><TipoTag tipo={item.tipo} category={item.category} /><b>{item.title}</b></span>
+                  <StatusPill estado={item.estado} />
+                </span>
+                <span className="meta">
+                  <SeasonDot season={item.season} />{SEASONS[item.season]?.name}
+                  {item.conceptoCentral && <> · {item.conceptoCentral}</>}
+                </span>
+              </Link>
+            </li>
+          );
+        })}
+      </ol>
+      <CardFoot note={`${foot.note} · ${foot.route}`} label="Solicitar" />
     </section>
   );
 }
+
+// Oz: progresión sugerida, no obligatoria; cuadrícula de hitos.
+function OzCard({ items }) {
+  const info = DEREJ.oz;
+  return (
+    <section id="xplev-oz" className="xc xc--wide" style={{ '--dc': info.color }}>
+      <CardHead info={info} tag={`${items.length} experiencias`} />
+      <p className="xc-desc">
+        Desde el llamado inicial y la confrontación de ideales, pasando por la maduración del
+        discipulado, hasta el fuego vivo de Pentecostés. Orden sugerido, no obligatorio.
+      </p>
+      <div className="xplev-hitos">
+        {items.map((item) => (
+          <Link key={item.id} to={`/proyectos/${item.id}`} className={`hito${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
+            <span className="top">
+              <span className="d num">{String(item.paso).padStart(2, '0')}</span>
+              <StatusPill estado={item.estado} />
+            </span>
+            <span className="ttl"><TipoTag tipo={item.tipo} category={item.category} /><b>{item.title}</b></span>
+            {item.conceptoCentral && <span className="desc">{item.conceptoCentral}</span>}
+            <span className="kind"><SeasonDot season={item.season} />{TIPO_LABELS[item.tipo] || 'Estación'}</span>
+          </Link>
+        ))}
+      </div>
+      <CardFoot note="Cada parroquia puede implementar las estaciones de forma modular según su ciclo pastoral anual." label="Solicitar guía de pastoral juvenil" />
+    </section>
+  );
+}
+
+function SimjaCard({ items }) {
+  const info = DEREJ.simja;
+  return (
+    <section id="xplev-simja" className="xc xc--wide" style={{ '--dc': info.color }}>
+      <CardHead info={info} tag="En preparación" />
+      <p className="xc-desc">Formato de estaciones rotativas (no taller/retiro tradicional), organizado por corte de edad.</p>
+      {groupByCorte(items).map((g) => (
+        <div className="xplev-group" key={g.corte}>
+          <div className="xplev-group__label">{g.name} <span>({g.rango})</span></div>
+          <ChipList items={g.items} />
+        </div>
+      ))}
+      <CardFoot note="Estaciones adaptadas a la etapa de maduración de cada corte" />
+    </section>
+  );
+}
+
+// Mesharét / Jaím: catálogos abiertos, sin orden, agrupados por tipo.
+function OpenCard({ derejKey, items }) {
+  const info = DEREJ[derejKey];
+  return (
+    <section id={`xplev-${derejKey}`} className="xc" style={{ '--dc': info.color }}>
+      <CardHead info={info} tag="Catálogo abierto" />
+      <p className="xc-desc">{OPEN_DESCRIPTIONS[derejKey]}</p>
+      {groupByTipo(items).map((g) => (
+        <div className="xplev-group" key={g.tipo ?? 'otros'}>
+          <div className="xplev-group__label">{g.tipo && <TipoTag tipo={g.tipo} />}{g.label}</div>
+          <ChipList items={g.items} />
+        </div>
+      ))}
+      <CardFoot note="Personalizable a la medida de tu comunidad" />
+    </section>
+  );
+}
+
+const CARDS = {
+  guibor: (items) => <SequentialCard key="guibor" derejKey="guibor" items={items} />,
+  kavod: (items) => <SequentialCard key="kavod" derejKey="kavod" items={items} />,
+  oz: (items) => <OzCard key="oz" items={items} />,
+  simja: (items) => <SimjaCard key="simja" items={items} />,
+  mesharet: (items) => <OpenCard key="mesharet" derejKey="mesharet" items={items} />,
+  jaim: (items) => <OpenCard key="jaim" derejKey="jaim" items={items} />,
+};
 
 export default function XpLev() {
-  const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('all');
-  const [onlyAvailable, setOnlyAvailable] = useState(false);
+  const [params, setParams] = useSearchParams();
+  // Estado en la URL (?camino=oz&solo=1&tiempo=adviento) para compartir un catálogo.
+  const camino = CAMINOS.includes(params.get('camino')) ? params.get('camino') : 'all';
+  const solo = params.get('solo') === '1';
+  const tiempoParam = params.get('tiempo');
+  const tiempo = Object.hasOwn(SEASONS, tiempoParam) ? tiempoParam : null;
 
-  const handleTabClick = (key) => {
-    setActiveTab(key);
-    if (key === 'all') {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      return;
-    }
-    const el = document.getElementById(`xplev-${key}`);
-    if (!el) return;
-    const headerOffset = 150;
-    const top = el.getBoundingClientRect().top + window.pageYOffset - headerOffset;
-    window.scrollTo({ top, behavior: 'smooth' });
-  };
+  const set = (changes) =>
+    setParams((prev) => {
+      const next = new URLSearchParams(prev);
+      Object.entries(changes).forEach(([k, v]) => (v ? next.set(k, v) : next.delete(k)));
+      return next;
+    }, { replace: true });
+
+  const keep = (i) =>
+    (!solo || i.estado !== 'proximamente') &&
+    (!tiempo || i.season === tiempo || i.seasonSecondary?.includes(tiempo));
+
+  const visibles = Object.keys(CARDS)
+    .filter((k) => camino === 'all' || camino === k)
+    .map((k) => [k, ITEMS[k].filter(keep)])
+    .filter(([, items]) => items.length > 0);
 
   return (
     <>
-      <section className="page-header">
-        <div className="eyebrow eyebrow--section">XP Lev · Evangelización por Públicos</div>
-        <h1>Itinerarios Vivenciales de Encuentro con Cristo</h1>
-        <p>
-          Retiros, talleres y adoraciones especialmente diseñados para las etapas de vida y
-          vocación de cada persona. Cada hito es un paso consciente en el camino de discipulado.
-        </p>
-        <div className="xplev-legend">
-          <div className="xplev-legend__group">
-            <span className="xplev-legend__label">Tiempos litúrgicos:</span>
-            {Object.entries(SEASONS).map(([key, s]) => (
-              <span className="xplev-legend__item" key={key}>
-                <SeasonDot season={key} />
-                {s.name}
-              </span>
-            ))}
-          </div>
-          <div className="xplev-legend__group">
-            <span className="xplev-legend__label">Formatos:</span>
-            {['retiro', 'taller', 'hora_santa'].map((tipo) => (
-              <span className="xplev-format-badge" key={tipo}>
-                <span className="xplev-format-badge__abbr">{TIPO_ABBR[tipo]}</span>
-                {TIPO_LABELS[tipo]}
-              </span>
-            ))}
-          </div>
+      <section className="page-head">
+        <div className="wrap">
+          <div className="kicker red">XP Lev · Evangelización por públicos</div>
+          <h1 className="d">Itinerarios de encuentro con <span className="jesus">Cristo</span></h1>
+          <p className="lead">
+            Retiros, talleres y adoraciones diseñados para las etapas de vida y vocación de cada
+            persona. Cada hito es un paso consciente en el camino de discipulado.
+          </p>
         </div>
       </section>
 
-      <nav className="xplev-tabs" aria-label="Selector de Caminos de Formación">
-        <div className="xplev-tabs__nav">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              className={`xplev-tab${activeTab === tab.key ? ' is-active' : ''}`}
-              onClick={() => handleTabClick(tab.key)}
-            >
-              {tab.color && <span className="xplev-tab__dot" style={{ background: tab.color }} />}
-              {tab.label}
-            </button>
-          ))}
+      <div className="xplev-bar">
+        <div className="wrap">
+          <nav className="xplev-tabs" aria-label="Selector de caminos">
+            {CAMINOS.map((k) => (
+              <button
+                key={k}
+                type="button"
+                className="xplev-tab"
+                style={{ '--dc': DEREJ[k]?.color }}
+                aria-pressed={camino === k}
+                title={DEREJ[k] ? `${DEREJ[k].name} · ${DEREJ[k].audience}` : undefined}
+                onClick={() => set({ camino: k === 'all' ? null : k })}
+              >
+                {DEREJ[k] && <span className="dot" aria-hidden="true" />}
+                {SHORT_NAME[k] || DEREJ[k].name.replace('Dérej ', '')}
+              </button>
+            ))}
+          </nav>
         </div>
-        <label className="xplev-tabs__filter">
-          <input
-            type="checkbox"
-            checked={onlyAvailable}
-            onChange={(e) => setOnlyAvailable(e.target.checked)}
-          />
-          Solo disponibles ahora
-        </label>
-      </nav>
+      </div>
 
-      <main className={`xplev-main${onlyAvailable ? ' xplev-main--filtered' : ''}`}>
-        <div className="xplev-grid-2">
-          <DerejSequentialCard sequenceKey="derej-gibor" colorVar="var(--color-red)" items={derejGibor} navigate={navigate} />
-          <DerejSequentialCard sequenceKey="derej-kavod" colorVar="var(--color-gold)" items={derejKavod} navigate={navigate} />
+      <section className="band xplev-main">
+        <div className="wrap">
+          <div className="xplev-filters">
+            <label className="check">
+              <input type="checkbox" checked={solo} onChange={(e) => set({ solo: e.target.checked ? '1' : null })} />
+              Solo disponibles ahora
+            </label>
+            <div className="seasons" role="group" aria-label="Tiempo litúrgico">
+              <span className="lbl">Tiempo litúrgico</span>
+              {Object.entries(SEASONS).map(([key, s]) => (
+                <button
+                  key={key}
+                  type="button"
+                  className="season-chip"
+                  style={{ '--sc': `var(--season-${key})`, '--sb': `var(--season-${key}-bg)` }}
+                  aria-pressed={tiempo === key}
+                  onClick={() => set({ tiempo: tiempo === key ? null : key })}
+                >
+                  <span className="season-dot" aria-hidden="true" />{s.name}
+                </button>
+              ))}
+            </div>
+            <p className="formats">
+              Formatos: {['retiro', 'taller', 'hora_santa'].map((t) => `${TIPO_ABBR[t]} ${TIPO_LABELS[t]}`).join(' · ')}
+            </p>
+          </div>
+
+          {visibles.length === 0 ? (
+            <div className="xplev-empty" role="status">
+              <h2 className="d">Nada con esos filtros</h2>
+              <p>Prueba con otro tiempo litúrgico o quita “solo disponibles”.</p>
+              <button type="button" className="btn" onClick={() => set({ solo: null, tiempo: null })}>Quitar filtros</button>
+            </div>
+          ) : (
+            <div className={`xplev-grid${camino === 'all' ? '' : ' xplev-grid--one'}`}>
+              {visibles.map(([k, items]) => CARDS[k](items))}
+            </div>
+          )}
         </div>
+      </section>
 
-        <DerejOzCard items={derejOz} navigate={navigate} />
-
-        <DerejSimjaCard items={derejSimja} navigate={navigate} />
-
-        <div className="xplev-grid-2">
-          <DerejOpenCatalogCard
-            derejKey="mesharet"
-            colorVar="var(--color-gold)"
-            items={derejMesharet}
-            description="Módulos independientes para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor."
-            navigate={navigate}
-          />
-          <DerejOpenCatalogCard
-            derejKey="jaim"
-            colorVar="var(--color-red)"
-            items={derejJaim}
-            description="Gran repertorio de retiros de impacto, talleres de discernimiento bíblico y Horas Santas temáticas por calendario eclesial."
-            navigate={navigate}
-          />
-        </div>
-      </main>
-
-      <section className="cta-banner">
-        <div className="eyebrow" style={{ background: 'rgba(199,154,43,0.15)', color: 'var(--color-gold)' }}>
-          Acompañamiento Pastoral Integral
-        </div>
-        <h3>Diseña el Itinerario Anual para tu Comunidad</h3>
-        <p>
-          Ya sea que busques abrir el camino formativo de hombres (Dérej Gibor), dinamizar a tus
-          jóvenes (Dérej Oz) o renovar los ministerios (Dérej Mesharét), adaptamos fechas,
-          materiales y predicadores al ritmo de tu diócesis.
-        </p>
-        <div className="cta-banner__actions">
-          <button className="btn btn-gold" onClick={() => navigate('/contacto')}>
-            Agendar Reunión de Planificación
-          </button>
-          <button className="btn btn-outline" onClick={() => navigate('/contacto')}>
-            Solicitar Dosier de Experiencias
-          </button>
+      <section className="band contact">
+        <div className="wrap">
+          <div className="kicker">Acompañamiento pastoral</div>
+          <h2 className="d sec-title">Diseña el itinerario anual de tu comunidad</h2>
+          <p className="cta-text">
+            Ya sea que busques abrir el camino formativo de hombres (Dérej Guibor), dinamizar a tus
+            jóvenes (Dérej Oz) o renovar los ministerios (Dérej Mesharét), adaptamos fechas,
+            materiales y predicadores al ritmo de tu diócesis.
+          </p>
+          <div className="row">
+            <Link className="btn" to="/contacto">Agendar reunión de planificación</Link>
+            <Link className="btn btn--ghost" to="/contacto">Solicitar dosier de experiencias</Link>
+          </div>
         </div>
       </section>
     </>
