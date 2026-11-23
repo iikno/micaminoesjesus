@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react';
 import { Routes, Route } from 'react-router-dom';
 import Layout from './components/Layout';
 import Home from './pages/Home';
@@ -9,6 +10,9 @@ import ProyectoDetalle from './pages/ProyectoDetalle';
 import Calendario from './pages/Calendario';
 import Contacto from './pages/Contacto';
 import AvisoPrivacidad from './pages/AvisoPrivacidad';
+
+// The admin panel is its own chunk: visitors of the public site never download it.
+const PanelApp = lazy(() => import('./panel/PanelApp'));
 
 export default function App() {
   return (
@@ -24,6 +28,7 @@ export default function App() {
         <Route path="/contacto" element={<Contacto />} />
         <Route path="/aviso-de-privacidad" element={<AvisoPrivacidad />} />
       </Route>
+      <Route path="/panel/*" element={<Suspense fallback={<p style={{ padding: 24 }}>Cargando…</p>}><PanelApp /></Suspense>} />
     </Routes>
   );
 }

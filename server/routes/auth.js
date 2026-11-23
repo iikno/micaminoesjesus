@@ -1,5 +1,6 @@
 import { authenticate, createSession, csrf, destroySession, hash, hashPassword, verifyPassword } from '../lib/auth.js';
 import { audit } from '../lib/audit.js';
+import { PERMS } from '../lib/perm.js';
 import { afterFailure, isLocked } from '../lib/lockout.js';
 import { trySend } from '../lib/mailer.js';
 import { issueToken, linkFor } from '../lib/users.js';
@@ -48,7 +49,7 @@ export default async function authRoutes(app) {
     return reply.code(204).send();
   });
 
-  app.get('/api/auth/me', { preHandler: authenticate }, async (req) => req.user);
+  app.get('/api/auth/me', { preHandler: authenticate }, async (req) => ({ ...req.user, perms: PERMS[req.user.role] })); // the UI reads sections from here, never its own copy
 
   // Setting the first password through the invite link is what verifies the email.
   app.post('/api/auth/accept-invite', { config: limit(10) }, async (req, reply) => {

@@ -39,3 +39,21 @@ test('reminders: due after 48h, then every 48h from the last one', () => {
   assert.equal(reminderDue({ created_at: created, last_reminded_at: at(48) }, at(95)), false);
   assert.equal(reminderDue({ created_at: created, last_reminded_at: at(48) }, at(96)), true);
 });
+
+import { planApproval, promotionDue } from '../lib/review.js';
+
+test('planApproval: future edit of live content goes to pending, everything else is live', () => {
+  const now = new Date('2026-01-01T00:00:00Z');
+  const future = '2026-02-01T00:00:00Z';
+  assert.deepEqual(planApproval({ publish_at: future, published_snapshot: { a: 1 } }, now), { slot: 'pending', from: new Date(future) });
+  assert.deepEqual(planApproval({ publish_at: future, published_snapshot: null }, now), { slot: 'live', from: new Date(future) });
+  assert.deepEqual(planApproval({ publish_at: null, published_snapshot: { a: 1 } }, now), { slot: 'live', from: now });
+  assert.deepEqual(planApproval({ publish_at: '2025-12-01T00:00:00Z', published_snapshot: { a: 1 } }, now), { slot: 'live', from: now });
+});
+
+test('promotionDue only when a pending snapshot exists and its time passed', () => {
+  const now = new Date('2026-01-01T00:00:00Z');
+  assert.ok(promotionDue({ pending_snapshot: {}, pending_from: '2025-12-31T00:00:00Z' }, now));
+  assert.ok(!promotionDue({ pending_snapshot: {}, pending_from: '2026-01-02T00:00:00Z' }, now));
+  assert.ok(!promotionDue({ pending_snapshot: null, pending_from: '2025-12-31T00:00:00Z' }, now));
+});

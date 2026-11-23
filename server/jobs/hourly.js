@@ -2,8 +2,9 @@
 import { pathToFileURL } from 'node:url';
 import { ENTITIES } from '../lib/entities.js';
 import { labelOf, notifyReminders } from '../lib/notify.js';
-import { reminderDue } from '../lib/review.js';
-import { pool, q } from '../db.js';
+import { audit } from '../lib/audit.js';
+import { promotionDue, reminderDue } from '../lib/review.js';
+import { pool, q, tx } from '../db.js';
 
 export async function runHourly(log = console.log) {
   const now = new Date();
@@ -16,7 +17,21 @@ export async function runHourly(log = console.log) {
   // serves them from live_from; this only flips the label).
   let flipped = 0;
   for (const e of Object.values(ENTITIES)) {
-    flipped += (await q("UPDATE ?? SET status = 'publicado' WHERE status = 'programado' AND live_from <= ?", [e.table, now])).affectedRows;
+    flipped += (await q("UPDATE ?? SET status = 'publicado' WHERE status = 'programado' AND pending_snapshot IS NULL AND live_from <= ?", [e.table, now])).affectedRows;
+  }
+
+  // Approved edits of live content wait in pending_snapshot; promote them when their time has come.
+  let promoted = 0;
+  for (const [key, e] of Object.entries(ENTITIES)) {
+    for (const row of await q('SELECT id, pending_snapshot, pending_from FROM ?? WHERE pending_snapshot IS NOT NULL AND pending_from <= ?', [e.table, now])) {
+      if (!promotionDue(row, now)) continue;
+      await tx(async (c) => {
+        await c.q(`UPDATE ${e.table} SET published_snapshot = pending_snapshot, live_from = pending_from, pending_snapshot = NULL, pending_from = NULL,
+                   status = IF(status = 'programado', 'publicado', status) WHERE id = ?`, [row.id]);
+        await audit(c, { ip: 'job' }, 'publish_scheduled', key, row.id, { live_from: row.pending_from });
+      });
+      promoted++;
+    }
   }
 
   // Reviews pending for 48h get a reminder, then again every 48h. A scheduled item whose time passed
@@ -31,7 +46,7 @@ export async function runHourly(log = console.log) {
     await notifyReminders(due);
     await q('UPDATE reviews SET last_reminded_at = ? WHERE id IN (?)', [now, due.map((d) => d.id)]);
   }
-  log(`hourly: sessions purged ${s.affectedRows}, tokens purged ${t.affectedRows}, scheduled->published ${flipped}, reminders ${due.length}`);
+  log(`hourly: sessions purged ${s.affectedRows}, tokens purged ${t.affectedRows}, scheduled->published ${flipped}, promoted ${promoted}, reminders ${due.length}`);
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {

@@ -43,3 +43,13 @@ export function reminderDue(review, now = new Date()) {
   const since = new Date(review.last_reminded_at ?? review.created_at);
   return now - since >= REMINDER_HOURS * 3600e3;
 }
+
+// Where an approval lands. A future publish_at on content that already has a live snapshot goes to the
+// pending slot so the live version keeps being served; otherwise it becomes the live snapshot right away.
+export function planApproval(row, now = new Date()) {
+  const future = row.publish_at && new Date(row.publish_at) > now;
+  if (future && row.published_snapshot) return { slot: 'pending', from: new Date(row.publish_at) };
+  return { slot: 'live', from: future ? new Date(row.publish_at) : now };
+}
+
+export const promotionDue = (row, now = new Date()) => !!row.pending_snapshot && !!row.pending_from && new Date(row.pending_from) <= now;

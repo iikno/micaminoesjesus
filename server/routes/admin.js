@@ -4,7 +4,7 @@ import { authenticate, csrf } from '../lib/auth.js';
 import { ENTITIES, snapshotOf, toColumns } from '../lib/entities.js';
 import { labelOf, notifyDecision, notifySubmitted } from '../lib/notify.js';
 import { can } from '../lib/perm.js';
-import { FlowError, canDecide, nextStatus } from '../lib/review.js';
+import { FlowError, canDecide, nextStatus, planApproval } from '../lib/review.js';
 import * as s from '../lib/schemas.js';
 import { inviteUser } from '../lib/users.js';
 import { one, q, tx } from '../db.js';
@@ -80,11 +80,30 @@ export default async function adminRoutes(app) {
     return out;
   });
 
+  // Items the caller submitted that are currently rejected, with the reviewer's comment.
+  app.get('/api/admin/reviews/mine', async (req) => {
+    const out = [];
+    for (const [key, e] of Object.entries(ENTITIES)) {
+      if (!can(req.user.role, e.resource, 'write')) continue;
+      const rows = await q(
+        `SELECT r.entity_id, r.comment, r.decided_at, t.* FROM reviews r JOIN ${e.table} t ON t.id = r.entity_id
+          WHERE r.entity = ? AND r.submitted_by = ? AND r.decision = 'rechazado' AND t.status = 'rechazado'
+            AND r.id = (SELECT MAX(id) FROM reviews WHERE entity = r.entity AND entity_id = r.entity_id)`, [key, req.user.id]);
+      for (const r of rows) out.push({ entity: key, id: r.entity_id, label: labelOf(r), comment: r.comment, decided_at: r.decided_at });
+    }
+    return out;
+  });
+
   app.get('/api/admin/audit', async (req, reply) => {
     if (!can(req.user.role, 'audit', 'read')) return deny(reply);
-    const { entity, entity_id: id, limit = '100' } = req.query;
-    return q(`SELECT * FROM audit_log WHERE (? IS NULL OR entity = ?) AND (? IS NULL OR entity_id = ?) ORDER BY id DESC LIMIT ?`,
-      [entity ?? null, entity ?? null, id ?? null, id ?? null, Math.min(Number(limit) || 100, 500)]);
+    const { entity, entity_id: id, user_id: uid, action, from, to, limit = '100' } = req.query;
+    const day = (d) => (/^\d{4}-\d{2}-\d{2}$/.test(d ?? '') ? d : null);
+    return q(`SELECT a.*, u.name user_name FROM audit_log a LEFT JOIN users u ON u.id = a.user_id
+               WHERE (? IS NULL OR a.entity = ?) AND (? IS NULL OR a.entity_id = ?) AND (? IS NULL OR a.user_id = ?) AND (? IS NULL OR a.action = ?)
+                 AND (? IS NULL OR a.created_at >= ?) AND (? IS NULL OR a.created_at < DATE_ADD(?, INTERVAL 1 DAY))
+               ORDER BY a.id DESC LIMIT ?`,
+      [entity ?? null, entity ?? null, id ?? null, id ?? null, uid ?? null, uid ?? null, action ?? null, action ?? null,
+        day(from), day(from), day(to), day(to), Math.min(Number(limit) || 100, 500)]);
   });
 
   // ---- content entities ----
@@ -101,6 +120,11 @@ export default async function adminRoutes(app) {
 
     g.get('/api/admin/:entity/:id', { preHandler: needs('read') }, async (req, reply) =>
       (await one(`SELECT * FROM ${req.ent.table} WHERE id = ?`, [req.params.id])) ?? reply.code(404).send({ error: 'not_found' }));
+
+    g.get('/api/admin/:entity/:id/reviews', { preHandler: needs('read') }, (req) =>
+      q(`SELECT r.id, r.version, r.decision, r.comment, r.created_at, r.decided_at, s.name submitted_by_name, v.name reviewer_name
+           FROM reviews r JOIN users s ON s.id = r.submitted_by LEFT JOIN users v ON v.id = r.reviewer_id
+          WHERE r.entity = ? AND r.entity_id = ? ORDER BY r.id DESC`, [req.params.entity, req.params.id]));
 
     g.post('/api/admin/:entity', { preHandler: needs('write') }, async (req, reply) => {
       const cols = toColumns(req.ent, req.ent.schema.parse(req.body));
@@ -151,18 +175,24 @@ export default async function adminRoutes(app) {
     });
 
     const decide = (event) => async (req, reply) => {
-      const { comment = '' } = (event === 'reject' ? s.rejection : s.decision).parse(req.body ?? {});
+      const { comment = '', publish_at: publishAt } = (event === 'reject' ? s.rejection : s.decision).parse(req.body ?? {});
       const { row, review } = await tx(async (c) => {
         const r = await lockRow(c, req.ent, req.params.id);
+        if (event === 'approve' && publishAt !== undefined) r.publish_at = publishAt ? new Date(publishAt) : null; // reviewer picks now vs schedule
         const rv = await c.one("SELECT * FROM reviews WHERE entity = ? AND entity_id = ? AND decision = 'pendiente' ORDER BY id DESC LIMIT 1 FOR UPDATE",
           [req.params.entity, r.id]) ?? fail(409, 'no_pending_review');
         if (!canDecide(req.user, req.ent.resource, rv.submitted_by)) fail(403, 'cannot_decide_own_or_forbidden');
         const status = nextStatus(r.status, event, { publishAt: r.publish_at, comment });
         const now = new Date();
         if (event === 'approve') {
-          const liveFrom = r.publish_at && new Date(r.publish_at) > now ? new Date(r.publish_at) : now;
-          await c.q(`UPDATE ${req.ent.table} SET status = ?, live_from = ?, published_snapshot = ? WHERE id = ?`,
-            [status, liveFrom, JSON.stringify(snapshotOf(req.ent, r)), r.id]);
+          const plan = planApproval(r, now);
+          const snap = JSON.stringify(snapshotOf(req.ent, r));
+          if (plan.slot === 'pending') {
+            await c.q(`UPDATE ${req.ent.table} SET status = ?, publish_at = ?, pending_snapshot = ?, pending_from = ? WHERE id = ?`, [status, r.publish_at, snap, plan.from, r.id]);
+          } else {
+            await c.q(`UPDATE ${req.ent.table} SET status = ?, live_from = ?, publish_at = ?, published_snapshot = ?, pending_snapshot = NULL, pending_from = NULL WHERE id = ?`,
+              [status, plan.from, r.publish_at, snap, r.id]);
+          }
         } else {
           await c.q(`UPDATE ${req.ent.table} SET status = ? WHERE id = ?`, [status, r.id]);
         }
@@ -187,7 +217,8 @@ export default async function adminRoutes(app) {
         if (!row.published_snapshot) fail(409, 'not_published');
         // Patch the live snapshot itself so unreviewed draft edits never go live through here.
         const snap = { ...row.published_snapshot, ...patch };
-        await c.q(`UPDATE ${req.ent.table} SET ?, published_snapshot = ?, updated_by = ? WHERE id = ?`, [patch, JSON.stringify(snap), req.user.id, row.id]);
+        const pend = row.pending_snapshot && JSON.stringify({ ...row.pending_snapshot, ...patch }); // the fix must survive the scheduled promotion
+        await c.q(`UPDATE ${req.ent.table} SET ?, published_snapshot = ?, pending_snapshot = COALESCE(?, pending_snapshot), updated_by = ? WHERE id = ?`, [patch, JSON.stringify(snap), pend, req.user.id, row.id]);
         await audit(c, req, 'quick_fix', req.params.entity, row.id, { comment, changes: diffOf(row.published_snapshot, patch) });
       });
       return reply.code(204).send();

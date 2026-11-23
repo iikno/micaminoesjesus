@@ -55,3 +55,11 @@ test('toColumns serializes JSON columns and publish_at', () => {
   assert.ok(c.publish_at instanceof Date);
   assert.equal(c.title, 'T');
 });
+
+test('approve decision accepts an optional publish_at, rejects unknown keys', () => {
+  ok(s.decision, {});
+  ok(s.decision, { comment: 'ok', publish_at: '2027-01-01T10:00:00Z' });
+  ok(s.decision, { publish_at: null });
+  bad(s.decision, { publish_at: 'mañana' });
+  bad(s.decision, { status: 'publicado' });
+});
