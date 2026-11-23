@@ -7,11 +7,13 @@ COPY . .
 RUN npm run build
 
 FROM node:24-bookworm-slim
-ENV NODE_ENV=production PORT=3000 UPLOAD_DIR=/data/uploads
+ENV NODE_ENV=production PORT=3000 UPLOADS_DIR=/data/uploads
 WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev && npm cache clean --force
 COPY server ./server
+# server/lib/seo.js shares the per-page titles with the browser; it is the only file of src/ the server needs.
+COPY src/i18n/meta.js ./src/i18n/meta.js
 COPY --from=build /app/dist ./dist
 RUN mkdir -p /data/uploads && chown -R node:node /data /app
 USER node

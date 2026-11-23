@@ -8,6 +8,7 @@ const dir = fileURLToPath(new URL('./migrations/', import.meta.url));
 export async function migrate(log = console.log) {
   const c = await mysql.createConnection({
     host: config.DB_HOST, port: config.DB_PORT, user: config.DB_USER, password: config.DB_PASS, database: config.DB_NAME,
+    ssl: config.DB_SSL ? 'Amazon RDS' : undefined,
     multipleStatements: true, charset: 'utf8mb4',
   });
   try {

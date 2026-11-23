@@ -1,19 +1,9 @@
-import { Link, useParams, Navigate } from 'react-router-dom';
-import {
-  getRetreatById, SEASONS, DEREJ, TIPO_LABELS,
-  derejGuibor, derejKavod,
-} from '../data/retreats';
-
-const ROUTE_ITEMS = { guibor: derejGuibor, kavod: derejKavod };
-const CTA_PHRASE = { retiro: 'este retiro', taller: 'este taller', hora_santa: 'esta adoración' };
-const TIPO_ARTICLE = {
-  retiro: 'del Retiro',
-  taller: 'del Taller',
-  hora_santa: 'de la Adoración',
-  vivencial: 'del Vivencial',
-  experiencial: 'del Experiencial',
-};
-const NUMBER_WORDS = { 1: 'Uno', 2: 'Dos', 3: 'Tres', 4: 'Cuatro', 5: 'Cinco', 6: 'Seis', 7: 'Siete', 8: 'Ocho' };
+import { Link, useParams } from 'react-router-dom';
+import { Async } from '../components/Status';
+import { useLang, useMeta } from '../i18n';
+import { pageTitle } from '../i18n/meta';
+import { useData } from '../lib/api';
+import { adaptRetreat, useCatalog } from '../lib/catalog';
 
 // Íconos de la ficha técnica, tomados de la referencia de diseño (tmp.html).
 const FICHA_ICONS = {
@@ -53,13 +43,10 @@ function FichaIcon({ name }) {
   );
 }
 
-export default function ProyectoDetalle() {
-  const { id } = useParams();
-  const retiro = getRetreatById(id);
-
-  if (!retiro) {
-    return <Navigate to="/proyectos/xp-lev" replace />;
-  }
+function Detalle({ retiro, c }) {
+  const { t, to } = useLang();
+  useMeta(null, { title: pageTitle(`${retiro.title} · XP Lev`), desc: (retiro.conceptoCentral ?? retiro.subtitle ?? '').slice(0, 160) });
+  const { DEREJ, SEASONS } = c;
 
   const hasBasadoEn = !!retiro.basadoEn;
   const hasConcepto = !!retiro.conceptoCentral;
@@ -68,18 +55,21 @@ export default function ProyectoDetalle() {
   const hasBloques = !!(retiro.bloques && retiro.bloques.length);
   const hasTemas = !!(retiro.temas && retiro.temas.length);
   const temasCount = retiro.temas ? retiro.temas.length : 0;
-  const pedagogiaTitulo = `Los ${NUMBER_WORDS[temasCount] || temasCount} Temas ${TIPO_ARTICLE[retiro.tipo] || 'del Encuentro'}`;
+  const tipoKey = retiro.tipo && t(`det.article.${retiro.tipo}`) !== `det.article.${retiro.tipo}` ? retiro.tipo : 'default';
+  const pedagogiaTitulo = t('det.ped.title', { n: t(`det.num.${temasCount}`) === `det.num.${temasCount}` ? temasCount : t(`det.num.${temasCount}`), article: t(`det.article.${tipoKey}`) });
   const hasFichaTecnica = !!(retiro.fichaTecnica && retiro.fichaTecnica.length);
   const isPending = retiro.estado === 'proximamente';
   const derejInfo = retiro.derej ? DEREJ[retiro.derej] : null;
   const hasSecondarySeasons = !!(retiro.seasonSecondary && retiro.seasonSecondary.length);
-  const tagLabel = retiro.category || TIPO_LABELS[retiro.tipo] || 'Proyecto';
+  const tipoLabel = retiro.tipo ? t(`tipo.${retiro.tipo}`) : null;
+  const tagLabel = tipoLabel && tipoLabel !== `tipo.${retiro.tipo}` ? tipoLabel : t('det.project');
   const audience = derejInfo?.audience;
 
-  const routeItems = retiro.derej ? ROUTE_ITEMS[retiro.derej] : null;
-  const showRoute = !!(routeItems && routeItems.length && derejInfo?.esquema === 'secuencial');
+  const routeItems = derejInfo?.esquema === 'secuencial' ? c.byDerej(retiro.derej) : null;
+  const showRoute = !!(routeItems && routeItems.length);
   const routeColor = derejInfo?.color || 'var(--color-red)';
-  const ctaPhrase = CTA_PHRASE[retiro.tipo] || 'esta experiencia';
+  const ctaKey = retiro.tipo && t(`det.cta.${retiro.tipo}`) !== `det.cta.${retiro.tipo}` ? retiro.tipo : 'default';
+  const ctaPhrase = t(`det.cta.${ctaKey}`);
 
   return (
     <>
@@ -89,15 +79,15 @@ export default function ProyectoDetalle() {
           {derejInfo && (
             <div className="detalle-sequence">
               {derejInfo.name} · {derejInfo.subtitle}
-              {retiro.paso && derejInfo.pasoTotal ? ` — Paso ${retiro.paso} de ${derejInfo.pasoTotal}` : ''}
-              {retiro.paso && !derejInfo.pasoTotal ? ` — orden sugerido ${retiro.paso}` : ''}
+              {retiro.paso && derejInfo.pasoTotal ? ` — ${t('det.step', { n: retiro.paso, total: derejInfo.pasoTotal })}` : ''}
+              {retiro.paso && !derejInfo.pasoTotal ? ` — ${t('det.suggested', { n: retiro.paso })}` : ''}
               {retiro.sequenceTheme ? ` · ${retiro.sequenceTheme}` : ''}
             </div>
           )}
           <h1 className="d">{retiro.title}</h1>
           {isPending && (
             <div style={{ marginTop: 10 }}>
-              <span className="badge-estado badge-estado--proximamente">Próximamente</span>
+              <span className="badge-estado badge-estado--proximamente">{t('det.pending')}</span>
             </div>
           )}
           <div className="detalle-pills">
@@ -112,12 +102,12 @@ export default function ProyectoDetalle() {
                   {SEASONS[s].name}
                 </span>
               ))}
-            {retiro.tipo && TIPO_LABELS[retiro.tipo] && (
-              <span className="detalle-pill detalle-pill--tipo">{TIPO_LABELS[retiro.tipo]}</span>
+            {tagLabel !== t('det.project') && (
+              <span className="detalle-pill detalle-pill--tipo">{tagLabel}</span>
             )}
             {audience && <span className="detalle-pill">{audience}</span>}
           </div>
-          {hasBasadoEn && <p className="detalle-basado">Basado en {retiro.basadoEn}</p>}
+          {hasBasadoEn && <p className="detalle-basado">{t('det.basedOn', { text: retiro.basadoEn })}</p>}
           {hasConcepto && <p className="detalle-concepto">{retiro.conceptoCentral}</p>}
         </div>
       </section>
@@ -125,10 +115,10 @@ export default function ProyectoDetalle() {
       <section className="detalle-sec">
         <div className="wrap detalle-image-wrap">
           {hasImage ? (
-            <img src={retiro.image} alt={`Foto de ${retiro.title}`} className="detalle-image" />
+            <img src={retiro.image} alt={retiro.imageAlt || t('det.photo', { title: retiro.title })} className="detalle-image" />
           ) : (
             <div className="detalle-image detalle-image--placeholder">
-              [Imagen pendiente: {retiro.codigo || retiro.id} — {retiro.title}]
+              {t('det.noimage', { code: retiro.codigo || retiro.id, title: retiro.title })}
             </div>
           )}
         </div>
@@ -150,7 +140,7 @@ export default function ProyectoDetalle() {
           )}
 
           {!hasBloques && !hasTemas && (
-            <p className="detalle-preparacion">Este contenido está en preparación.</p>
+            <p className="detalle-preparacion">{t('det.prep')}</p>
           )}
 
           {hasBloques && (
@@ -172,15 +162,14 @@ export default function ProyectoDetalle() {
             <div className="detalle-route__header">
               <div>
                 <span className="detalle-route__eyebrow">
-                  Itinerario Formativo Integral
+                  {t('det.route.eyebrow')}
                 </span>
                 <h2 className="detalle-route__title">
                   {derejInfo.name}: {derejInfo.subtitle}
                 </h2>
               </div>
               <p className="detalle-route__desc">
-                Ruta de {derejInfo.pasoTotal} pasos diseñada para madurar el camino de{' '}
-                {(audience || '').toLowerCase()}.
+                {t('det.route.desc', { n: derejInfo.pasoTotal, audience: (audience || '').toLowerCase() })}
               </p>
             </div>
             <div className="detalle-route__grid">
@@ -194,16 +183,16 @@ export default function ProyectoDetalle() {
                     key={item.id}
                     className={`detalle-route__step${isCurrent ? ' is-current' : ''}${stepPending ? ' is-pending' : ''}`}
                     style={isCurrent ? { borderColor: routeColor } : undefined}
-                    to={clickable ? `/proyectos/${item.id}` : undefined}
+                    to={clickable ? to(`/proyectos/${item.id}`) : undefined}
                   >
                     <div className="detalle-route__step-top">
                       <span
                         className="detalle-route__num"
                         style={isCurrent ? { background: routeColor, color: '#fff' } : undefined}
                       >
-                        {item.sequenceStep}
+                        {item.paso}
                       </span>
-                      {isCurrent && <span className="detalle-route__current-tag">Actual</span>}
+                      {isCurrent && <span className="detalle-route__current-tag">{t('det.route.current')}</span>}
                     </div>
                     <p className="detalle-route__step-title">{item.title}</p>
                     {item.conceptoCentral && <p className="detalle-route__step-desc">{item.conceptoCentral}</p>}
@@ -219,10 +208,10 @@ export default function ProyectoDetalle() {
         <section className="detalle-sec">
           <div className="wrap detalle-pedagogia">
             <div className="detalle-pedagogia__header">
-              <span className="detalle-pedagogia__eyebrow">Pedagogía Vivencial</span>
+              <span className="detalle-pedagogia__eyebrow">{t('det.ped.eyebrow')}</span>
               <h2 className="detalle-pedagogia__title">{pedagogiaTitulo}</h2>
               <p className="detalle-pedagogia__desc">
-                Cada tema combina una evocación, un contenido bíblico y una experiencia concreta que lo hace vida.
+                {t('det.ped.desc')}
               </p>
             </div>
             <div className="detalle-pedagogia__grid">
@@ -230,7 +219,7 @@ export default function ProyectoDetalle() {
                 <div className="detalle-pedagogia__card" key={tema.titulo}>
                   <div className="detalle-pedagogia__card-top">
                     <span className="detalle-pedagogia__badge">T{i + 1}</span>
-                    <span className="detalle-pedagogia__label">Tema {i + 1} de {temasCount}</span>
+                    <span className="detalle-pedagogia__label">{t('det.ped.topic', { i: i + 1, n: temasCount })}</span>
                   </div>
                   <h3 className="detalle-pedagogia__card-title">{tema.titulo}</h3>
                   {tema.resumen ? (
@@ -246,12 +235,12 @@ export default function ProyectoDetalle() {
                     </>
                   ) : (
                     <>
-                      {tema.evocacion && <p><em>Evocación:</em> {tema.evocacion}</p>}
-                      {tema.actividadIntroductoria && <p><em>Actividad:</em> {tema.actividadIntroductoria}</p>}
+                      {tema.evocacion && <p><em>{t('det.ped.evo')}</em> {tema.evocacion}</p>}
+                      {tema.actividadIntroductoria && <p><em>{t('det.ped.act')}</em> {tema.actividadIntroductoria}</p>}
                       {tema.contenido && <p>{tema.contenido}</p>}
-                      {tema.actividadesAdicionales && <p><em>Actividad adicional:</em> {tema.actividadesAdicionales}</p>}
+                      {tema.actividadesAdicionales && <p><em>{t('det.ped.act2')}</em> {tema.actividadesAdicionales}</p>}
                       {!!(tema.simbolos && tema.simbolos.length) && (
-                        <p><em>Símbolos:</em> {tema.simbolos.join(' · ')}</p>
+                        <p><em>{t('det.ped.sym')}</em> {tema.simbolos.join(' · ')}</p>
                       )}
                       {tema.reflexion && <p className="detalle-reflexion">{tema.reflexion}</p>}
                     </>
@@ -267,8 +256,8 @@ export default function ProyectoDetalle() {
         <section className="detalle-sec">
           <div className="wrap detalle-ficha">
             <div className="detalle-ficha__header">
-              <span className="detalle-ficha__eyebrow">Organización Parroquial &amp; Logística</span>
-              <h2 className="detalle-ficha__title">Ficha Técnica</h2>
+              <span className="detalle-ficha__eyebrow">{t('det.ficha.eyebrow')}</span>
+              <h2 className="detalle-ficha__title">{t('det.ficha.title')}</h2>
             </div>
             <div className="detalle-ficha__grid">
               {retiro.fichaTecnica.map((item) => (
@@ -286,13 +275,22 @@ export default function ProyectoDetalle() {
 
       <section className="band contact">
         <div className="wrap">
-          <h2 className="d sec-title">¿Quieres llevar {ctaPhrase} a tu parroquia o comunidad?</h2>
+          <h2 className="d sec-title">{t('det.cta.h', { what: ctaPhrase })}</h2>
           <div className="row">
-            <Link className="btn" to="/contacto">Contáctanos</Link>
-            <Link className="btn btn--ghost" to="/proyectos/xp-lev">Ver el catálogo</Link>
+            <Link className="btn" to={to('/contacto')}>{t('det.cta.contact')}</Link>
+            <Link className="btn btn--ghost" to={to('/proyectos/xp-lev')}>{t('det.cta.catalog')}</Link>
           </div>
         </div>
       </section>
     </>
   );
+}
+
+export default function ProyectoDetalle() {
+  const { id } = useParams();
+  const { lang } = useLang();
+  const detail = useData(`/api/public/retreats/${encodeURIComponent(id)}?lang=${lang}`);
+  const cat = useCatalog();
+  const state = { data: detail.data && cat.data ? { retiro: adaptRetreat(detail.data), c: cat.data } : null, loading: detail.loading || cat.loading, error: detail.error || cat.error, retry: () => { detail.retry(); cat.retry(); } };
+  return <Async state={state}>{({ retiro, c }) => <Detalle retiro={retiro} c={c} />}</Async>;
 }

@@ -6,6 +6,7 @@ import { pool, tx } from './db.js';
 import { ENTITIES, snapshotOf } from './lib/entities.js';
 import { CALENDARIO } from '../src/data/calendario.js';
 import { EQUIPO } from '../src/data/equipo.js';
+import { VERSO } from '../src/data/site.js';
 import { DEREJ, SEASONS, retreats } from '../src/data/retreats.js';
 
 // Seeding a real database by accident would be a disaster: only local hosts unless explicitly allowed.
@@ -66,7 +67,9 @@ const out = await tx(async (c) => {
       title: it.titulo, note: it.nota, starts_on, ends_on, date_text: it.cuando, cal_state: it.estado, highlight: !!it.destacado,
     }, { sql: 'SELECT id FROM retreat_sessions WHERE title = ? AND starts_on = ?', params: [it.titulo, starts_on] });
   }
-  return { nRetreats, nTeam, nCal };
+  // The home page verse. text_en stays empty: the RSV-2CE text is typed by hand in the panel, never machine-translated.
+  const nVerse = await insertPublished(c, 'verses', { ref: 'Josué 1:9', text_es: VERSO.texto, version_en: 'RSV-2CE' }, { sql: 'SELECT id FROM verses WHERE ref = ?', params: ['Josué 1:9'] });
+  return { nRetreats, nTeam, nCal, nVerse };
 });
 
 const [[n]] = await pool.query('SELECT (SELECT COUNT(*) FROM retreats) retreats, (SELECT COUNT(*) FROM derej) derej, (SELECT COUNT(*) FROM seasons) seasons, (SELECT COUNT(*) FROM team_members) team, (SELECT COUNT(*) FROM retreat_sessions) sessions');

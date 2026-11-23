@@ -3,6 +3,7 @@ import { config } from './config.js';
 
 export const pool = mysql.createPool({
   host: config.DB_HOST, port: config.DB_PORT, user: config.DB_USER, password: config.DB_PASS, database: config.DB_NAME,
+  ssl: config.DB_SSL ? 'Amazon RDS' : undefined,
   charset: 'utf8mb4', timezone: 'Z', dateStrings: ['DATE'], connectionLimit: 10,
 });
 

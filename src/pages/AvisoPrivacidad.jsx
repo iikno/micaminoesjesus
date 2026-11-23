@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useLang, useMeta } from '../i18n';
 
 export default function AvisoPrivacidad() {
+  useMeta('privacidad');
+  const { lang, t, to } = useLang();
   return (
     <>
       <section className="page-head">
@@ -11,8 +14,9 @@ export default function AvisoPrivacidad() {
       </section>
 
       <section className="band">
-        <div className="wrap legal">
-          <p className="draft" role="note">
+        <div className="wrap legal" lang="es">
+          {lang === 'en' && <p className="draft" role="note" lang="en">{t('legal.en')}</p>}
+          <p className="draft" role="note" lang="es">
             <b>Borrador, pendiente de revisión legal.</b> El responsable legal aún no está
             constituido. Este texto es provisional, no es un aviso definitivo y no debe tomarse
             como garantía de cumplimiento de la ley.
@@ -26,8 +30,10 @@ export default function AvisoPrivacidad() {
             <li>Nombre.</li>
             <li>Teléfono.</li>
             <li>Correo electrónico.</li>
-            <li>Contacto de emergencia.</li>
-            <li>Alergias: es un dato personal sensible y solo se trata con tu consentimiento expreso.</li>
+            <li>Contacto de emergencia (nombre y teléfono).</li>
+            <li>Si te inscribes a una actividad para niñas y niños (Dérej Simjá, hasta 12 años): nombre y teléfono de la madre, padre o tutor que hace la inscripción. En el Dérej Oz, si eres menor de 18 años, te pedimos confirmar que tienes permiso de tu madre, padre o tutor.</li>
+            <li>Alergias: es un dato personal sensible, es opcional y solo se trata con tu consentimiento expreso y separado.</li>
+            <li>Mensajes que nos envías desde el formulario de contacto, junto con la dirección IP desde la que se enviaron.</li>
           </ul>
 
           <h2 className="d">Finalidades</h2>
@@ -38,11 +44,19 @@ export default function AvisoPrivacidad() {
             <li>Atender necesidades de salud o alimentación, como las alergias, durante las actividades.</li>
           </ul>
 
+          <h2 className="d">Seguridad y conservación</h2>
+          <ul>
+            <li>El contacto de emergencia, los datos del tutor y las alergias se guardan cifrados y solo los ve la persona responsable de la actividad.</li>
+            <li>Borramos las alergias y el contacto de emergencia 30 días después de terminada la actividad, y la inscripción completa 90 días después.</li>
+            <li>Los mensajes de contacto se conservan 12 meses (los marcados como spam, 30 días). El registro de actividad interna se conserva 24 meses.</li>
+            <li>Para evitar el spam usamos reCAPTCHA de Google en los formularios; Google recibe datos técnicos de tu navegador para esa verificación.</li>
+          </ul>
+
           <h2 className="d">Derechos ARCO</h2>
           <p>
             Puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición, así como
             revocar tu consentimiento, enviándonos tu solicitud desde la página de{' '}
-            <Link to="/contacto">Contacto</Link> con el asunto &ldquo;Derechos ARCO&rdquo;.
+            <Link to={to('/contacto')}>Contacto</Link> con el asunto &ldquo;Derechos ARCO&rdquo;. Responderemos en un plazo de 20 días hábiles [pendiente: verificar el plazo con asesoría legal].
           </p>
 
           <h2 className="d">Cambios al aviso</h2>

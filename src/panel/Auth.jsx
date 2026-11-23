@@ -3,7 +3,7 @@ import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react
 import logo from '../assets/logos/logotipo.png';
 import { ApiError, errText, get, post } from './api';
 import { useAuth } from './session';
-import { Field } from './ui';
+import { Field, PageHead, useToast } from './ui';
 
 function Card({ title, children, foot }) {
   return (
@@ -97,5 +97,33 @@ export function Forgot() {
         <button className="p-btn p-btn-primary p-btn-block" disabled={f.busy}>Enviar enlace</button>
       </form>
     </Card>
+  );
+}
+
+// Inside the panel: the logged-in user changes their own password (other sessions are closed).
+export function ChangePassword() {
+  const toast = useToast();
+  const [local, setLocal] = useState({});
+  const f = useSubmit(async (d) => {
+    const pw = d.get('password');
+    const e = {};
+    if (pw.length < 12) e.password = 'Mínimo 12 caracteres.';
+    if (pw !== d.get('again')) e.again = 'Las contraseñas no coinciden.';
+    setLocal(e);
+    if (Object.keys(e).length) return;
+    await post('/api/auth/change-password', { current: d.get('current'), password: pw });
+    toast('Contraseña actualizada. Se cerraron tus otras sesiones.');
+  });
+  return (
+    <>
+      <PageHead title="Cambiar contraseña" sub="Se cerrarán tus sesiones en otros dispositivos." />
+      <form onSubmit={f.run} noValidate style={{ maxWidth: 420 }}>
+        <Field label="Contraseña actual" required>{(p) => <input {...p} name="current" type="password" autoComplete="current-password" />}</Field>
+        <Field label="Contraseña nueva" help="Mínimo 12 caracteres." error={local.password} required>{(p) => <input {...p} name="password" type="password" autoComplete="new-password" />}</Field>
+        <Field label="Repite la contraseña nueva" error={local.again} required>{(p) => <input {...p} name="again" type="password" autoComplete="new-password" />}</Field>
+        <Err>{f.err}</Err>
+        <button className="p-btn p-btn-primary" disabled={f.busy}>Guardar contraseña</button>
+      </form>
+    </>
   );
 }

@@ -3,9 +3,13 @@ import { Link, Route, Routes } from 'react-router-dom';
 import logo from '../assets/logos/logotipo.png';
 import './panel.css';
 import { Audit, Users } from './Admin';
-import { Forgot, Invite, Login, Reset } from './Auth';
+import { ChangePassword, Forgot, Invite, Login, Reset } from './Auth';
 import { ContentForm, ContentList } from './Content';
+import Bandeja from './Bandeja';
 import Dashboard from './Dashboard';
+import Glossary from './Glossary';
+import { RegistrationEvents, RegistrationList } from './Inscripciones';
+import MediaPage from './Media';
 import Review from './Review';
 import { RESOURCES } from './resources';
 import { AuthProvider, RequireAuth, useAuth } from './session';
@@ -20,7 +24,11 @@ const ICONS = {
   pilgrimages: 'M12 21s-7-6-7-11a7 7 0 0114 0c0 5-7 11-7 11zM12 10m-2 0a2 2 0 104 0 2 2 0 10-4 0',
   team: 'M9 11a3 3 0 100-6 3 3 0 000 6zM3 20c0-3 3-5 6-5s6 2 6 5M17 11a2.5 2.5 0 100-5M21 19c0-2-1.5-3.5-4-4',
   verses: 'M5 4h10a4 4 0 014 4v12H9a4 4 0 01-4-4zM9 8h6M9 12h6',
+  media: 'M4 5h16v14H4zM8 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM4 17l5-5 4 4 3-3 4 4',
+  glossary: 'M5 4h12a2 2 0 012 2v14H7a2 2 0 01-2-2zM9 8h6M9 12h6',
   users: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6',
+  regs: 'M9 11l3 3 8-8M4 12v7h14M4 5h10',
+  inbox: 'M4 4h16v12h-5l-2 3h-2l-2-3H4z',
   audit: 'M12 8v5l3 2M21 12a9 9 0 11-3-6.7M21 4v5h-5',
 };
 
@@ -32,6 +40,10 @@ function Shell() {
     ['/panel', 'Inicio', 'home', true, true],
     ['/panel/revision', 'Revisión', 'review', approver],
     ...Object.values(RESOURCES).map((r) => [`/panel/${r.path}`, r.title, r.entity, can(r.perm, 'read')]),
+    ['/panel/inscripciones', 'Inscripciones', 'regs', can('registrations', 'read')],
+    ['/panel/contacto', 'Bandeja de contacto', 'inbox', can('contact', 'read')],
+    ['/panel/imagenes', 'Imágenes', 'media', can('media', 'read')],
+    ['/panel/glosario', 'Glosario', 'glossary', can('glossary', 'read')],
     ['/panel/usuarios', 'Usuarios', 'users', can('users', 'read')],
     ['/panel/historial', 'Historial', 'audit', can('audit', 'read')],
   ].filter((i) => i[3]);
@@ -56,6 +68,7 @@ function Shell() {
         </nav>
         <div className="side-foot">
           <p className="p-who"><strong>{user.name}</strong><br /><span>{ROLE[user.role]}</span></p>
+          <PNavLink to="/panel/contrasena" className="side-link" onClick={() => setOpen(false)}>Cambiar contraseña</PNavLink>
           <a href="/" className="side-link">Ver el sitio</a>
           <button className="p-btn p-btn-ghost" onClick={logout}>Cerrar sesión</button>
         </div>
@@ -82,6 +95,12 @@ function Guarded() {
         <Route key={r.path} path={r.path} element={<Allowed ok={can(r.perm, 'read')}><ContentList res={r} /></Allowed>} />,
         <Route key={`${r.path}-id`} path={`${r.path}/:id`} element={<Allowed ok={can(r.perm, 'read')}><ContentForm res={r} /></Allowed>} />,
       ])}
+      <Route path="inscripciones" element={<Allowed ok={can('registrations', 'read')}><RegistrationEvents /></Allowed>} />
+      <Route path="inscripciones/:kind/:id" element={<Allowed ok={can('registrations', 'read')}><RegistrationList /></Allowed>} />
+      <Route path="contacto" element={<Allowed ok={can('contact', 'read')}><Bandeja /></Allowed>} />
+      <Route path="contrasena" element={<ChangePassword />} />
+      <Route path="imagenes" element={<Allowed ok={can('media', 'read')}><MediaPage /></Allowed>} />
+      <Route path="glosario" element={<Allowed ok={can('glossary', 'read')}><Glossary /></Allowed>} />
       <Route path="usuarios" element={<Allowed ok={can('users', 'read')}><Users /></Allowed>} />
       <Route path="historial" element={<Allowed ok={can('audit', 'read')}><Audit /></Allowed>} />
       <Route path="*" element={<div className="state"><p className="state-title">Esta página no existe.</p><Link to="/panel">Volver al inicio</Link></div>} />

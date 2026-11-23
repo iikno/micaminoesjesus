@@ -1,4 +1,4 @@
-import { authenticate, createSession, csrf, destroySession, hash, hashPassword, verifyPassword } from '../lib/auth.js';
+import { COOKIE, authenticate, createSession, csrf, destroySession, hash, hashPassword, verifyPassword } from '../lib/auth.js';
 import { audit } from '../lib/audit.js';
 import { PERMS } from '../lib/perm.js';
 import { afterFailure, isLocked } from '../lib/lockout.js';
@@ -63,6 +63,20 @@ export default async function authRoutes(app) {
       return true;
     });
     return ok ? reply.code(204).send() : reply.code(400).send({ error: 'invalid_token' });
+  });
+
+  // Logged-in user changes their own password; every other session is revoked, this one stays.
+  app.post('/api/auth/change-password', { preHandler: authenticate, config: limit(5) }, async (req, reply) => {
+    const { current, password } = s.changePassword.parse(req.body);
+    const u = await one('SELECT pass_hash FROM users WHERE id = ?', [req.user.id]);
+    if (!(await verifyPassword(u?.pass_hash, current))) return reply.code(400).send({ error: 'wrong_password' });
+    const hashed = await hashPassword(password);
+    await tx(async (c) => {
+      await c.q('UPDATE users SET pass_hash = ? WHERE id = ?', [hashed, req.user.id]);
+      await c.q('DELETE FROM sessions WHERE user_id = ? AND id <> ?', [req.user.id, hash(req.cookies[COOKIE])]);
+      await audit(c, req, 'change_password', 'users', req.user.id);
+    });
+    return reply.code(204).send();
   });
 
   app.post('/api/auth/forgot', { config: limit(5) }, async (req, reply) => {

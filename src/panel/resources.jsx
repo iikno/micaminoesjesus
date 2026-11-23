@@ -10,6 +10,7 @@ export const RESOURCES = {
   retreats: {
     entity: 'retreats', perm: 'retreats', path: 'retiros', title: 'Retiros', one: 'retiro', label: (r) => r.title,
     text: ['title', 'subtitle', 'summary', 'tema_paso'],
+    tr: ['title', 'subtitle', 'summary', 'tema_paso', 'body'], // fields with an English version; mirrors server/lib/entities.js
     fields: [
       { n: 'title', label: 'Título', t: 'text', req: true, max: 160 },
       { n: 'slug', label: 'Clave de la dirección', t: 'text', req: true, slug: true, help: 'Minúsculas, números y guiones (2 a 80). Es parte de la dirección pública.' },
@@ -24,8 +25,8 @@ export const RESOURCES = {
       { n: 'estado_catalogo', label: 'Estado en el catálogo', t: 'select', omit: true, opts: () => [['publicado', 'Disponible'], ['proximamente', 'Próximamente']] },
       { n: 'subtitle', label: 'Subtítulo', t: 'text', max: 255, full: true },
       { n: 'summary', label: 'Concepto central', t: 'textarea', full: true, help: 'Texto principal que ve el público en el catálogo.' },
-      { n: 'cover', label: 'Imagen de portada', t: 'text', max: 255, help: 'Por ahora, el nombre del archivo. La biblioteca de imágenes llega en la siguiente fase.' },
-      { n: 'body', label: 'Contenido del retiro (módulos o temas, ficha técnica, cronograma)', t: 'json', full: true, help: 'Formato JSON. Edítalo con cuidado; si dudas, deja lo que ya está.' },
+      { n: 'cover', label: 'Imagen de portada', t: 'media', full: true, help: 'Se elige de la biblioteca de imágenes.' },
+      { n: 'body', label: 'Contenido del retiro', t: 'body', full: true },
       PUBLISH,
     ],
     meta: (r, c) => {
@@ -36,6 +37,7 @@ export const RESOURCES = {
   sessions: {
     entity: 'sessions', perm: 'sessions', path: 'fechas', title: 'Fechas de retiros', one: 'fecha', label: (r) => r.title || `Fecha ${r.starts_on}`,
     text: ['title', 'note', 'place', 'cost_info'],
+    tr: ['title', 'note', 'place', 'cost_info', 'date_text'],
     fields: [
       { n: 'retreat_id', label: 'Retiro', t: 'select', num: true, opts: (c) => (c.retreats ?? []).map((r) => [r.id, r.title]), help: 'Elige un retiro, o deja vacío y escribe un título para una entrada libre del calendario.' },
       { n: 'title', label: 'Título (si no hay retiro)', t: 'text', max: 160 },
@@ -58,6 +60,7 @@ export const RESOURCES = {
   pilgrimages: {
     entity: 'pilgrimages', perm: 'pilgrimages', path: 'peregrinaciones', title: 'Peregrinaciones', one: 'peregrinación', label: (r) => r.title,
     text: ['title', 'summary', 'place', 'cost_info'],
+    tr: ['title', 'summary', 'place', 'cost_info', 'itinerary'],
     fields: [
       { n: 'title', label: 'Título', t: 'text', req: true, max: 160 },
       { n: 'slug', label: 'Clave de la dirección', t: 'text', req: true, slug: true, help: 'Minúsculas, números y guiones (2 a 80).' },
@@ -70,7 +73,7 @@ export const RESOURCES = {
       { n: 'summary', label: 'Resumen', t: 'textarea', full: true },
       { n: 'itinerary', label: 'Itinerario por días', t: 'itin', full: true },
       { n: 'cost_info', label: 'Costo', t: 'textarea', full: true, help: 'Texto libre, por ejemplo "$18,500 por persona, hospedaje doble".' },
-      { n: 'cover', label: 'Imagen de portada', t: 'text', max: 255, help: 'Por ahora, el nombre del archivo.' },
+      { n: 'cover', label: 'Imagen de portada', t: 'media', full: true },
       PUBLISH,
     ],
     meta: (r) => `${r.place ?? 'Sin destino'} · ${fmtDate(r.starts_on)}`,
@@ -78,10 +81,11 @@ export const RESOURCES = {
   team: {
     entity: 'team', perm: 'team', path: 'equipo', title: 'Equipo', one: 'integrante', label: (r) => r.name,
     text: ['name', 'role_title'],
+    tr: ['role_title'],
     fields: [
       { n: 'name', label: 'Nombre', t: 'text', req: true, max: 160 },
       { n: 'role_title', label: 'Cargo o rol', t: 'text', req: true, max: 160 },
-      { n: 'photo', label: 'Foto', t: 'text', max: 255, help: 'Por ahora, el nombre del archivo.' },
+      { n: 'photo', label: 'Foto', t: 'media', full: true, help: 'No uses fotos de menores: no se publican.' },
       { n: 'sort', label: 'Orden', t: 'number', min: 0, max: 32000, omit: true, help: 'Número menor aparece primero.' },
       PUBLISH,
     ],

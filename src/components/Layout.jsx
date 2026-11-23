@@ -1,10 +1,17 @@
+import { Suspense, useEffect } from 'react';
 import { Outlet, useLocation } from 'react-router-dom';
-import { useEffect } from 'react';
+import { useLang } from '../i18n';
 import Header from './Header';
 import Footer from './Footer';
+import { Loading } from './Status';
 
 export default function Layout() {
   const { pathname, hash } = useLocation();
+  const { lang, t } = useLang();
+
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   useEffect(() => {
     const target = hash && document.getElementById(hash.slice(1));
@@ -14,10 +21,12 @@ export default function Layout() {
 
   return (
     <>
-      <a className="skip" href="#contenido">Saltar al contenido</a>
+      <a className="skip" href="#contenido">{t('skip')}</a>
       <Header />
       <main id="contenido">
-        <Outlet />
+        <Suspense fallback={<Loading />}>
+          <Outlet />
+        </Suspense>
       </main>
       <Footer />
     </>

@@ -4,16 +4,16 @@ import { config } from '../config.js';
 let transport;
 
 // Plain text only. With MAIL_DISABLED=1 nothing leaves the process: the message is printed instead.
-export async function sendMail({ to, subject, text }) {
+export async function sendMail({ to, subject, text, replyTo }) {
   if (config.MAIL_DISABLED) {
-    console.log(`[mail disabled] to=${to} subject=${subject}\n${text}\n`);
+    console.log(`[mail disabled] to=${to} subject=${subject}${replyTo ? ` reply-to=${replyTo}` : ''}\n${text}\n`);
     return;
   }
   transport ??= nodemailer.createTransport({
     host: config.SMTP_HOST, port: config.SMTP_PORT, secure: config.SMTP_SECURE,
     auth: config.SMTP_USER ? { user: config.SMTP_USER, pass: config.SMTP_PASS } : undefined,
   });
-  await transport.sendMail({ from: config.SMTP_FROM, to, subject, text });
+  await transport.sendMail({ from: config.SMTP_FROM, to, subject, text, replyTo });
 }
 
 // Notifications must never break the request that triggered them.

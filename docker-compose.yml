@@ -1,39 +1,45 @@
-# LOCAL development only. Always run with: docker compose --env-file .env.local ...  (npm run db:up)
-# so Compose never reads the real .env. The credentials below belong to a throwaway local container
-# bound to 127.0.0.1 and must match your .env.local.
-name: mcj-local
+# PRODUCTION compose for Coolify (build pack Docker Compose). Variables come from the Coolify UI.
+# Do NOT run it locally: Compose would read .env (live RDS credentials). Local dev uses docker-compose.local.yml.
+# MySQL is external (AWS RDS); there is no db service.
+name: mcj
 services:
-  db:
-    image: mysql:8
-    restart: unless-stopped
-    environment:
-      MYSQL_ROOT_PASSWORD: mcj_local_root
-      MYSQL_DATABASE: mcj
-      MYSQL_USER: mcj
-      MYSQL_PASSWORD: mcj_local_dev
-    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
-    ports: ['127.0.0.1:3307:3306']
-    volumes: [dbdata:/var/lib/mysql]
-    healthcheck:
-      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-pmcj_local_root']
-      interval: 5s
-      timeout: 5s
-      retries: 20
-  # Production image check: docker compose --env-file .env.local --profile app up --build app
   app:
-    profiles: [app]
     build: .
-    depends_on: { db: { condition: service_healthy } }
+    restart: unless-stopped
+    expose: ['3000']
     environment:
-      DB_HOST: db
-      DB_PORT: '3306'
-      DB_USER: mcj
-      DB_PASS: mcj_local_dev
-      DB_NAME: mcj
-      SESSION_SECRET: local-only-session-secret-change-me-0123456789
-      PUBLIC_URL: http://localhost:3000
-      MAIL_DISABLED: '1'
-      NODE_ENV: development
-    ports: ['127.0.0.1:3000:3000']
+      NODE_ENV: ${NODE_ENV:?}
+      PORT: ${PORT:-3000}
+      PUBLIC_URL: ${PUBLIC_URL:?}
+      TZ: ${TZ:-America/Mexico_City}
+      SESSION_SECRET: ${SESSION_SECRET:?}
+      DB_HOST: ${DB_HOST:?}
+      DB_PORT: ${DB_PORT:-3306}
+      DB_USER: ${DB_USER:?}
+      DB_PASS: ${DB_PASS:?}
+      DB_NAME: ${DB_NAME:?}
+      DB_SSL: ${DB_SSL:-}
+      SMTP_HOST: ${SMTP_HOST:?}
+      SMTP_PORT: ${SMTP_PORT:-587}
+      SMTP_SECURE: ${SMTP_SECURE:-}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASS: ${SMTP_PASS:-}
+      SMTP_FROM: ${SMTP_FROM:-no-reply@micaminoesjesus.org}
+      ADMIN_USER: ${ADMIN_USER:-}
+      ADMIN_PASS: ${ADMIN_PASS:-}
+      ADMIN_NAME: ${ADMIN_NAME:-}
+      CONTACT_TO: ${CONTACT_TO:-}
+      GC_SITE: ${GC_SITE:-}
+      GC_SECRET: ${GC_SECRET:-}
+      RECAPTCHA_MIN_SCORE: ${RECAPTCHA_MIN_SCORE:-0.5}
+      REG_ENC_KEY: ${REG_ENC_KEY:-}
+      ALLERGIES_ENABLED: ${ALLERGIES_ENABLED:-}
+      CLAUDE: ${CLAUDE:-}
+      TRANSLATE_PROVIDER: ${TRANSLATE_PROVIDER:-claude}
+      TRANSLATE_MODEL: ${TRANSLATE_MODEL:-claude-haiku-5-5}
+      TRANSLATE_MONTHLY_LIMIT: ${TRANSLATE_MONTHLY_LIMIT:-100000}
+      UPLOADS_DIR: ${UPLOADS_DIR:-/data/uploads}
+      UPLOAD_MAX_MB: ${UPLOAD_MAX_MB:-8}
+    volumes: [uploads:/data/uploads]
 volumes:
-  dbdata:
+  uploads:

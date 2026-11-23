@@ -15,14 +15,15 @@ export default function Dashboard() {
       approver ? get('/api/admin/reviews/pending') : [],
       get('/api/admin/reviews/mine'),
     ]);
-    return { sets, pending, mine };
+    const inbox = can('contact', 'read') ? await get('/api/admin/contact/summary') : null;
+    return { sets, pending, mine, inbox };
   }, [user.id]);
 
   return (
     <>
       <PageHead title={`Hola, ${user.name.split(' ')[0]}`} sub="Resumen de lo que está a tu alcance." />
       <Async load={load} rows={6}>
-        {({ sets, pending, mine }) => {
+        {({ sets, pending, mine, inbox }) => {
           const totals = Object.fromEntries(ORDER.map((s) => [s, sets.reduce((n, [, rows]) => n + rows.filter((r) => r.status === s).length, 0)]));
           const drafts = sets.flatMap(([r, rows]) => rows.filter((x) => x.created_by === user.id && (x.status === 'borrador' || x.status === 'rechazado')).map((x) => ({ r, x })));
           const comment = (r, x) => mine.find((m) => m.entity === r.entity && m.id === x.id)?.comment;
@@ -48,6 +49,14 @@ export default function Dashboard() {
                   </table>
                 </div>
               </section>
+
+              {inbox && (
+                <section className="card" aria-labelledby="h-inbox">
+                  <h2 id="h-inbox">Bandeja de contacto <span className="count p-num">{inbox.nuevos}</span></h2>
+                  <p className="help">{inbox.nuevos} mensaje(s) nuevo(s) · {inbox.arco_abiertos} solicitud(es) ARCO abiertas{inbox.arco_vencidos ? ` · ${inbox.arco_vencidos} vencida(s)` : ''}.</p>
+                  <PLink className="p-btn p-btn-sm" to="/panel/contacto">Abrir la bandeja</PLink>
+                </section>
+              )}
 
               {approver && (
                 <section className="card" aria-labelledby="h-pend">
