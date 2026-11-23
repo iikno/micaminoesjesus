@@ -30,7 +30,7 @@ export async function inviteUser(c, { email, name, role }) {
   const link = linkFor('invite', await issueToken(c, user.id, 'invite'));
   const sent = await trySend({
     to: email, subject: 'Invitación al panel de Mi Camino es Jesús',
-    text: `Hola ${name},\n\nFuiste invitado al panel de Mi Camino es Jesús. Crea tu contraseña (mínimo 12 caracteres) en este enlace, válido 7 días:\n\n${link}\n`,
+    text: `Hola ${name},\n\nFuiste invitado al panel de Mi Camino es Jesús. Crea tu contraseña (mínimo 6 caracteres) en este enlace, válido 7 días:\n\n${link}\n`,
   });
   return { id: user.id, link, sent };
 }

@@ -67,7 +67,7 @@ export const roles = z.enum(['admin', 'asesor', 'pastoral', 'peregrinacion']);
 export const invite = z.strictObject({ email: z.email().max(190).transform((e) => e.toLowerCase()), name: str(120).min(1), role: roles });
 export const userPatch = z.strictObject({ name: str(120).min(1), role: roles, status: z.enum(['active', 'disabled']) }).partial();
 
-export const password = z.string().min(12).max(200);
+export const password = z.string().min(6).max(200);
 export const login = z.strictObject({ email: z.email().transform((e) => e.toLowerCase()), password: z.string().min(1).max(200) });
 export const setPassword = z.strictObject({ token: z.string().min(20).max(200), password });
 export const changePassword = z.strictObject({ current: z.string().min(1).max(200), password });

@@ -38,10 +38,10 @@ test('verse and pilgrimage', () => {
   bad(s.pilgrimage, { slug: 'x', title: 'Mal', state: 'cerrada-y-media' });
 });
 
-test('auth payloads: password >= 12, email normalized, invite needs a valid role', () => {
+test('auth payloads: password >= 6, email normalized, invite needs a valid role', () => {
   assert.equal(s.login.parse({ email: 'A@B.org', password: 'x' }).email, 'a@b.org');
-  ok(s.setPassword, { token: 'a'.repeat(43), password: 'a-long-enough-pass' });
-  bad(s.setPassword, { token: 'a'.repeat(43), password: 'short' });
+  ok(s.setPassword, { token: 'a'.repeat(43), password: 'abcdef' });
+  bad(s.setPassword, { token: 'a'.repeat(43), password: 'abcde' });
   ok(s.invite, { email: 'x@y.org', name: 'X', role: 'asesor' });
   bad(s.invite, { email: 'x@y.org', name: 'X', role: 'root' });
   bad(s.rejection, { comment: '' });

@@ -900,15 +900,15 @@
     "semantic_hash": ""
   },
   "server/lib/schemas.js": {
-    "mtime": 1795462398.254476,
-    "seen": 1795462490.5341396,
-    "ast_hash": "7defa6c99b8638e40892ac3f2e8dd704",
+    "mtime": 1795463643.187591,
+    "seen": 1795463654.423975,
+    "ast_hash": "76879901e7d2917230c5d61be335172c",
     "semantic_hash": ""
   },
   "server/lib/users.js": {
-    "mtime": 1795457870.7580938,
-    "seen": 1795458281.1950302,
-    "ast_hash": "d85a0496e0ecae274f5a788c2fb796e7",
+    "mtime": 1795463643.4847538,
+    "seen": 1795463654.423982,
+    "ast_hash": "b7d9b8b85a4d8e17b68f086454db4a4b",
     "semantic_hash": ""
   },
   "server/migrate.js": {
@@ -978,9 +978,9 @@
     "semantic_hash": ""
   },
   "server/test/schemas.test.js": {
-    "mtime": 1795457870.8310032,
-    "seen": 1795458281.1950507,
-    "ast_hash": "0e737e339bd047b26d83d8f14fafbddd",
+    "mtime": 1795463647.6889684,
+    "seen": 1795463654.424031,
+    "ast_hash": "9d88e1b611d3f632fe5a3d3e1420c8cd",
     "semantic_hash": ""
   },
   "src/lib/api.js": {
@@ -996,9 +996,9 @@
     "semantic_hash": ""
   },
   "docs/plan-backend.md": {
-    "mtime": 1795462398.233189,
-    "seen": 1795462490.534296,
-    "ast_hash": "59646c81bd1ba698faa8557f531be01c",
+    "mtime": 1795463643.69007,
+    "seen": 1795463654.4241498,
+    "ast_hash": "432e1117a5f968b0d85ee892fa8d6152",
     "semantic_hash": ""
   },
   "src/panel/Admin.jsx": {
@@ -1008,9 +1008,9 @@
     "semantic_hash": ""
   },
   "src/panel/Auth.jsx": {
-    "mtime": 1795462398.3036313,
-    "seen": 1795462490.5342445,
-    "ast_hash": "60b4d08e59f7829b4360342d5e9760e6",
+    "mtime": 1795463643.3837068,
+    "seen": 1795463654.4240947,
+    "ast_hash": "c0cec3eed778d95de80dde07e04e4e05",
     "semantic_hash": ""
   },
   "src/panel/Content.jsx": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "docs/deploy-coolify.md": {
-    "mtime": 1795462398.2311876,
-    "seen": 1795462490.5342946,
-    "ast_hash": "05d523319a043fc9380060b9016fc161",
+    "mtime": 1795463643.490786,
+    "seen": 1795463654.4241486,
+    "ast_hash": "53a9ab2fa9c9e1858830307cb26b9df6",
     "semantic_hash": ""
   },
   "server/migrations/003_media.sql": {
@@ -1398,9 +1398,9 @@
     "semantic_hash": ""
   },
   "server/lib/bootstrap.js": {
-    "mtime": 1795462398.2401948,
-    "seen": 1795462490.534111,
-    "ast_hash": "594781e41ecf6dc4a69580829f233281",
+    "mtime": 1795463643.288474,
+    "seen": 1795463654.4239423,
+    "ast_hash": "1288dcfce1dd233ccea9abe311eece7f",
     "semantic_hash": ""
   },
   "server/lib/bootstrapAdmin.js": {

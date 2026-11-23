@@ -62,7 +62,7 @@ function SetPassword({ title, endpoint, done }) {
   const f = useSubmit(async (d) => {
     const pw = d.get('password');
     const e = {};
-    if (pw.length < 12) e.password = 'Mínimo 12 caracteres.';
+    if (pw.length < 6) e.password = 'Mínimo 6 caracteres.';
     if (pw !== d.get('again')) e.again = 'Las contraseñas no coinciden.';
     setLocal(e);
     if (Object.keys(e).length) return;
@@ -74,7 +74,7 @@ function SetPassword({ title, endpoint, done }) {
   return (
     <Card title={title}>
       <form onSubmit={f.run} noValidate>
-        <Field label="Contraseña nueva" help="Mínimo 12 caracteres." error={local.password} required>{(p) => <input {...p} name="password" type="password" autoComplete="new-password" autoFocus />}</Field>
+        <Field label="Contraseña nueva" help="Mínimo 6 caracteres." error={local.password} required>{(p) => <input {...p} name="password" type="password" autoComplete="new-password" autoFocus />}</Field>
         <Field label="Repite la contraseña" error={local.again} required>{(p) => <input {...p} name="again" type="password" autoComplete="new-password" />}</Field>
         <Err>{f.err}</Err>
         <button className="p-btn p-btn-primary p-btn-block" disabled={f.busy}>Guardar contraseña</button>
@@ -107,7 +107,7 @@ export function ChangePassword() {
   const f = useSubmit(async (d) => {
     const pw = d.get('password');
     const e = {};
-    if (pw.length < 12) e.password = 'Mínimo 12 caracteres.';
+    if (pw.length < 6) e.password = 'Mínimo 6 caracteres.';
     if (pw !== d.get('again')) e.again = 'Las contraseñas no coinciden.';
     setLocal(e);
     if (Object.keys(e).length) return;
@@ -119,7 +119,7 @@ export function ChangePassword() {
       <PageHead title="Cambiar contraseña" sub="Se cerrarán tus sesiones en otros dispositivos." />
       <form onSubmit={f.run} noValidate style={{ maxWidth: 420 }}>
         <Field label="Contraseña actual" required>{(p) => <input {...p} name="current" type="password" autoComplete="current-password" />}</Field>
-        <Field label="Contraseña nueva" help="Mínimo 12 caracteres." error={local.password} required>{(p) => <input {...p} name="password" type="password" autoComplete="new-password" />}</Field>
+        <Field label="Contraseña nueva" help="Mínimo 6 caracteres." error={local.password} required>{(p) => <input {...p} name="password" type="password" autoComplete="new-password" />}</Field>
         <Field label="Repite la contraseña nueva" error={local.again} required>{(p) => <input {...p} name="again" type="password" autoComplete="new-password" />}</Field>
         <Err>{f.err}</Err>
         <button className="p-btn p-btn-primary" disabled={f.busy}>Guardar contraseña</button>

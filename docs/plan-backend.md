@@ -128,7 +128,7 @@ Panel (cookie + CSRF + permiso): CRUD `/api/admin/{users,derej,retiros,sesiones,
 Toda escritura pasa por `audit(user, action, entity, before, after)` en la misma transacción. `GET /api/health` para healthcheck.
 
 ## 8. Autenticación y seguridad
-- **Alta**: admin invita (correo + rol) → token (hash en BD, vence en 7 días) → contraseña (mín. 12) → `email_verified_at`. Sin registro público.
+- **Alta**: admin invita (correo + rol) → token (hash en BD, vence en 7 días) → contraseña (mín. 6) → `email_verified_at`. Sin registro público.
 - **Login**: argon2, mensaje genérico, 5 fallos → bloqueo 15 min + aviso, rate limit por IP. Sesión 8 h de inactividad, tope 30 días, id rotado al login.
 - **Reset**: token 1 h, un uso, invalida sesiones.
 - **CSRF**: SameSite=Lax + `X-CSRF-Token` (double submit) + validación de `Origin`. **CORS**: mismo origen en producción (cerrado); solo `localhost:5173` en dev.

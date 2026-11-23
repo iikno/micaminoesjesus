@@ -47,9 +47,9 @@ En la app: *Scheduled Tasks > Add*: nombre `hourly`, comando `node server/jobs/h
 1. Snapshot manual de RDS hecho (paso 2.4) y Security Group abierto a la IP del servidor.
 2. *Deploy*. Las migraciones corren solas al arrancar (antes de escuchar). El seed **nunca** corre automáticamente.
 3. Espera a que el contenedor figure *healthy*; abre `https://micaminoesjesus.org/api/health` (debe responder `{"ok":true}`) y el sitio.
-4. **Primer admin automático (recomendado):** antes del primer deploy define `ADMIN_USER` (correo) y `ADMIN_PASS` (mínimo 12 caracteres; opcional `ADMIN_NAME`). Al primer arranque, si no existe ningún admin, se crea uno activo con esa contraseña (en el log: "Admin inicial creado: <correo>", sin la contraseña). Si ya hay un admin las variables se ignoran y nunca cambian una contraseña existente. Entra a `/panel`, cambia la contraseña en **Cambiar contraseña** (menú lateral) y **quita `ADMIN_PASS` (y `ADMIN_USER`) de Coolify**. Alternativa manual: crea el primer admin desde la terminal de la app en Coolify (*Terminal*):
+4. **Primer admin automático (recomendado):** antes del primer deploy define `ADMIN_USER` (correo) y `ADMIN_PASS` (mínimo 6 caracteres; opcional `ADMIN_NAME`). Al primer arranque, si no existe ningún admin, se crea uno activo con esa contraseña (en el log: "Admin inicial creado: <correo>", sin la contraseña). Si ya hay un admin las variables se ignoran y nunca cambian una contraseña existente. Entra a `/panel`, cambia la contraseña en **Cambiar contraseña** (menú lateral) y **quita `ADMIN_PASS` (y `ADMIN_USER`) de Coolify**. Alternativa manual: crea el primer admin desde la terminal de la app en Coolify (*Terminal*):
    `node server/cli/create-admin.js --email tu@correo.org --name "Tu Nombre"`
-   Envía la invitación por SMTP; si el correo falla, imprime el enlace de un solo uso (válido 7 días). Ábrelo, crea tu contraseña (mínimo 12 caracteres) y entra a `/panel`.
+   Envía la invitación por SMTP; si el correo falla, imprime el enlace de un solo uso (válido 7 días). Ábrelo, crea tu contraseña (mínimo 6 caracteres) y entra a `/panel`.
 5. Prueba: login, "olvidé mi contraseña" (debe llegar el correo), y que los enlaces del correo apunten a `https://micaminoesjesus.org`.
 6. Revisa que la tarea `hourly` se ejecutó (logs de *Scheduled Tasks*).
 
