@@ -1,0 +1,14 @@
+node_modules
+dist
+.git
+.claude
+.remember
+.env
+.env.*
+!.env.example
+graphify-out
+presentacion
+tmp
+docs
+uploads
+server/test

@@ -1,0 +1,39 @@
+# LOCAL development only. Always run with: docker compose --env-file .env.local ...  (npm run db:up)
+# so Compose never reads the real .env. The credentials below belong to a throwaway local container
+# bound to 127.0.0.1 and must match your .env.local.
+name: mcj-local
+services:
+  db:
+    image: mysql:8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: mcj_local_root
+      MYSQL_DATABASE: mcj
+      MYSQL_USER: mcj
+      MYSQL_PASSWORD: mcj_local_dev
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_0900_ai_ci
+    ports: ['127.0.0.1:3307:3306']
+    volumes: [dbdata:/var/lib/mysql]
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', '127.0.0.1', '-pmcj_local_root']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+  # Production image check: docker compose --env-file .env.local --profile app up --build app
+  app:
+    profiles: [app]
+    build: .
+    depends_on: { db: { condition: service_healthy } }
+    environment:
+      DB_HOST: db
+      DB_PORT: '3306'
+      DB_USER: mcj
+      DB_PASS: mcj_local_dev
+      DB_NAME: mcj
+      SESSION_SECRET: local-only-session-secret-change-me-0123456789
+      PUBLIC_URL: http://localhost:3000
+      MAIL_DISABLED: '1'
+      NODE_ENV: development
+    ports: ['127.0.0.1:3000:3000']
+volumes:
+  dbdata:

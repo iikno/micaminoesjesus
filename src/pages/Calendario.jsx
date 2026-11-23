@@ -1,7 +1,10 @@
 import { Link } from 'react-router-dom';
 import Calendario from '../components/Calendario';
+import { CALENDARIO } from '../data/calendario';
+import { useApi } from '../lib/api';
 
 export default function CalendarioPage() {
+  const items = useApi('/api/public/calendar', CALENDARIO);
   return (
     <>
       <section className="page-head">
@@ -13,7 +16,7 @@ export default function CalendarioPage() {
       </section>
       <section className="band next">
         <div className="wrap">
-          <Calendario />
+          <Calendario items={items} />
           <Link className="btn btn--ghost" to="/contacto">Pregunta por fechas</Link>
         </div>
       </section>
