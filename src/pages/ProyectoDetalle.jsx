@@ -1,11 +1,10 @@
-import { useNavigate, useParams, Navigate } from 'react-router-dom';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import {
-  getRetreatById, SEQUENCES, SEASONS, DEREJ, TIPO_LABELS,
-  derejGibor, derejKavod,
+  getRetreatById, SEASONS, DEREJ, TIPO_LABELS,
+  derejGuibor, derejKavod,
 } from '../data/retreats';
 
-const ROUTE_ITEMS = { guibor: derejGibor, kavod: derejKavod };
-const ROUTE_COLOR = { guibor: 'var(--color-red)', kavod: 'var(--color-gold)' };
+const ROUTE_ITEMS = { guibor: derejGuibor, kavod: derejKavod };
 const CTA_PHRASE = { retiro: 'este retiro', taller: 'este taller', hora_santa: 'esta adoración' };
 const TIPO_ARTICLE = {
   retiro: 'del Retiro',
@@ -55,7 +54,6 @@ function FichaIcon({ name }) {
 }
 
 export default function ProyectoDetalle() {
-  const navigate = useNavigate();
   const { id } = useParams();
   const retiro = getRetreatById(id);
 
@@ -73,7 +71,6 @@ export default function ProyectoDetalle() {
   const pedagogiaTitulo = `Los ${NUMBER_WORDS[temasCount] || temasCount} Temas ${TIPO_ARTICLE[retiro.tipo] || 'del Encuentro'}`;
   const hasFichaTecnica = !!(retiro.fichaTecnica && retiro.fichaTecnica.length);
   const isPending = retiro.estado === 'proximamente';
-  const sequenceInfo = retiro.sequence ? SEQUENCES[retiro.sequence] : null;
   const derejInfo = retiro.derej ? DEREJ[retiro.derej] : null;
   const hasSecondarySeasons = !!(retiro.seasonSecondary && retiro.seasonSecondary.length);
   const tagLabel = retiro.category || TIPO_LABELS[retiro.tipo] || 'Proyecto';
@@ -81,28 +78,23 @@ export default function ProyectoDetalle() {
 
   const routeItems = retiro.derej ? ROUTE_ITEMS[retiro.derej] : null;
   const showRoute = !!(routeItems && routeItems.length && derejInfo?.esquema === 'secuencial');
-  const routeColor = (retiro.derej && ROUTE_COLOR[retiro.derej]) || 'var(--color-red)';
+  const routeColor = derejInfo?.color || 'var(--color-red)';
   const ctaPhrase = CTA_PHRASE[retiro.tipo] || 'esta experiencia';
 
   return (
     <>
-      <section className="page-header">
-        <div className="detalle-header">
+      <section className="page-head">
+        <div className="wrap detalle-header">
           <div className="detalle-tag">{tagLabel} · XP Lev</div>
-          {sequenceInfo && (
-            <div className="detalle-sequence">
-              {sequenceInfo.name} · {sequenceInfo.subtitle} — Paso {retiro.sequenceStep} de {sequenceInfo.total}
-              {retiro.sequenceTheme ? ` · ${retiro.sequenceTheme}` : ''}
-            </div>
-          )}
-          {!sequenceInfo && derejInfo && (
+          {derejInfo && (
             <div className="detalle-sequence">
               {derejInfo.name} · {derejInfo.subtitle}
               {retiro.paso && derejInfo.pasoTotal ? ` — Paso ${retiro.paso} de ${derejInfo.pasoTotal}` : ''}
               {retiro.paso && !derejInfo.pasoTotal ? ` — orden sugerido ${retiro.paso}` : ''}
+              {retiro.sequenceTheme ? ` · ${retiro.sequenceTheme}` : ''}
             </div>
           )}
-          <h1>{retiro.title}</h1>
+          <h1 className="d">{retiro.title}</h1>
           {isPending && (
             <div style={{ marginTop: 10 }}>
               <span className="badge-estado badge-estado--proximamente">Próximamente</span>
@@ -130,8 +122,8 @@ export default function ProyectoDetalle() {
         </div>
       </section>
 
-      <section style={{ padding: '0 clamp(20px,6vw,48px) clamp(56px,7vw,80px)' }}>
-        <div className="detalle-image-wrap">
+      <section className="detalle-sec">
+        <div className="wrap detalle-image-wrap">
           {hasImage ? (
             <img src={retiro.image} alt={`Foto de ${retiro.title}`} className="detalle-image" />
           ) : (
@@ -142,8 +134,8 @@ export default function ProyectoDetalle() {
         </div>
       </section>
 
-      <section style={{ padding: '0 clamp(20px,6vw,48px) clamp(56px,7vw,80px)' }}>
-        <div className="detalle-body">
+      <section className="detalle-sec">
+        <div className="wrap detalle-body">
           {hasChips && (
             <div style={{ marginBottom: 28 }}>
               <div className="detalle-chips-label">{retiro.chipsLabel}</div>
@@ -175,11 +167,11 @@ export default function ProyectoDetalle() {
       </section>
 
       {showRoute && (
-        <section style={{ padding: '0 clamp(20px,6vw,48px) clamp(56px,7vw,80px)' }}>
-          <div className="detalle-route">
+        <section className="detalle-sec">
+          <div className="wrap detalle-route">
             <div className="detalle-route__header">
               <div>
-                <span className="detalle-route__eyebrow" style={{ color: routeColor }}>
+                <span className="detalle-route__eyebrow">
                   Itinerario Formativo Integral
                 </span>
                 <h2 className="detalle-route__title">
@@ -196,14 +188,13 @@ export default function ProyectoDetalle() {
                 const stepPending = item.estado === 'proximamente';
                 const isCurrent = item.id === retiro.id;
                 const clickable = !stepPending && !isCurrent;
+                const Tag = clickable ? Link : 'div';
                 return (
-                  <div
+                  <Tag
                     key={item.id}
                     className={`detalle-route__step${isCurrent ? ' is-current' : ''}${stepPending ? ' is-pending' : ''}`}
                     style={isCurrent ? { borderColor: routeColor } : undefined}
-                    onClick={clickable ? () => navigate(`/proyectos/${item.id}`) : undefined}
-                    role={clickable ? 'button' : undefined}
-                    tabIndex={clickable ? 0 : undefined}
+                    to={clickable ? `/proyectos/${item.id}` : undefined}
                   >
                     <div className="detalle-route__step-top">
                       <span
@@ -216,7 +207,7 @@ export default function ProyectoDetalle() {
                     </div>
                     <p className="detalle-route__step-title">{item.title}</p>
                     {item.conceptoCentral && <p className="detalle-route__step-desc">{item.conceptoCentral}</p>}
-                  </div>
+                  </Tag>
                 );
               })}
             </div>
@@ -225,8 +216,8 @@ export default function ProyectoDetalle() {
       )}
 
       {hasTemas && (
-        <section style={{ padding: '0 clamp(20px,6vw,48px) clamp(56px,7vw,80px)' }}>
-          <div className="detalle-pedagogia">
+        <section className="detalle-sec">
+          <div className="wrap detalle-pedagogia">
             <div className="detalle-pedagogia__header">
               <span className="detalle-pedagogia__eyebrow">Pedagogía Vivencial</span>
               <h2 className="detalle-pedagogia__title">{pedagogiaTitulo}</h2>
@@ -273,8 +264,8 @@ export default function ProyectoDetalle() {
       )}
 
       {hasFichaTecnica && (
-        <section style={{ padding: '0 clamp(20px,6vw,48px) clamp(56px,7vw,80px)' }}>
-          <div className="detalle-ficha">
+        <section className="detalle-sec">
+          <div className="wrap detalle-ficha">
             <div className="detalle-ficha__header">
               <span className="detalle-ficha__eyebrow">Organización Parroquial &amp; Logística</span>
               <h2 className="detalle-ficha__title">Ficha Técnica</h2>
@@ -293,11 +284,14 @@ export default function ProyectoDetalle() {
         </section>
       )}
 
-      <section className="cta-banner cta-banner--tight">
-        <h3>¿Quieres llevar {ctaPhrase} a tu parroquia o comunidad?</h3>
-        <button className="btn btn-gold" onClick={() => navigate('/contacto')}>
-          Contáctanos
-        </button>
+      <section className="band contact">
+        <div className="wrap">
+          <h2 className="d sec-title">¿Quieres llevar {ctaPhrase} a tu parroquia o comunidad?</h2>
+          <div className="row">
+            <Link className="btn" to="/contacto">Contáctanos</Link>
+            <Link className="btn btn--ghost" to="/proyectos/xp-lev">Ver el catálogo</Link>
+          </div>
+        </div>
       </section>
     </>
   );
