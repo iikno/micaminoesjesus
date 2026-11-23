@@ -17,4 +17,5 @@ export async function sendMail({ to, subject, text }) {
 }
 
 // Notifications must never break the request that triggered them.
-export const trySend = (m) => sendMail(m).catch((e) => console.error('mail failed:', e.message));
+// Resolves true when sent, false when it failed.
+export const trySend = (m) => sendMail(m).then(() => true, (e) => { console.error('mail failed:', e.message); return false; });

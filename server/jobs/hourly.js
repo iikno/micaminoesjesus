@@ -50,5 +50,16 @@ export async function runHourly(log = console.log) {
 }
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
-  try { await runHourly(); } finally { await pool.end(); }
+  // Advisory lock on a dedicated connection: an overlapping run exits 0 without doing anything.
+  const lock = await pool.getConnection();
+  try {
+    const [[{ got }]] = await lock.query("SELECT GET_LOCK('mcj_hourly', 0) AS got");
+    if (got) await runHourly(); else console.log('hourly: another run holds the lock, skipping');
+  } catch (e) {
+    console.error('hourly failed:', e);
+    process.exitCode = 1;
+  } finally {
+    lock.release();
+    await pool.end();
+  }
 }

@@ -12,3 +12,6 @@ tmp
 docs
 uploads
 server/test
+src/assets/fotos
+.github
+*.md

@@ -64,7 +64,11 @@ export async function buildApp() {
   // The built SPA, with fallback to index.html for client-side routes. Skipped if there is no build (API-only dev).
   const dist = resolve(config.DIST_DIR);
   if (existsSync(dist)) {
-    await app.register(staticFiles, { root: dist, prefix: '/', wildcard: false, maxAge: '1h' });
+    await app.register(staticFiles, {
+      root: dist, prefix: '/', wildcard: false, maxAge: '1h',
+      // Vite hashes everything under /assets, so it can be cached for a year; index.html must always be revalidated.
+      setHeaders: (res, path) => res.header('Cache-Control', /[\/]assets[\/]/.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache'),
+    });
     app.setNotFoundHandler((req, reply) => {
       if (req.url.startsWith('/api/') || (req.method !== 'GET' && req.method !== 'HEAD')) return reply.code(404).send({ error: 'not_found' });
       return reply.header('Cache-Control', 'no-cache').sendFile('index.html');

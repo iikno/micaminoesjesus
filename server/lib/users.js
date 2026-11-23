@@ -17,7 +17,7 @@ export const linkFor = (kind, token) =>
   `${config.PUBLIC_URL}/panel/${kind === 'reset' ? 'restablecer' : 'invitacion'}?token=${token}`;
 
 // Creates (or re-invites a still-invited) user and mails the set-password link.
-// Returns the link only so the CLI can print it when mail is disabled.
+// Returns the link so the CLI can print it when mail is disabled or failed.
 export async function inviteUser(c, { email, name, role }) {
   let user = await c.one('SELECT id, status FROM users WHERE email = ?', [email]);
   if (user && user.status !== 'invited') return { exists: true };
@@ -28,9 +28,9 @@ export async function inviteUser(c, { email, name, role }) {
     await c.q('UPDATE users SET name = ?, role = ? WHERE id = ?', [name, role, user.id]);
   }
   const link = linkFor('invite', await issueToken(c, user.id, 'invite'));
-  await trySend({
+  const sent = await trySend({
     to: email, subject: 'Invitación al panel de Mi Camino es Jesús',
     text: `Hola ${name},\n\nFuiste invitado al panel de Mi Camino es Jesús. Crea tu contraseña (mínimo 12 caracteres) en este enlace, válido 7 días:\n\n${link}\n`,
   });
-  return { id: user.id, link };
+  return { id: user.id, link, sent };
 }

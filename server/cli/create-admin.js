@@ -25,8 +25,8 @@ try {
   if (r.exists) {
     console.error('That user already exists and is active.');
     process.exitCode = 1;
-  } else if (config.MAIL_DISABLED) {
-    console.log(`MAIL_DISABLED: one-time set-password link (valid 7 days):\n${r.link}`);
+  } else if (config.MAIL_DISABLED || !r.sent) {
+    console.log(`${config.MAIL_DISABLED ? 'MAIL_DISABLED' : 'Mail failed'}: one-time set-password link (valid 7 days):\n${r.link}`);
   } else {
     console.log(`Invite sent to ${data.email}.`);
   }
