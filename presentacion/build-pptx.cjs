@@ -9,7 +9,8 @@ const JSZip = require('jszip');
 const HERE = __dirname;
 const ASSETS = path.join(HERE, '../src/assets');
 const OUT = path.join(HERE, 'MCJ-Presentacion-Equipo.pptx');
-const img = (p) => path.join(ASSETS, p);
+const img = (p) => (path.isAbsolute(p) ? p : path.join(ASSETS, p));
+const FOTO = (k) => path.join(HERE, 'fotos', `${k}.jpg`); // recortes 1:1 para círculos
 const I = (pt) => pt / 72;
 
 // ---------------- Paleta de marca ----------------
@@ -30,7 +31,10 @@ const PLAN = {
   'Barrabás': 'Semana Santa 2027',
   'El Arca de Noé: Refugio Seguro': 'Fin dic · Angélica',
   'Esclava del Señor': 'Fin ene · Maribel',
+  'Belén': 'Fin ene · P. Cristopher',
 };
+// Listas según el equipo aunque el sitio aún no las marque como publicadas.
+const READY_OVERRIDE = new Set(['Gólgota']);
 
 (async () => {
   // ---------------- Datos del catálogo ----------------
@@ -40,7 +44,7 @@ const PLAN = {
   const { retreats, DEREJ, CORTES_SIMJA } = await import('data:text/javascript,' + encodeURIComponent(code));
 
   const READY = new Set(['publicado', 'disponible']);
-  const isReady = (r) => READY.has(r.estado);
+  const isReady = (r) => READY.has(r.estado) || READY_OVERRIDE.has(r.title);
   const TIPO = { Retiro: 'Retiro', Taller: 'Taller', 'Adoración': 'Adoración', retiro: 'Retiro', taller: 'Taller', hora_santa: 'Hora Santa', estaciones: 'Estaciones' };
   const tipoOf = (r) => TIPO[r.category] || TIPO[r.tipo] || '—';
   const SEASON = { ordinario: 'Ordinario', adviento: 'Adviento', cuaresma: 'Cuaresma', pascua: 'Pascua', pentecostes: 'Pentecostés' };
@@ -153,7 +157,7 @@ const PLAN = {
 
   // 02 CARTA
   {
-    const s = slide('MCJ_CREMA', 'Bienvenida', 'fade', 'Leer la carta en voz alta. Es el tono de toda la presentación: gratitud primero.');
+    const s = slide('MCJ_CREMA', 'Bienvenida', 'fade', 'Carta de Jehosua al equipo. Leer en voz alta. Es el tono de toda la presentación: gratitud primero.');
     head(s, 'Antes de empezar', ['GRACIAS POR ', { em: 'DECIR QUE SÍ' }]);
     box(s, L, 166, 540, 300, HEX.white, { shadow: true, g: 1, fx: 'float' });
     txt(s, [
@@ -162,7 +166,7 @@ const PLAN = {
       { text: 'Esta presentación es para que todos veamos el mismo mapa: qué tenemos, qué falta y dónde cabe cada quien.' },
     ], L + 26, 188, 488, 210, { size: 14.5, lh: 1.4, g: 1, fx: 'float' });
     pic(s, 'logos/isotipo.png', L + 26, 418, 38, 38, { contain: true, g: 2, fx: 'fade' });
-    txt(s, [{ text: 'Equipo fundador', options: { bold: true, breakLine: true } }, { text: 'Pbro. Cristopher Cortés · Jehosua Castañeda', options: { color: HEX.gray, fontSize: 11.5 } }], L + 74, 418, 440, 40, { size: 13, g: 2, fx: 'fade' });
+    txt(s, [{ text: 'Jehosua A. Castañeda Ortiz', options: { bold: true, breakLine: true } }, { text: 'Fundador · Mi Camino es Jesús', options: { color: HEX.gray, fontSize: 11.5 } }], L + 74, 418, 440, 40, { size: 13, g: 2, fx: 'fade' });
     pic(s, 'images/nosotros.webp', 620, 166, 292, 230, { g: 3, fx: 'fade' });
     box(s, 620, 414, 292, 52, HEX.ink, { g: 4, fx: 'zoom' });
     txt(s, [{ text: '“SÉ FUERTE Y VALIENTE”', options: { bold: true, color: HEX.cream, breakLine: true } }, { text: 'JOSUÉ 1:9', options: { fontSize: 9, color: HEX.gold, charSpacing: 2 } }], 620, 414, 292, 52, { size: 13, align: 'center', valign: 'middle', g: 4, fx: 'zoom' });
@@ -206,11 +210,11 @@ const PLAN = {
     });
     label(s, 'LO QUE YA ESTÁ LISTO', 520, 166, 380, 5);
     ready.forEach((r, i) => {
-      const y = 190 + i * 40.5, g = 6 + i;
-      box(s, 520, y, 392, 35, HEX.white, { r: 0.2, g });
-      box(s, 534, y + 12, 11, 11, HEX.green, { r: 0.5, g });
-      txt(s, r.title, 556, y, 210, 35, { size: 12, bold: true, valign: 'middle', g });
-      txt(s, `${DEREJ[r.derej].name} · ${tipoOf(r)}`, 760, y, 140, 35, { size: 10, color: HEX.gray, align: 'right', valign: 'middle', g });
+      const y = 190 + i * 37, g = 6 + i;
+      box(s, 520, y, 392, 32, HEX.white, { r: 0.2, g });
+      box(s, 534, y + 10.5, 11, 11, HEX.green, { r: 0.5, g });
+      txt(s, r.title, 556, y, 210, 32, { size: 12, bold: true, valign: 'middle', g });
+      txt(s, `${DEREJ[r.derej].name} · ${tipoOf(r)}`, 760, y, 140, 32, { size: 10, color: HEX.gray, align: 'right', valign: 'middle', g });
     });
   }
 
@@ -225,8 +229,8 @@ const PLAN = {
       ['ARRANCAR DÉREJ KAVOD', 'Fuiste Hecha Mujer: piloto en enero, exclusivo para las mujeres del equipo, y retiro abierto en marzo.'],
       ['DAR CONTINUIDAD A GUIBOR', 'Segunda edición de Levántate y Sé Hombre en febrero; Sansón (paso 2) en abril o mayo.'],
       ['SEMANA SANTA CON LA COMUNIDAD', 'Barrabás será el retiro de Semana Santa para la comunidad (Dérej Jaím).'],
-      ['NUEVOS MATERIALES', 'El Arca de Noé (Angélica) a finales de diciembre y Esclava del Señor (Maribel) a finales de enero.'],
-      ['LANZAR PEREGRINOS', 'Nueva dimensión de peregrinaciones por México y el mundo, a cargo de Silvia Ponce.'],
+      ['NUEVOS MATERIALES', 'El Arca de Noé (Angélica) a fin de diciembre; Esclava del Señor (Maribel) y Belén (P. Cristopher) a fin de enero.'],
+      ['LANZAR PEREGRINOS', 'Nueva dimensión de peregrinaciones por México y el mundo, a cargo de Silvia “Silber” Ponce.'],
       ['CAMINAR CON LA ARQUIDIÓCESIS', 'Presentar MCJ a Mons. Patrón Wong y buscar su respaldo.'],
     ];
     F.forEach(([t, d], i) => {
@@ -245,7 +249,7 @@ const PLAN = {
     const RT = [
       ['FIN DIC 2026', 'Entrega: El Arca de Noé', 'Dérej Simjá · Angélica', HEX.gold],
       ['ENE 2027', 'Piloto: Fuiste Hecha Mujer', 'Dérej Kavod · solo mujeres del equipo', HEX.red],
-      ['FIN ENE 2027', 'Entrega: Esclava del Señor', 'Dérej Mesharét · Maribel', HEX.gold],
+      ['FIN ENE 2027', 'Entregas: Esclava del Señor y Belén', 'Mesharét · Maribel\nJaím · P. Cristopher', HEX.gold],
       ['FEB 2027', 'Levántate y Sé Hombre · 2ª edición', 'Dérej Guibor · paso 1', HEX.red],
       ['MAR 2027', 'Fuiste Hecha Mujer', 'Dérej Kavod · paso 1', HEX.red],
       ['SEMANA SANTA', 'Barrabás · retiro para la comunidad', 'Dérej Jaím · 21 al 27 de marzo', HEX.cuaresma],
@@ -305,9 +309,31 @@ const PLAN = {
     oz: { code: 'OZ', color: HEX.red, heb: 'Oz = fortaleza', route: 'Del llamado a la misión', esq: '10 hitos · orden sugerido', why: 'Pastoral juvenil (13–30 años) en tres movimientos: el llamado (1–3), el discipulado (4–8) y el envío (9–10). Cada parroquia puede tomarlos de forma modular.', tip: 'Ya hay 3 hitos listos (Pedro, Juan y Emaús), los tres de Pascua: base natural para arrancar Oz.', phases: { 1: 'LLAMADO', 4: 'DISCIPULADO', 9: 'ENVÍO' } },
     simja: { code: 'SMJ', color: HEX.ink, heb: 'Simjá = alegría', route: 'Infancia misionera y catequesis', esq: 'Estaciones · no lineal', why: 'Pedagogía bíblica, asombro y oración para niños de hasta 12 años, en dos cortes: Kínder (4–6) y Primaria (7–12). Cada actividad es un circuito de estaciones.', tip: 'Angélica presenta El Arca de Noé a finales de diciembre: será la primera experiencia lista para niños.', corte: true },
     mesharet: { code: 'MSH', color: HEX.red, heb: 'Mesharét = el que sirve', route: 'Formación de servidores', esq: 'Catálogo abierto · módulos', why: 'Talleres para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor. Un módulo por ministerio.', tip: 'Maribel presenta Esclava del Señor a finales de enero. Sin servidores formados no hay forma de multiplicar los retiros.' },
-    jaim: { code: 'JM', color: HEX.ink, heb: 'Jaím = vida', route: 'Para toda la comunidad', esq: 'Catálogo abierto · litúrgico', why: 'Retiros de impacto, talleres y Horas Santas temáticas para la comunidad parroquial en general, según el calendario de la Iglesia.', tip: 'Barrabás es el retiro de Semana Santa para la comunidad. Emmanuel y Camino a Belén ya están listos para Adviento.' },
+    jaim: { code: 'JM', color: HEX.ink, heb: 'Jaím = vida', route: 'Para toda la comunidad', esq: 'Catálogo abierto · litúrgico', why: 'Retiros de impacto, talleres y Horas Santas temáticas para la comunidad parroquial en general, según el calendario de la Iglesia.', tip: 'Gólgota ya está listo y Barrabás será el retiro de Semana Santa. El P. Cristopher entrega Belén a finales de enero.' },
   };
   const ORDER = ['guibor', 'kavod', 'oz', 'simja', 'mesharet', 'jaim'];
+
+  // LOGO XP LEV
+  {
+    const s = slide('MCJ_CLARO', 'Los 6 Dérej', 'fadeSlow', 'XP Lev: el Ji-Rho es el monograma de Cristo; Lev significa corazón en hebreo. La franja diagonal es el camino (Dérej) con los colores de MCJ.');
+    head(s, 'Nuestro método', ['XP LEV: ', { em: 'CRISTO EN EL CORAZÓN' }]);
+    box(s, L, 166, 300, 300, HEX.bgAlt, { r: 0.25, g: 1, fx: 'zoom' });
+    pic(s, 'images/xp-lev.png', L + 24, 190, 252, 252, { contain: true, g: 1, fx: 'zoom' });
+    const B = [
+      ['XP', 'JI-RHO · XP', 'Las dos primeras letras de “Cristo” en griego (Χριστός): uno de los monogramas cristianos más antiguos. Todo el método empieza y termina en Él.'],
+      ['LEV', 'CORAZÓN EN HEBREO', 'En la Biblia el corazón es el centro de la persona: donde se decide, se ama y se cree. XP Lev es eso: llevar a Cristo al corazón. Por eso los Dérej también llevan nombres hebreos.'],
+      ['//', 'LA FRANJA DIAGONAL', 'El camino (Dérej) que cruza la vida, en el oro y el rojo de MCJ. La misma franja aparece en Peregrinos: somos una sola familia.'],
+    ];
+    B.forEach(([ic, t, d], i) => {
+      const y = 166 + i * 104, g = 2 + i;
+      box(s, 376, y, 536, 94, HEX.white, { shadow: true, g });
+      box(s, 392, y + 18, 58, 58, i === 1 ? HEX.red : HEX.ink, { r: 0.25, g });
+      txt(s, ic, 392, y + 18, 58, 58, { size: i === 1 ? 15 : 20, bold: true, color: i === 1 ? HEX.cream : HEX.gold, align: 'center', valign: 'middle', g });
+      txt(s, t, 466, y + 14, 430, 16, { size: 10.5, bold: true, cs: 2, color: HEX.red, g });
+      txt(s, d, 466, y + 34, 432, 56, { size: 11.5, lh: 1.3, g });
+    });
+    txt(s, 'Y también se lee como lo que ofrece: experiencias (XP) que llegan al corazón.', 376, 476, 536, 18, { size: 11, italic: true, color: HEX.gray, g: 5, fx: 'fade' });
+  }
 
   // 08 MAPA
   {
@@ -328,74 +354,86 @@ const PLAN = {
       box(s, x + 16, y + 96, Math.max(248 * r / items.length, 6), 5, HEX.gold, { r: 0.5, g, fx: 'wipe' });
     });
     box(s, L, 432, W, 46, HEX.red, { g: 8, fx: 'zoom' });
-    txt(s, [{ text: '+ PEREGRINOS', options: { bold: true, color: HEX.cream } }, { text: '   la nueva dimensión de peregrinaciones por México y el mundo, a cargo de Silvia Ponce', options: { color: HEX.white } }], L + 18, 432, W - 36, 46, { size: 12.5, valign: 'middle', g: 8, fx: 'zoom' });
+    txt(s, [{ text: '+ PEREGRINOS', options: { bold: true, color: HEX.cream } }, { text: '   la nueva dimensión de peregrinaciones por México y el mundo, a cargo de Silvia “Silber” Ponce', options: { color: HEX.white } }], L + 18, 432, W - 36, 46, { size: 12.5, valign: 'middle', g: 8, fx: 'zoom' });
   }
 
-  // 09–14 UNA LÁMINA POR DÉREJ
+  // 09+ UNA LÁMINA POR DÉREJ (los de más de 6 experiencias se dividen en 2 partes)
   ORDER.forEach((k, idx) => {
-    const d = DJ[k], info = DEREJ[k], items = byDerej[k] || [];
-    const s = slide('MCJ_DEREJ', 'Los 6 Dérej', 'push', `${info.name}: ${d.why} ${d.tip}`);
-    const nReady = items.filter(isReady).length;
-    const PW = 300; // panel izquierdo
-    const accent = d.color === HEX.ink ? HEX.gold : HEX.cream;
-    box(s, L, 88, PW, 404, d.color, { g: 1, fx: 'zoom' });
-    txt(s, `DÉREJ ${idx + 1} DE 6`, L + 20, 104, 180, 14, { size: 9, bold: true, cs: 2, color: accent, g: 1, fx: 'zoom' });
-    txt(s, info.audience.toUpperCase(), L + 20, 120, 180, 14, { size: 9, bold: true, cs: 1.5, color: HEX.white, g: 1, fx: 'zoom' });
-    box(s, L + PW - 86, 102, 68, 60, HEX.white, { transparency: 85, r: 0.18, g: 1, fx: 'zoom' });
-    txt(s, [{ text: String(nReady), options: { fontSize: 24, bold: true } }, { text: `/${items.length}`, options: { fontSize: 12 } }], L + PW - 86, 104, 68, 32, { color: HEX.white, align: 'center', g: 1, fx: 'zoom' });
-    txt(s, 'LISTAS', L + PW - 86, 140, 68, 12, { size: 7.5, bold: true, cs: 2, color: HEX.white, align: 'center', g: 1, fx: 'zoom' });
-    txt(s, info.name.toUpperCase(), L + 20, 170, PW - 40, 32, { size: 26, bold: true, color: HEX.white, g: 1, fx: 'zoom' });
-    txt(s, [{ text: info.subtitle, options: { breakLine: true } }, { text: d.heb, options: { italic: true, color: accent } }], L + 20, 204, PW - 40, 34, { size: 11, color: 'E6E0D6', g: 1, fx: 'zoom' });
-    txt(s, [{ text: d.route.toUpperCase(), options: { bold: true, color: accent, charSpacing: 1, breakLine: true } }, { text: d.esq, options: { color: HEX.white } }], L + 20, 250, PW - 40, 32, { size: 9.5, g: 2, fx: 'fade' });
-    txt(s, d.why, L + 20, 290, PW - 40, 110, { size: 11, color: 'E6E0D6', lh: 1.3, g: 2, fx: 'fade' });
-    box(s, L + 14, 404, PW - 28, 76, HEX.white, { transparency: 88, r: 0.12, g: 2, fx: 'fade' });
-    txt(s, 'DATO CLAVE', L + 26, 412, PW - 52, 12, { size: 8, bold: true, cs: 2, color: accent, g: 2, fx: 'fade' });
-    txt(s, d.tip, L + 26, 426, PW - 52, 50, { size: 10, color: HEX.white, lh: 1.2, g: 2, fx: 'fade' });
+    const d = DJ[k], info = DEREJ[k], all = byDerej[k] || [];
+    const nReady = all.filter(isReady).length;
+    const parts = all.length > 6 ? [all.slice(0, Math.ceil(all.length / 2)), all.slice(Math.ceil(all.length / 2))] : [all];
+    parts.forEach((items, pi) => {
+      const s = slide('MCJ_DEREJ', 'Los 6 Dérej', 'push', `${info.name}${parts.length > 1 ? ` (parte ${pi + 1} de ${parts.length})` : ''}: ${d.why} ${d.tip}`);
+      const PW = 300;
+      const accent = d.color === HEX.ink ? HEX.gold : HEX.cream;
+      box(s, L, 88, PW, 404, d.color, { g: 1, fx: 'zoom' });
+      txt(s, `DÉREJ ${idx + 1} DE 6${parts.length > 1 ? ` · PARTE ${pi + 1}/${parts.length}` : ''}`, L + 20, 104, 190, 14, { size: 9, bold: true, cs: 2, color: accent, g: 1, fx: 'zoom' });
+      txt(s, info.audience.toUpperCase(), L + 20, 120, 190, 14, { size: 9, bold: true, cs: 1.5, color: HEX.white, g: 1, fx: 'zoom' });
+      box(s, L + PW - 86, 102, 68, 60, HEX.white, { transparency: 85, r: 0.18, g: 1, fx: 'zoom' });
+      txt(s, [{ text: String(nReady), options: { fontSize: 24, bold: true } }, { text: `/${all.length}`, options: { fontSize: 12 } }], L + PW - 86, 104, 68, 32, { color: HEX.white, align: 'center', g: 1, fx: 'zoom' });
+      txt(s, 'LISTAS', L + PW - 86, 140, 68, 12, { size: 7.5, bold: true, cs: 2, color: HEX.white, align: 'center', g: 1, fx: 'zoom' });
+      txt(s, info.name.toUpperCase(), L + 20, 170, PW - 40, 32, { size: 26, bold: true, color: HEX.white, g: 1, fx: 'zoom' });
+      txt(s, [{ text: info.subtitle, options: { breakLine: true } }, { text: d.heb, options: { italic: true, color: accent } }], L + 20, 204, PW - 40, 34, { size: 11, color: 'E6E0D6', g: 1, fx: 'zoom' });
+      txt(s, [{ text: d.route.toUpperCase(), options: { bold: true, color: accent, charSpacing: 1, breakLine: true } }, { text: d.esq, options: { color: HEX.white } }], L + 20, 250, PW - 40, 32, { size: 9.5, g: 2, fx: 'fade' });
+      txt(s, d.why, L + 20, 290, PW - 40, 110, { size: 11, color: 'E6E0D6', lh: 1.3, g: 2, fx: 'fade' });
+      box(s, L + 14, 404, PW - 28, 76, HEX.white, { transparency: 88, r: 0.12, g: 2, fx: 'fade' });
+      txt(s, 'DATO CLAVE', L + 26, 412, PW - 52, 12, { size: 8, bold: true, cs: 2, color: accent, g: 2, fx: 'fade' });
+      txt(s, d.tip, L + 26, 426, PW - 52, 50, { size: 10, color: HEX.white, lh: 1.2, g: 2, fx: 'fade' });
 
-    // lista de experiencias (derecha)
-    const X0 = L + PW + 20, RW = R - X0;
-    const two = items.length > 6;
-    const colW = two ? (RW - 12) / 2 : RW;
-    const half = Math.ceil(items.length / 2);
-    const cols = two ? [items.slice(0, half), items.slice(half)] : [items];
-    let g = 3;
-    cols.forEach((col, ci) => {
-      let y = 88; const x = X0 + ci * (colW + 12);
-      col.forEach((r) => {
+      // lista: título + tipo/tiempo en una línea, estado a la derecha, explicación debajo
+      const x = L + PW + 20, cw = R - x;
+      let y = 88, g = 3;
+      items.forEach((r) => {
         if (d.phases?.[r.paso]) { txt(s, d.phases[r.paso], x + 4, y, 200, 13, { size: 8.5, bold: true, cs: 2.5, color: HEX.red, g, fx: 'fade' }); y += 15; }
         const [name, suffix] = r.title.split(' · ');
         const plan = PLAN[r.title]; const ok = isReady(r);
         const lab = plan || (ok ? 'Lista' : 'En preparación');
-        const cwid = Math.round(lab.length * 5.1 + 16);
-        const concept = two ? '' : r.conceptoCentral;
-        const cl = concept ? Math.ceil(concept.length / 88) : 0;
-        const h = two ? (suffix ? 56 : 46) : 46 + cl * 13;
-        box(s, x, y, colW, h, HEX.white, { line: ok ? HEX.green : undefined, lineW: 1.25, r: 0.14, g });
-        const hasNum = r.paso != null; const tx = x + (hasNum ? 34 : 14);
+        const chipW = Math.round(lab.length * 5.1 + 16);
+        const hasNum = r.paso != null; const tx = x + (hasNum ? 34 : 26);
+        const tw = x + cw - 12 - tx;
+        const concept = (suffix ? suffix + '. ' : '') + (r.conceptoCentral || '');
+        const lines = Math.max(1, Math.ceil(concept.length / 90));
+        const h = 34 + lines * 12.5;
+        box(s, x, y, cw, h, HEX.white, { line: ok ? HEX.green : undefined, lineW: 1.25, r: 0.12, g });
         if (hasNum) txt(s, String(r.paso), x + 6, y, 24, h, { size: 15, bold: true, color: HEX.red, align: 'center', valign: 'middle', g });
-        const tw = x + colW - 12 - tx;
-        txt(s, name, tx, y + 7, tw - (two ? 0 : cwid + 8), 16, { size: 12, bold: true, g });
-        let yy = y + 25;
-        if (two && suffix) { txt(s, suffix, tx, yy, tw, 13, { size: 9.5, italic: true, color: HEX.red, g }); yy += 14; }
+        else box(s, x + 11, y + 12, 8, 8, HEX[r.season] || HEX.green, { r: 0.5, g });
         const corte = d.corte && r.corte ? ` · ${CORTES_SIMJA[r.corte].name}` : '';
-        box(s, tx, yy + 4, 6, 6, HEX[r.season] || HEX.green, { r: 0.5, g });
-        txt(s, `${tipoOf(r)} · ${SEASON[r.season]}${corte}`, tx + 10, yy, tw - cwid - 14, 13, { size: 9.5, color: HEX.gray, g });
-        // chip de estado/plan: en una columna va junto al título; en dos, en la línea de datos
-        const cy = two ? yy - 2 : y + 7;
-        box(s, x + colW - 12 - cwid, cy, cwid, 17, plan ? HEX.gold : ok ? HEX.green : HEX.white, { line: plan || ok ? undefined : 'C9C2B4', r: 0.5, g });
-        txt(s, lab.toUpperCase(), x + colW - 12 - cwid, cy, cwid, 17, { size: 7, bold: true, color: plan || ok ? HEX.white : HEX.gray, align: 'center', valign: 'middle', g });
-        if (concept) txt(s, concept, tx, y + 40, tw, cl * 13 + 2, { size: 10, color: '3B4B58', lh: 1.15, g });
+        txt(s, [{ text: name, options: { bold: true, fontSize: 12 } }, { text: `   ${tipoOf(r)} · ${SEASON[r.season]}${corte}`, options: { fontSize: 9.5, color: HEX.gray } }], tx, y + 6, tw - chipW - 8, 18, { valign: 'middle', g });
+        box(s, x + cw - 12 - chipW, y + 7, chipW, 17, plan ? HEX.gold : ok ? HEX.green : HEX.white, { line: plan || ok ? undefined : 'C9C2B4', r: 0.5, g });
+        txt(s, lab.toUpperCase(), x + cw - 12 - chipW, y + 7, chipW, 17, { size: 7, bold: true, color: plan || ok ? HEX.white : HEX.gray, align: 'center', valign: 'middle', g });
+        const runs = suffix ? [{ text: suffix + '. ', options: { bold: true, color: HEX.red } }, { text: r.conceptoCentral || '' }] : concept;
+        txt(s, runs, tx, y + 27, tw, lines * 12.5 + 2, { size: 10, color: '3B4B58', lh: 1.15, g });
         y += h + 6; g++;
       });
+      if (y > 498) console.warn(`AVISO: ${info.name} parte ${pi + 1} se pasa (${Math.round(y)} pt)`);
     });
   });
 
   // ======================= SECCIÓN: PEREGRINOS =======================
   pres.addSection({ title: 'Peregrinos' });
 
+  // LOGO PEREGRINOS
+  {
+    const s = slide('MCJ_OSCURO', 'Peregrinos', 'fadeSlow', 'Logo de Peregrinos: cruz de Jerusalén, PER (del latín per, a través de), el arco del camino y la franja que lo une a XP Lev.');
+    head(s, 'Nueva dimensión', ['PEREGRINOS: ', { em: 'UN LOGO PARA EL CAMINO' }], true);
+    pic(s, path.join(HERE, 'logos', 'peregrinos.png'), L, 166, 300, 300, { contain: true, g: 1, fx: 'zoom' });
+    const B = [
+      ['CRUZ DE JERUSALÉN', 'Una cruz grande y cuatro pequeñas: Cristo y los cuatro evangelistas que llevan su Palabra a los cuatro puntos del mundo. Es la cruz tradicional de Tierra Santa y de sus peregrinos.'],
+      ['PER', 'Del latín per, “a través de”. Peregrino viene de per ager: “el que va a través de los campos”. Es la raíz misma de la palabra.'],
+      ['EL ARCO', 'Bajo las letras, el camino que se recorre y el horizonte hacia el que se va: cada viaje termina en un encuentro.'],
+      ['LA FRANJA', 'La misma diagonal de XP Lev, en tonos cobre y tierra: el polvo del camino. Peregrinos es parte de la familia MCJ.'],
+    ];
+    B.forEach(([t, d], i) => {
+      const y = 166 + i * 79, g = 2 + i;
+      box(s, 376, y, 536, 71, HEX.inkSoft, { line: '2E475B', g });
+      txt(s, t, 396, y + 12, 496, 15, { size: 10.5, bold: true, cs: 2, color: HEX.gold, g });
+      txt(s, d, 396, y + 30, 500, 38, { size: 11.5, color: HEX.bg, lh: 1.25, g });
+    });
+  }
+
   // 15 PEREGRINOS
   {
-    const s = slide('MCJ_OSCURO', 'Peregrinos', 'fadeSlow', 'Peregrinos: nueva dimensión de MCJ, a cargo de Silvia Ponce, agente de viajes certificada y ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila.');
+    const s = slide('MCJ_OSCURO', 'Peregrinos', 'fadeSlow', 'Peregrinos: nueva dimensión de MCJ, a cargo de Silvia “Silber” Ponce, agente de viajes certificada y ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila.');
     head(s, 'Nueva dimensión', ['PEREGRINOS: ', { em: 'CAMINAR PARA ENCONTRARLO' }], true);
     const pts = [[64, 196], [160, 172], [256, 196], [352, 172], [436, 192]];
     for (let i = 0; i < pts.length - 1; i++) {
@@ -409,10 +447,9 @@ const PLAN = {
     });
     txt(s, 'Peregrinaciones a lo largo de México y del mundo para acercar a las personas a Cristo y a la historia de la fe: los lugares donde la fe se vivió, se defendió y se sigue viviendo.', L, 234, 400, 70, { size: 13, color: 'DCE3E8', lh: 1.4, g: 6, fx: 'fade' });
     box(s, L, 318, 400, 172, HEX.bg, { g: 7, fx: 'zoom' });
-    s.addShape(pres.ShapeType.ellipse, { x: I(L + 18), y: I(336), w: I(66), h: I(66), fill: { color: HEX.red }, line: { color: HEX.red, width: 0 }, ...nm(7, 'zoom') });
-    txt(s, 'SP', L + 18, 336, 66, 66, { size: 22, bold: true, color: HEX.cream, align: 'center', valign: 'middle', g: 7, fx: 'zoom' });
+    pic(s, FOTO('silvia'), L + 18, 336, 66, 66, { round: true, g: 7, fx: 'zoom' });
     txt(s, 'A CARGO DE', L + 100, 338, 280, 12, { size: 8.5, bold: true, cs: 2, color: HEX.red, g: 7, fx: 'zoom' });
-    txt(s, 'Silvia Ponce', L + 100, 352, 280, 24, { size: 19, bold: true, g: 7, fx: 'zoom' });
+    txt(s, 'Silvia “Silber” Ponce', L + 100, 352, 280, 24, { size: 19, bold: true, g: 7, fx: 'zoom' });
     txt(s, 'Agente de viajes certificada', L + 100, 380, 280, 16, { size: 11.5, bold: true, color: HEX.gold, g: 7, fx: 'zoom' });
     txt(s, 'Ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila. Une la experiencia pastoral con la logística profesional de viajes.', L + 18, 418, 364, 60, { size: 11, color: '3B4B58', lh: 1.3, g: 8, fx: 'fade' });
     [['QUÉ ES', 'Una dimensión dedicada solo a peregrinar: viajes con sentido, preparados y acompañados.'], ['PARA QUIÉN', 'Para fieles y para quienes aún no conocen a Cristo: el camino también evangeliza.'], ['CÓMO SE INTEGRA', 'Cada peregrinación es un retiro en movimiento: encuentro, formación, comunidad y misión.']].forEach(([t, dd], i) => {
@@ -483,11 +520,11 @@ const PLAN = {
     const s = slide('MCJ_CREMA', 'Equipo y cierre', 'fade');
     head(s, 'Nuestro equipo', ['QUIÉNES ', { em: 'HOY' }, ' LO HACEN POSIBLE']);
     const T = [
-      ['images/p-cristopher.jpeg', 'Pbro. Cristopher Cortés Pliego', 'Fundador · Asesor espiritual', ''],
-      ['images/jehosua.jpg', 'Jehosua A. Castañeda Ortiz', 'Fundador · Eq. pastoral', ''],
-      ['images/maribel.jpeg', 'Maribel Pinto Corona', 'Equipo pastoral', 'Esclava del Señor · fin de enero'],
-      ['images/angy.jpeg', 'Angélica M. Romero Hernández', 'Equipo pastoral', 'El Arca de Noé · fin de diciembre'],
-      [null, 'Silvia Ponce', 'Responsable de Peregrinos', 'Agente de viajes certificada'],
+      [FOTO('jehosua'), 'Jehosua A. Castañeda Ortiz', 'Fundador · Eq. pastoral', ''],
+      [FOTO('cristopher'), 'Pbro. Cristopher Cortés Pliego', 'Fundador · Asesor espiritual', 'Belén · fin de enero'],
+      [FOTO('maribel'), 'Maribel Pinto Corona', 'Equipo pastoral', 'Esclava del Señor · fin de enero'],
+      [FOTO('angelica'), 'Angélica M. Romero Hernández', 'Equipo pastoral', 'El Arca de Noé · fin de diciembre'],
+      [FOTO('silvia'), 'Silvia “Silber” Ponce', 'Responsable de Peregrinos', 'Agente de viajes certificada'],
     ];
     const cw = (W - 4 * 12) / 5;
     T.forEach(([p, n, r, extra], i) => {
@@ -499,7 +536,7 @@ const PLAN = {
       txt(s, r.toUpperCase(), x + 10, 362, cw - 20, 26, { size: 8.5, bold: true, cs: 1, color: HEX.red, align: 'center', g });
       if (extra) txt(s, extra, x + 10, 400, cw - 20, 40, { size: 10.5, color: HEX.gray, align: 'center', g });
     });
-    txt(s, '…y el siguiente lugar en esta lámina puede ser el tuyo.', L, 468, W, 20, { size: 12.5, italic: true, color: HEX.gray, align: 'center', g: 6, fx: 'fade' });
+    txt(s, 'Cinco personas, un mismo camino.', L, 468, W, 20, { size: 12.5, italic: true, color: HEX.gray, align: 'center', g: 6, fx: 'fade' });
   }
 
   // 19 LO QUE NECESITAMOS DE TI
@@ -507,7 +544,7 @@ const PLAN = {
     const s = slide('MCJ_OSCURO', 'Equipo y cierre', 'push');
     head(s, 'Próximos pasos', ['LO QUE ', { em: 'NECESITAMOS' }, ' DE TI'], true);
     const N = [
-      ['ADOPTA UN DÉREJ', 'Un responsable por camino que cuide su avance y su calidad, como ya lo hacen Angélica y Maribel.'],
+      ['ADOPTA UN DÉREJ', 'Un responsable por camino que cuide su avance y su calidad, como ya lo hacen el Padre, Angélica y Maribel.'],
       ['AYUDA A REDACTAR', `Hay ${total - ready.length} experiencias esperando su material. Tu talento cabe en alguna.`],
       ['SIRVE EN LOS PRÓXIMOS RETIROS', 'Levántate (feb), Fuiste Hecha Mujer (mar) y Barrabás (Semana Santa) necesitan manos.'],
       ['ORA, INVITA Y COMPARTE', 'Invita a alguien, comparte @micaminoesjesus y suma ideas para Peregrinos.'],
