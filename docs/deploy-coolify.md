@@ -45,7 +45,7 @@ En la app: *Scheduled Tasks > Add*: nombre `hourly`, comando `node server/jobs/h
 
 ## 5. Primer despliegue (checklist)
 1. Snapshot manual de RDS hecho (paso 2.4) y Security Group abierto a la IP del servidor.
-2. *Deploy*. Las migraciones corren solas al arrancar (antes de escuchar). El seed **nunca** corre automáticamente.
+2. *Deploy*. Las migraciones corren solas al arrancar (antes de escuchar). La migración `007_seed_catalogo.sql` carga el catálogo original del sitio (6 dérej, 5 temporadas, 48 entradas: 22 retiros, 16 talleres, 5 horas santas y 5 estaciones; equipo, calendario y versículo) ya **publicado**. Corre una sola vez, es idempotente y nunca sobrescribe filas que ya existan (por slug, nombre, título+fecha o cita).
 3. Espera a que el contenedor figure *healthy*; abre `https://micaminoesjesus.org/api/health` (debe responder `{"ok":true}`) y el sitio.
 4. **Primer admin automático (recomendado):** antes del primer deploy define `ADMIN_USER` (correo) y `ADMIN_PASS` (mínimo 6 caracteres; opcional `ADMIN_NAME`). Al primer arranque, si no existe ningún admin, se crea uno activo con esa contraseña (en el log: "Admin inicial creado: <correo>", sin la contraseña). Si ya hay un admin las variables se ignoran y nunca cambian una contraseña existente. Entra a `/panel`, cambia la contraseña en **Cambiar contraseña** (menú lateral) y **quita `ADMIN_PASS` (y `ADMIN_USER`) de Coolify**. Alternativa manual: crea el primer admin desde la terminal de la app en Coolify (*Terminal*):
    `node server/cli/create-admin.js --email tu@correo.org --name "Tu Nombre"`
@@ -61,7 +61,7 @@ En la app: *Scheduled Tasks > Add*: nombre `hourly`, comando `node server/jobs/h
 *Deployments* > redeploy del commit anterior. Las migraciones son aditivas (no se revierten solas): el código viejo funciona con el esquema nuevo. Si hubiera daño en datos, restaura un snapshot o un punto en el tiempo de RDS.
 
 ## 8. Qué NO hacer
-- No ejecutes `npm run seed` en producción (carga datos de ejemplo).
+- No ejecutes `npm run seed` en producción: el catálogo llega por la migración 007. Si cambias `src/data/*` antes del primer deploy, regenera con `npm run seed:sql` (un test falla si el SQL quedó desfasado). Después del primer deploy la BD es la fuente de verdad: los cambios se hacen en `/panel`, no en `src/data`.
 - No pongas secretos en el repo ni en el Dockerfile; solo en la UI de Coolify. El `.env` local no entra a la imagen.
 - No actives `MAIL_DISABLED` ni cambies `SESSION_SECRET` sin avisar (cierra todas las sesiones).
 - No escales a más de una réplica sin revisar.
