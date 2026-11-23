@@ -6,7 +6,21 @@ const date = z.iso.date();
 const when = z.iso.datetime().nullish(); // publish_at; absent = publish on approval
 const slug = z.string().regex(/^[a-z0-9-]{2,80}$/);
 const mode = z.enum(['none', 'own']);
-const json = z.record(z.string(), z.unknown());
+
+// Structured body of a retreat: exactly what the public detail page renders (see ProyectoDetalle.jsx).
+const lines = (n, max) => z.array(str(max)).max(n);
+export const retreatBody = z.strictObject({
+  basadoEn: str(255).nullish(),
+  chipsLabel: str(160).nullish(), chips: lines(30, 120).nullish(),
+  bloques: z.array(z.strictObject({ title: str(160).min(1), text: text.nullish() })).max(20).nullish(), // módulos
+  temas: z.array(z.strictObject({ // pedagogía vivencial
+    titulo: str(200).min(1), resumen: text.nullish(), puntos: lines(12, 1500).nullish(),
+    evocacion: text.nullish(), actividadIntroductoria: text.nullish(), contenido: text.nullish(),
+    actividadesAdicionales: text.nullish(), simbolos: lines(12, 400).nullish(), reflexion: text.nullish(),
+  })).max(30).nullish(),
+  cronograma: z.array(z.strictObject({ bloque: str(160).min(1), duracionMinutos: z.int().min(0).max(1440).nullish() })).max(60).nullish(),
+  fichaTecnica: z.array(z.strictObject({ icon: z.enum(['clock', 'people', 'building']).nullish(), label: str(80).min(1), value: str(160).min(1), desc: str(1000).nullish() })).max(12).nullish(),
+});
 
 export const retreat = z.strictObject({
   slug, codigo: str(60).nullish(), derej_slug: str(40),
@@ -16,7 +30,7 @@ export const retreat = z.strictObject({
   season_slug: str(40).nullish(), season_secondary: z.array(str(40)).nullish(),
   corte_simja: z.enum(['kinder', 'primaria', 'ambos']).nullish(), cover: str(255).nullish(),
   estado_catalogo: z.enum(['publicado', 'proximamente']).optional(),
-  body: json.nullish(), publish_at: when,
+  body: retreatBody.nullish(), publish_at: when,
 });
 
 // No .default() anywhere: PATCH uses .partial() and must not reset omitted fields; the DB columns carry the defaults.
@@ -60,3 +74,21 @@ export const forgot = z.strictObject({ email: z.email().transform((e) => e.toLow
 
 export const decision = z.strictObject({ comment: str(2000).optional(), publish_at: when });
 export const rejection = z.strictObject({ comment: str(2000).min(1) });
+
+// ---- F3b: media, glossary, translations ----
+export const mediaPatch = z.strictObject({
+  alt_es: str(255).nullish(), alt_en: str(255).nullish(), caption_retreat: str(160).nullish(),
+  caption_place: str(160).nullish(), caption_date: date.nullish(), has_minors: z.boolean(),
+}).partial();
+export const glossaryTerm = z.strictObject({
+  term: str(120).min(1), mode: z.enum(['keep', 'map']), en: str(160).nullish(), note: str(255).nullish(),
+}).refine((g) => g.mode === 'keep' || g.en, { message: 'en is required for map terms', path: ['en'] });
+
+// English fields per entity: same shapes as the Spanish ones, all optional (missing = fall back to Spanish).
+const enText = str(20000).nullish();
+export const translationFields = {
+  retreats: z.strictObject({ title: enText, subtitle: enText, summary: enText, tema_paso: enText, body: retreatBody.nullish() }).partial(),
+  sessions: z.strictObject({ title: enText, note: enText, place: enText, cost_info: enText, date_text: enText }).partial(),
+  pilgrimages: z.strictObject({ title: enText, summary: enText, place: enText, cost_info: enText, itinerary: z.array(z.unknown()).nullish() }).partial(),
+  team: z.strictObject({ role_title: enText }).partial(),
+};

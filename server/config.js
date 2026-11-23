@@ -17,14 +17,18 @@ const schema = z.object({
   DB_USER: z.string().min(1),
   DB_PASS: z.string(),
   DB_NAME: z.string().min(1),
+  DB_SSL: bool, // 1 = TLS to the DB with the bundled Amazon RDS CA (external RDS)
   SESSION_SECRET: z.string().min(32, 'SESSION_SECRET must be at least 32 characters'),
   MAIL_DISABLED: bool,
   SMTP_HOST: opt, SMTP_PORT: z.coerce.number().int().optional(), SMTP_SECURE: bool,
   SMTP_USER: opt, SMTP_PASS: opt, SMTP_FROM: z.string().default('no-reply@micaminoesjesus.org'),
-  UPLOAD_DIR: z.string().default('./uploads'),
+  UPLOADS_DIR: opt, UPLOAD_DIR: z.string().default('./uploads'), // UPLOAD_DIR is the legacy name
+  UPLOAD_MAX_MB: z.coerce.number().int().min(1).max(20).default(8),
+  TRANSLATE_PROVIDER: z.enum(['claude']).default('claude'), TRANSLATE_MODEL: z.string().default('claude-haiku-5-5'),
+  TRANSLATE_MONTHLY_LIMIT: z.coerce.number().int().min(0).default(100000), // characters of source text per month
   DIST_DIR: z.string().default('./dist'),
   // Used by later phases (F3 translation/media, F4 contact/captcha); validated as present-or-not only.
-  CONTACT_TO: opt, GC_SITE: opt, GC_SECRET: opt, CLAUDE: opt,
+  CONTACT_TO: opt, GC_SITE: opt, GC_SECRET: opt, CLAUDE: opt, ANTHROPIC_BASE_URL: opt, // CLAUDE = Anthropic API key; the base URL only exists so tests can point at a fake server
   S3_BUCKET: opt, S3_REGION: opt, S3_ACCESS_KEY_ID: opt, S3_SECRET_ACCESS_KEY: opt,
 }).refine((e) => e.MAIL_DISABLED || e.SMTP_HOST, { message: 'SMTP_HOST is required unless MAIL_DISABLED=1', path: ['SMTP_HOST'] });
 
@@ -38,7 +42,8 @@ const prodChecks = (env) => {
 };
 
 export function parseConfig(env) {
-  const r = schema.safeParse(env);
+  // Compose passes unset optional variables as '' (e.g. TRANSLATE_MONTHLY_LIMIT=): treat them as not set, not as 0 or invalid.
+  const r = schema.safeParse(Object.fromEntries(Object.entries(env).filter(([, v]) => v !== '')));
   const bad = [...(r.success ? [] : r.error.issues.map((i) => `${i.path.join('.')}: ${i.message}`)), ...prodChecks(env)];
   if (bad.length) {
     // Names and messages only, never values.
@@ -51,6 +56,7 @@ export function parseConfig(env) {
   const alt = u.hostname === 'localhost' ? [] : [`${u.protocol}//${www}${u.port ? ':' + u.port : ''}`];
   return {
     ...c,
+    uploadsDir: c.UPLOADS_DIR || c.UPLOAD_DIR,
     isProd: c.NODE_ENV === 'production',
     secureCookies: origin.startsWith('https:'),
     allowedOrigins: [origin, ...alt, ...(c.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://localhost:3000'])],

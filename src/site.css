@@ -477,3 +477,19 @@ a.detalle-route__step:hover { transform: translate(-3px, -3px); box-shadow: 5px 
   .ticker .track { width: auto; flex-wrap: wrap; }
   .ticker .dup { display: none; }
 }
+
+/* idioma, estados de carga y peregrinaciones (F3b) */
+.top nav a.lang-switch { border: 2px solid var(--ink); margin-left: 6px; padding: 6px 12px; min-height: 36px; font-size: .75rem; }
+.top nav a.lang-switch::after { display: none; }
+.top nav a.lang-switch:hover, .top nav a.lang-switch:focus-visible { background: var(--ink); color: var(--cream); }
+.pub-state { text-align: center; padding: 48px 20px; font-weight: 700; }
+.pub-state .btn { margin-top: 12px; }
+.verse .verse-note { margin-top: 16px; font-size: .85rem; opacity: .8; }
+.pg-list { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 12px; }
+.pg-list a { display: grid; gap: 4px; padding: 16px 18px; border: 3px solid var(--ink); background: var(--surface); box-shadow: 5px 5px 0 var(--ink); }
+.pg-list a:hover, .pg-list a:focus-visible { transform: translate(-2px, -2px); }
+.pg-list em { font-style: normal; font-weight: 800; font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--red); }
+.pg-facts { display: grid; grid-template-columns: max-content 1fr; gap: 8px 20px; margin: 0 0 28px; }
+.pg-facts dt { font-weight: 800; text-transform: uppercase; font-size: .75rem; letter-spacing: .08em; }
+.pg-facts dd { margin: 0; }
+@media (max-width: 640px) { .pg-facts { grid-template-columns: 1fr; } }

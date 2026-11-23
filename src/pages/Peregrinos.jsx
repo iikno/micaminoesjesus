@@ -1,40 +1,42 @@
+import { Link } from 'react-router-dom';
 import peregrinosLogo from '../assets/logos/peregrinos.png';
-import silvia from '../assets/images/equipo/silvia.jpg';
 import { WHATSAPP_URL } from '../data/site';
 import Polaroid from '../components/Polaroid';
-
-const SIGNIFICADO = [
-  { t: 'Cruz de Jerusalén', d: 'Presente en el emblema.' },
-  { t: 'PER', d: 'Significa “a través de”.' },
-  { t: 'Arco', d: 'El arco del camino recorrido.' },
-  { t: 'Franja diagonal', d: 'La misma franja diagonal de XP Lev.' },
-];
+import { Failed, Loading } from '../components/Status';
+import { useLang, useMeta } from '../i18n';
+import { useData } from '../lib/api';
+import { dateRange } from '../lib/dates';
+import { imgUrl } from '../lib/img';
 
 export default function Peregrinos() {
+  useMeta('peregrinos');
+  const { lang, t, to } = useLang();
+  const list = useData(`/api/public/pilgrimages?lang=${lang}`);
+  const trips = (list.data ?? []).filter((p) => p.state !== 'cancelada');
   return (
     <>
       <section className="band pg-sec pg-page">
         <div className="wrap grid">
           <div>
-            <div className="kicker red">La dimensión +1</div>
+            <div className="kicker red">{t('pg.k')}</div>
             <h1 className="d">Peregrinos</h1>
-            <p className="big">Peregrinaciones a lo largo de México y del mundo para acercar a las personas a Cristo y a la historia de la fe: los lugares donde la fe se vivió, se defendió y se sigue viviendo.</p>
-            <p>Para fieles y para quienes aún no conocen a Cristo: el camino también evangeliza. Cada peregrinación es un retiro en movimiento: encuentro, formación, comunidad y misión.</p>
+            <p className="big">{t('pg.big')}</p>
+            <p>{t('pg.p')}</p>
           </div>
-          <div className="shot"><img src={peregrinosLogo} alt="Logo de Peregrinos" /></div>
+          <div className="shot"><img src={peregrinosLogo} alt={t('pg.logo.alt')} /></div>
         </div>
       </section>
 
       <section className="band">
         <div className="wrap">
-          <div className="kicker red">El logo</div>
-          <h2 className="d sec-title">Qué significa</h2>
+          <div className="kicker red">{t('pg.logo.k')}</div>
+          <h2 className="d sec-title">{t('pg.logo.h')}</h2>
           <ol className="pil">
-            {SIGNIFICADO.map((s, i) => (
-              <li key={s.t}>
+            {[0, 1, 2, 3].map((i) => (
+              <li key={i}>
                 <span className="d n">{String(i + 1).padStart(2, '0')}</span>
-                <h3 className="d">{s.t}</h3>
-                <p>{s.d}</p>
+                <h3 className="d">{t(`pg.sig.${i}.t`)}</h3>
+                <p>{t(`pg.sig.${i}.d`)}</p>
               </li>
             ))}
           </ol>
@@ -43,21 +45,43 @@ export default function Peregrinos() {
 
       <section className="band team">
         <div className="wrap resp-grid">
-          <Polaroid foto={silvia} nombre="Silvia “Silber” Ponce" rol="Responsable de Peregrinos" />
+          <Polaroid foto={imgUrl('silvia.jpg')} nombre="Silvia “Silber” Ponce" rol={t('pg.resp.role')} />
           <div>
-            <div className="kicker red">Responsable</div>
+            <div className="kicker red">{t('pg.resp.k')}</div>
             <h2 className="d sec-title">Silvia “Silber” Ponce</h2>
-            <p>Agente de viajes certificada y ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila.</p>
+            <p>{t('pg.resp.bio')}</p>
           </div>
         </div>
       </section>
 
       <section className="band next">
         <div className="wrap">
-          <div className="kicker">Próximas peregrinaciones</div>
-          <h2 className="d sec-title">Próximamente</h2>
-          <p className="lead-block">Aún no publicamos fechas ni destinos. Escríbenos y te avisamos en cuanto estén listos.</p>
-          <a className="btn" href={WHATSAPP_URL} target="_blank" rel="noreferrer">Escríbenos por WhatsApp</a>
+          <div className="kicker">{t('pg.next.k')}</div>
+          {list.loading && <Loading />}
+          {list.error && <Failed onRetry={list.retry} />}
+          {list.data && trips.length > 0 && (
+            <>
+              <h2 className="d sec-title">{t('pg.list.h')}</h2>
+              <ul className="pg-list">
+                {trips.map((p) => (
+                  <li key={p.id}>
+                    <Link to={to(`/proyectos/peregrinos/${p.slug}`)}>
+                      <b>{p.title}</b>
+                      <span>{[p.place, dateRange(lang, p.starts_on, p.ends_on)].filter(Boolean).join(' · ')}</span>
+                      <em>{t(`pg.state.${p.state}`)}</em>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
+          {list.data && trips.length === 0 && (
+            <>
+              <h2 className="d sec-title">{t('pg.next.h')}</h2>
+              <p className="lead-block">{t('pg.next.p')}</p>
+              <a className="btn" href={WHATSAPP_URL} target="_blank" rel="noreferrer">{t('pg.next.wa')}</a>
+            </>
+          )}
         </div>
       </section>
     </>

@@ -1,57 +1,43 @@
 import { Link, useSearchParams } from 'react-router-dom';
-import {
-  derejGuibor, derejKavod, derejMesharet, derejSimja, derejOz, derejJaim,
-  SEASONS, DEREJ, TIPO_LABELS, TIPO_ABBR, CORTES_SIMJA,
-} from '../data/retreats';
+import { Async } from '../components/Status';
+import { useLang, useMeta } from '../i18n';
+import { TIPO_ABBR, useCatalog } from '../lib/catalog';
 
-const ITEMS = {
-  guibor: derejGuibor, kavod: derejKavod, oz: derejOz,
-  simja: derejSimja, mesharet: derejMesharet, jaim: derejJaim,
-};
-const SHORT_NAME = { all: 'Todos' };
-const CAMINOS = ['all', ...Object.keys(DEREJ)];
+const DEREJ_ORDER = ['guibor', 'kavod', 'oz', 'simja', 'mesharet', 'jaim'];
 
-const SEQUENCE_FOOTNOTES = {
-  guibor: { note: 'Formato pedagógico secuencial recomendado', route: 'Ruta Hombría Bíblica' },
-  kavod: { note: 'Secuencia formativa de autodescubrimiento y sanación', route: 'Ruta Mujer Nueva' },
-};
-const OPEN_DESCRIPTIONS = {
-  mesharet: 'Módulos independientes para revitalizar el celo pastoral, la técnica evangelizadora y la comunión del equipo servidor.',
-  jaim: 'Gran repertorio de retiros de impacto, talleres de discernimiento bíblico y Horas Santas temáticas por calendario eclesial.',
-};
-
-function SeasonDot({ season }) {
-  if (!season || !SEASONS[season]) return null;
-  return <span className="season-dot" style={{ '--sc': `var(--season-${season})` }} title={SEASONS[season].name} />;
+function SeasonDot({ season, c }) {
+  if (!season || !c.SEASONS[season]) return null;
+  return <span className="season-dot" style={{ '--sc': `var(--season-${season})` }} title={c.SEASONS[season].name} />;
 }
 
-function TipoTag({ tipo, category }) {
-  const label = category || TIPO_LABELS[tipo];
+function TipoTag({ tipo }) {
+  const { t } = useLang();
   const abbr = TIPO_ABBR[tipo];
-  if (!label || !abbr) return null;
-  return <sup className="tipo-tag" title={label}>{abbr}</sup>;
+  if (!t(`tipo.${tipo}`) || !abbr || t(`tipo.${tipo}`) === `tipo.${tipo}`) return null;
+  return <sup className="tipo-tag" title={t(`tipo.${tipo}`)}>{abbr}</sup>;
 }
 
 function StatusPill({ estado }) {
+  const { t } = useLang();
   const pending = estado === 'proximamente';
-  return <span className={`xplev-pill${pending ? ' is-pending' : ''}`}>{pending ? 'Próximamente' : 'Disponible'}</span>;
+  return <span className={`xplev-pill${pending ? ' is-pending' : ''}`}>{pending ? t('xp.pending') : t('xp.available')}</span>;
 }
 
-// Agrupa por tipo (retiro/taller/hora_santa); lo sin tipo (contenido sin redactar) cae en "En preparación".
-function groupByTipo(items) {
+// Agrupa por tipo (retiro/taller/hora_santa); lo sin tipo cae en "En preparación".
+function groupByTipo(items, t) {
   const order = ['retiro', 'taller', 'hora_santa'];
   const groups = order
-    .map((tipo) => ({ tipo, label: TIPO_LABELS[tipo], items: items.filter((i) => i.tipo === tipo) }))
+    .map((tipo) => ({ tipo, label: t(`tipo.${tipo}`), items: items.filter((i) => i.tipo === tipo) }))
     .filter((g) => g.items.length > 0);
   const rest = items.filter((i) => !order.includes(i.tipo));
-  if (rest.length) groups.push({ tipo: null, label: 'En preparación', items: rest });
+  if (rest.length) groups.push({ tipo: null, label: t('xp.prep'), items: rest });
   return groups;
 }
 
 // Dérej Simjá se agrupa por corte de edad en lugar de por tipo.
 function groupByCorte(items) {
   return ['primaria', 'kinder', 'ambos']
-    .map((corte) => ({ corte, ...CORTES_SIMJA[corte], items: items.filter((i) => i.corte === corte) }))
+    .map((corte) => ({ corte, items: items.filter((i) => i.corte === corte) }))
     .filter((g) => g.items.length > 0);
 }
 
@@ -69,23 +55,25 @@ function CardHead({ info, tag, children }) {
   );
 }
 
-function CardFoot({ note, label = 'Solicitar para tu parroquia' }) {
+function CardFoot({ note, label }) {
+  const { t, to } = useLang();
   return (
     <footer className="xc-foot">
       <span>{note}</span>
-      <Link to="/contacto">{label} &rarr;</Link>
+      <Link to={to('/contacto')}>{label ?? t('xp.request')} &rarr;</Link>
     </footer>
   );
 }
 
-function ChipList({ items }) {
+function ChipList({ items, c }) {
+  const { t, to } = useLang();
   return (
     <div className="xplev-chip-list">
       {items.map((item) => (
-        <Link key={item.id} to={`/proyectos/${item.id}`} className={`xplev-chip${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
-          <SeasonDot season={item.season} />
+        <Link key={item.id} to={to(`/proyectos/${item.id}`)} className={`xplev-chip${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
+          <SeasonDot season={item.season} c={c} />
           {item.title}
-          {item.estado === 'proximamente' && <span className="xplev-chip__pending">Próximamente</span>}
+          {item.estado === 'proximamente' && <span className="xplev-chip__pending">{t('xp.pending')}</span>}
         </Link>
       ))}
     </div>
@@ -93,25 +81,25 @@ function ChipList({ items }) {
 }
 
 // Guibor/Kavod: secuencia de 6 pasos, línea de tiempo vertical con nodos numerados.
-function SequentialCard({ derejKey, items }) {
-  const info = DEREJ[derejKey];
-  const foot = SEQUENCE_FOOTNOTES[derejKey];
+function SequentialCard({ derejKey, items, c }) {
+  const { t, to } = useLang();
+  const info = c.DEREJ[derejKey];
   return (
     <section id={`xplev-${derejKey}`} className="xc" style={{ '--dc': info.color }}>
-      <CardHead info={info} tag={`${info.pasoTotal} estaciones`} />
+      <CardHead info={info} tag={t('xp.stations', { n: info.pasoTotal })} />
       <ol className="xplev-timeline">
         {items.map((item) => {
           const pending = item.estado === 'proximamente';
           return (
             <li key={item.id} className={pending ? 'is-pending' : ''}>
               <span className="node" aria-hidden="true">{item.paso}</span>
-              <Link to={`/proyectos/${item.id}`}>
+              <Link to={to(`/proyectos/${item.id}`)}>
                 <span className="row">
-                  <span className="ttl"><TipoTag tipo={item.tipo} category={item.category} /><b>{item.title}</b></span>
+                  <span className="ttl"><TipoTag tipo={item.tipo} /><b>{item.title}</b></span>
                   <StatusPill estado={item.estado} />
                 </span>
                 <span className="meta">
-                  <SeasonDot season={item.season} />{SEASONS[item.season]?.name}
+                  <SeasonDot season={item.season} c={c} />{c.SEASONS[item.season]?.name}
                   {item.conceptoCentral && <> · {item.conceptoCentral}</>}
                 </span>
               </Link>
@@ -119,90 +107,92 @@ function SequentialCard({ derejKey, items }) {
           );
         })}
       </ol>
-      <CardFoot note={`${foot.note} · ${foot.route}`} label="Solicitar" />
+      <CardFoot note={t(`xp.${derejKey}.note`)} label={t('xp.requestShort')} />
     </section>
   );
 }
 
 // Oz: progresión sugerida, no obligatoria; cuadrícula de hitos.
-function OzCard({ items }) {
-  const info = DEREJ.oz;
+function OzCard({ items, c }) {
+  const { t, to } = useLang();
+  const info = c.DEREJ.oz;
   return (
     <section id="xplev-oz" className="xc xc--wide" style={{ '--dc': info.color }}>
-      <CardHead info={info} tag={`${items.length} experiencias`} />
-      <p className="xc-desc">
-        Desde el llamado inicial y la confrontación de ideales, pasando por la maduración del
-        discipulado, hasta el fuego vivo de Pentecostés. Orden sugerido, no obligatorio.
-      </p>
+      <CardHead info={info} tag={t('xp.exps', { n: items.length })} />
+      <p className="xc-desc">{t('xp.oz.desc')}</p>
       <div className="xplev-hitos">
         {items.map((item) => (
-          <Link key={item.id} to={`/proyectos/${item.id}`} className={`hito${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
+          <Link key={item.id} to={to(`/proyectos/${item.id}`)} className={`hito${item.estado === 'proximamente' ? ' is-pending' : ''}`}>
             <span className="top">
               <span className="d num">{String(item.paso).padStart(2, '0')}</span>
               <StatusPill estado={item.estado} />
             </span>
-            <span className="ttl"><TipoTag tipo={item.tipo} category={item.category} /><b>{item.title}</b></span>
+            <span className="ttl"><TipoTag tipo={item.tipo} /><b>{item.title}</b></span>
             {item.conceptoCentral && <span className="desc">{item.conceptoCentral}</span>}
-            <span className="kind"><SeasonDot season={item.season} />{TIPO_LABELS[item.tipo] || 'Estación'}</span>
+            <span className="kind"><SeasonDot season={item.season} c={c} />{t(`tipo.${item.tipo}`) === `tipo.${item.tipo}` ? t('xp.station') : t(`tipo.${item.tipo}`)}</span>
           </Link>
         ))}
       </div>
-      <CardFoot note="Cada parroquia puede implementar las estaciones de forma modular según su ciclo pastoral anual." label="Solicitar guía de pastoral juvenil" />
+      <CardFoot note={t('xp.oz.note')} label={t('xp.oz.cta')} />
     </section>
   );
 }
 
-function SimjaCard({ items }) {
-  const info = DEREJ.simja;
+function SimjaCard({ items, c }) {
+  const { t } = useLang();
+  const info = c.DEREJ.simja;
   return (
     <section id="xplev-simja" className="xc xc--wide" style={{ '--dc': info.color }}>
-      <CardHead info={info} tag="En preparación" />
-      <p className="xc-desc">Formato de estaciones rotativas (no taller/retiro tradicional), organizado por corte de edad.</p>
+      <CardHead info={info} tag={t('xp.prep')} />
+      <p className="xc-desc">{t('xp.simja.desc')}</p>
       {groupByCorte(items).map((g) => (
         <div className="xplev-group" key={g.corte}>
-          <div className="xplev-group__label">{g.name} <span>({g.rango})</span></div>
-          <ChipList items={g.items} />
+          <div className="xplev-group__label">{t(`corte.${g.corte}`)} <span>({t(`corte.${g.corte}.r`)})</span></div>
+          <ChipList items={g.items} c={c} />
         </div>
       ))}
-      <CardFoot note="Estaciones adaptadas a la etapa de maduración de cada corte" />
+      <CardFoot note={t('xp.simja.note')} />
     </section>
   );
 }
 
 // Mesharét / Jaím: catálogos abiertos, sin orden, agrupados por tipo.
-function OpenCard({ derejKey, items }) {
-  const info = DEREJ[derejKey];
+function OpenCard({ derejKey, items, c }) {
+  const { t } = useLang();
+  const info = c.DEREJ[derejKey];
   return (
     <section id={`xplev-${derejKey}`} className="xc" style={{ '--dc': info.color }}>
-      <CardHead info={info} tag="Catálogo abierto" />
-      <p className="xc-desc">{OPEN_DESCRIPTIONS[derejKey]}</p>
-      {groupByTipo(items).map((g) => (
+      <CardHead info={info} tag={t('xp.open')} />
+      <p className="xc-desc">{t(`xp.${derejKey}.desc`)}</p>
+      {groupByTipo(items, t).map((g) => (
         <div className="xplev-group" key={g.tipo ?? 'otros'}>
           <div className="xplev-group__label">{g.tipo && <TipoTag tipo={g.tipo} />}{g.label}</div>
-          <ChipList items={g.items} />
+          <ChipList items={g.items} c={c} />
         </div>
       ))}
-      <CardFoot note="Personalizable a la medida de tu comunidad" />
+      <CardFoot note={t('xp.open.note')} />
     </section>
   );
 }
 
 const CARDS = {
-  guibor: (items) => <SequentialCard key="guibor" derejKey="guibor" items={items} />,
-  kavod: (items) => <SequentialCard key="kavod" derejKey="kavod" items={items} />,
-  oz: (items) => <OzCard key="oz" items={items} />,
-  simja: (items) => <SimjaCard key="simja" items={items} />,
-  mesharet: (items) => <OpenCard key="mesharet" derejKey="mesharet" items={items} />,
-  jaim: (items) => <OpenCard key="jaim" derejKey="jaim" items={items} />,
+  guibor: (items, c) => <SequentialCard key="guibor" derejKey="guibor" items={items} c={c} />,
+  kavod: (items, c) => <SequentialCard key="kavod" derejKey="kavod" items={items} c={c} />,
+  oz: (items, c) => <OzCard key="oz" items={items} c={c} />,
+  simja: (items, c) => <SimjaCard key="simja" items={items} c={c} />,
+  mesharet: (items, c) => <OpenCard key="mesharet" derejKey="mesharet" items={items} c={c} />,
+  jaim: (items, c) => <OpenCard key="jaim" derejKey="jaim" items={items} c={c} />,
 };
 
-export default function XpLev() {
+function Catalog({ c }) {
+  const { t, to } = useLang();
   const [params, setParams] = useSearchParams();
+  const CAMINOS = ['all', ...DEREJ_ORDER.filter((k) => c.DEREJ[k])];
   // Estado en la URL (?camino=oz&solo=1&tiempo=adviento) para compartir un catálogo.
   const camino = CAMINOS.includes(params.get('camino')) ? params.get('camino') : 'all';
   const solo = params.get('solo') === '1';
   const tiempoParam = params.get('tiempo');
-  const tiempo = Object.hasOwn(SEASONS, tiempoParam) ? tiempoParam : null;
+  const tiempo = Object.hasOwn(c.SEASONS, tiempoParam) ? tiempoParam : null;
 
   const set = (changes) =>
     setParams((prev) => {
@@ -215,39 +205,28 @@ export default function XpLev() {
     (!solo || i.estado !== 'proximamente') &&
     (!tiempo || i.season === tiempo || i.seasonSecondary?.includes(tiempo));
 
-  const visibles = Object.keys(CARDS)
-    .filter((k) => camino === 'all' || camino === k)
-    .map((k) => [k, ITEMS[k].filter(keep)])
+  const visibles = DEREJ_ORDER
+    .filter((k) => c.DEREJ[k] && CARDS[k] && (camino === 'all' || camino === k))
+    .map((k) => [k, c.byDerej(k).filter(keep)])
     .filter(([, items]) => items.length > 0);
 
   return (
     <>
-      <section className="page-head">
-        <div className="wrap">
-          <div className="kicker red">XP Lev · Evangelización por públicos</div>
-          <h1 className="d">Itinerarios de encuentro con <span className="jesus">Cristo</span></h1>
-          <p className="lead">
-            Retiros, talleres y adoraciones diseñados para las etapas de vida y vocación de cada
-            persona. Cada hito es un paso consciente en el camino de discipulado.
-          </p>
-        </div>
-      </section>
-
       <div className="xplev-bar">
         <div className="wrap">
-          <nav className="xplev-tabs" aria-label="Selector de caminos">
+          <nav className="xplev-tabs" aria-label={t('xp.tabs')}>
             {CAMINOS.map((k) => (
               <button
                 key={k}
                 type="button"
                 className="xplev-tab"
-                style={{ '--dc': DEREJ[k]?.color }}
+                style={{ '--dc': c.DEREJ[k]?.color }}
                 aria-pressed={camino === k}
-                title={DEREJ[k] ? `${DEREJ[k].name} · ${DEREJ[k].audience}` : undefined}
+                title={c.DEREJ[k] ? `${c.DEREJ[k].name} · ${c.DEREJ[k].audience}` : undefined}
                 onClick={() => set({ camino: k === 'all' ? null : k })}
               >
-                {DEREJ[k] && <span className="dot" aria-hidden="true" />}
-                {SHORT_NAME[k] || DEREJ[k].name.replace('Dérej ', '')}
+                {c.DEREJ[k] && <span className="dot" aria-hidden="true" />}
+                {k === 'all' ? t('xp.all') : c.DEREJ[k].name.replace('Dérej ', '')}
               </button>
             ))}
           </nav>
@@ -259,11 +238,11 @@ export default function XpLev() {
           <div className="xplev-filters">
             <label className="check">
               <input type="checkbox" checked={solo} onChange={(e) => set({ solo: e.target.checked ? '1' : null })} />
-              Solo disponibles ahora
+              {t('xp.only')}
             </label>
-            <div className="seasons" role="group" aria-label="Tiempo litúrgico">
-              <span className="lbl">Tiempo litúrgico</span>
-              {Object.entries(SEASONS).map(([key, s]) => (
+            <div className="seasons" role="group" aria-label={t('xp.seasons')}>
+              <span className="lbl">{t('xp.seasons')}</span>
+              {Object.entries(c.SEASONS).map(([key, s]) => (
                 <button
                   key={key}
                   type="button"
@@ -277,19 +256,19 @@ export default function XpLev() {
               ))}
             </div>
             <p className="formats">
-              Formatos: {['retiro', 'taller', 'hora_santa'].map((t) => `${TIPO_ABBR[t]} ${TIPO_LABELS[t]}`).join(' · ')}
+              {t('xp.formats')}: {['retiro', 'taller', 'hora_santa'].map((k) => `${TIPO_ABBR[k]} ${t(`tipo.${k}`)}`).join(' · ')}
             </p>
           </div>
 
           {visibles.length === 0 ? (
             <div className="xplev-empty" role="status">
-              <h2 className="d">Nada con esos filtros</h2>
-              <p>Prueba con otro tiempo litúrgico o quita “solo disponibles”.</p>
-              <button type="button" className="btn" onClick={() => set({ solo: null, tiempo: null })}>Quitar filtros</button>
+              <h2 className="d">{t('xp.empty.h')}</h2>
+              <p>{t('xp.empty.p')}</p>
+              <button type="button" className="btn" onClick={() => set({ solo: null, tiempo: null })}>{t('xp.empty.btn')}</button>
             </div>
           ) : (
             <div className={`xplev-grid${camino === 'all' ? '' : ' xplev-grid--one'}`}>
-              {visibles.map(([k, items]) => CARDS[k](items))}
+              {visibles.map(([k, items]) => CARDS[k](items, c))}
             </div>
           )}
         </div>
@@ -297,19 +276,33 @@ export default function XpLev() {
 
       <section className="band contact">
         <div className="wrap">
-          <div className="kicker">Acompañamiento pastoral</div>
-          <h2 className="d sec-title">Diseña el itinerario anual de tu comunidad</h2>
-          <p className="cta-text">
-            Ya sea que busques abrir el camino formativo de hombres (Dérej Guibor), dinamizar a tus
-            jóvenes (Dérej Oz) o renovar los ministerios (Dérej Mesharét), adaptamos fechas,
-            materiales y predicadores al ritmo de tu diócesis.
-          </p>
+          <div className="kicker">{t('xp.cta.k')}</div>
+          <h2 className="d sec-title">{t('xp.cta.h')}</h2>
+          <p className="cta-text">{t('xp.cta.p')}</p>
           <div className="row">
-            <Link className="btn" to="/contacto">Agendar reunión de planificación</Link>
-            <Link className="btn btn--ghost" to="/contacto">Solicitar dosier de experiencias</Link>
+            <Link className="btn" to={to('/contacto')}>{t('xp.cta.b1')}</Link>
+            <Link className="btn btn--ghost" to={to('/contacto')}>{t('xp.cta.b2')}</Link>
           </div>
         </div>
       </section>
+    </>
+  );
+}
+
+export default function XpLev() {
+  useMeta('xplev');
+  const { t, r } = useLang();
+  const cat = useCatalog();
+  return (
+    <>
+      <section className="page-head">
+        <div className="wrap">
+          <div className="kicker red">{t('xp.k')}</div>
+          <h1 className="d">{r('xp.h')}</h1>
+          <p className="lead">{t('xp.lead')}</p>
+        </div>
+      </section>
+      <Async state={cat}>{(c) => <Catalog c={c} />}</Async>
     </>
   );
 }

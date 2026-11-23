@@ -1,23 +1,24 @@
 import { Link } from 'react-router-dom';
 import { PROYECTOS } from '../data/proyectos';
+import { useLang, useMeta } from '../i18n';
 
-function Accion({ l }) {
+function Accion({ l, label }) {
+  const { to } = useLang();
   const cls = `btn${l.sec ? ' btn--ghost btn--sm' : ' btn--sm'}`;
-  if (l.to) return <Link className={cls} to={l.to}>{l.label} &rarr;</Link>;
-  return <a className={cls} href={l.href} target="_blank" rel="noreferrer">{l.label}</a>;
+  if (l.to) return <Link className={cls} to={to(l.to)}>{label} &rarr;</Link>;
+  return <a className={cls} href={l.href} target="_blank" rel="noreferrer">{label}</a>;
 }
 
 export default function Proyectos() {
+  useMeta('proyectos');
+  const { t, r } = useLang();
   return (
     <>
       <section className="page-head">
         <div className="wrap">
-          <div className="kicker red">Proyectos</div>
-          <h1 className="d">Con quién <span className="jesus">caminamos</span></h1>
-          <p className="lead">
-            Además de la escuela, caminamos junto a otros proyectos que anuncian a Jesús desde
-            distintos lenguajes: moda, redes, peregrinaciones y experiencias de encuentro.
-          </p>
+          <div className="kicker red">{t('proy.k')}</div>
+          <h1 className="d">{r('proy.h')}</h1>
+          <p className="lead">{t('proy.lead')}</p>
         </div>
       </section>
 
@@ -25,12 +26,12 @@ export default function Proyectos() {
         {PROYECTOS.map((p, i) => (
           <section key={p.id} id={p.id} className={`band proyecto ${i % 2 ? 'alt' : ''}`}>
             <div className="wrap grid">
-              <div className="shot"><img src={p.logo} alt={p.alt} loading="lazy" /></div>
+              <div className="shot"><img src={p.logo} alt={t(`proy.${p.id}.alt`)} loading="lazy" /></div>
               <div>
-                <div className="kicker">{p.tag}</div>
+                <div className="kicker">{t(`proy.${p.id}.tag`)}</div>
                 <h2 className="d">{p.nombre}</h2>
-                <p>{p.desc}</p>
-                <div className="acts">{p.links.map((l) => <Accion key={l.label} l={l} />)}</div>
+                <p>{t(`proy.${p.id}.desc`)}</p>
+                <div className="acts">{p.links.map((l, n) => <Accion key={n} l={l} label={t(`proy.${p.id}.l${n}`)} />)}</div>
               </div>
             </div>
           </section>

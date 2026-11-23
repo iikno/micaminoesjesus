@@ -2,7 +2,12 @@ import { useMemo, useState } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ApiError, del, errText, fieldErrors, get, patch, post } from './api';
 import { useAuth, useCatalogs } from './session';
+import BodyEditor from './BodyEditor';
+import { bodyErrors, bodyToForm, formToBody } from './body';
+import { MediaPicker } from './Media';
+import PendingChange from './Pending';
 import { RESOURCES } from './resources';
+import Translation from './Translation';
 import {
   Async, Confirm, Empty, Field, PLink, PageHead, StatusPill, fmtDate, fmtDateTime, fromLocalInput,
   clearDirty, toLocalInput, useDirty, useLoad, useToast,
@@ -85,6 +90,7 @@ function fromItem(f, v) {
     case 'bool': return !!v;
     case 'multi': return Array.isArray(v) ? v : [];
     case 'json': return v == null ? '' : JSON.stringify(v, null, 2);
+    case 'body': return bodyToForm(v);
     case 'itin': return Array.isArray(v) ? v.map(rowOf) : [];
     case 'datetime': return toLocalInput(v);
     default: return v == null ? '' : String(v);
@@ -99,6 +105,8 @@ function toPayload(res, st) {
     if (f.t === 'bool') out[f.n] = v;
     else if (f.t === 'multi') out[f.n] = v.length ? v : null;
     else if (f.t === 'json') out[f.n] = v.trim() ? JSON.parse(v) : null;
+    else if (f.t === 'body') out[f.n] = formToBody(v);
+    else if (f.t === 'media') out[f.n] = v.trim() || null;
     else if (f.t === 'itin') { const r = v.map((x) => ({ title: x.title.trim(), text: x.text.trim() })).filter((x) => x.title || x.text); out[f.n] = r.length ? r : null; }
     else if (f.t === 'datetime') out[f.n] = fromLocalInput(v);
     else {
@@ -113,6 +121,7 @@ function validate(res, st) {
   const e = {};
   for (const f of res.fields) {
     const v = st[f.n];
+    if (f.t === 'body') { const m = bodyErrors(v); if (m) e[f.n] = m; continue; }
     const s = typeof v === 'string' ? v.trim() : v;
     if (f.req && !s) { e[f.n] = 'Este campo es obligatorio.'; continue; }
     if (!s || typeof s !== 'string') continue;
@@ -147,6 +156,12 @@ function Inputs({ res, st, setSt, errors, ctx, disabled }) {
               {err && <p className="p-err">{err}</p>}
             </fieldset>
           );
+        }
+        if (f.t === 'media') {
+          return <div key={f.n} className={wrap}><MediaPicker label={f.label} help={f.help} error={err} value={st[f.n]} disabled={disabled} onChange={(v) => up(f.n, v)} /></div>;
+        }
+        if (f.t === 'body') {
+          return <fieldset key={f.n} className={`p-field ${wrap}`}><legend>{f.label}</legend><BodyEditor value={st[f.n]} onChange={(v) => up(f.n, v)} disabled={disabled} error={err} /></fieldset>;
         }
         if (f.t === 'itin') {
           const rows = st[f.n];
@@ -278,6 +293,7 @@ function FormBody({ res, item, isNew, reviews, seed, ctx, can, nav, toast, reloa
 
   return (
     <div className="split">
+      <div className="main-col">
       <form className="card" onSubmit={(e) => { e.preventDefault(); saveDraft(); }} noValidate>
         <PageHead title={isNew ? `Nuevo ${res.one}` : res.label(item)}>
           {!isNew && <StatusPill status={status} />}
@@ -296,8 +312,11 @@ function FormBody({ res, item, isNew, reviews, seed, ctx, can, nav, toast, reloa
           </div>
         )}
       </form>
+      {!isNew && res.tr?.length > 0 && <Translation res={res} item={item} canWrite={canWrite} locked={status === 'en_revision'} esDirty={dirty} toast={toast} reload={reload} />}
+      </div>
       <aside className="side">
         {!isNew && <Facts item={item} res={res} />}
+        {!isNew && <PendingChange res={res} item={item} canAct={can(res.perm, 'write') || can(res.perm, 'approve')} toast={toast} reload={reload} />}
         {!isNew && can(res.perm, 'quick_fix') && item.published_snapshot && <QuickFix res={res} item={item} toast={toast} reload={reload} />}
         {!isNew && <History reviews={reviews} />}
         {res.entity === 'retreats' && !isNew && can('sessions', 'read') && <section className="card"><h2>Fechas</h2><PLink to={`/panel/fechas?retiro=${item.id}`}>Ver las fechas de este retiro</PLink></section>}

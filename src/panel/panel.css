@@ -199,3 +199,29 @@
   .panel *, .panel *::before, .panel *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
   .panel .skel-row { background: #EFE9DA; }
 }
+
+/* F3b: media library, structured body editor, translation, pending change */
+.panel .main-col { display: grid; gap: 1rem; min-width: 0; }
+.panel .main-col > .card { margin: 0; }
+.panel .dialog-wide { max-width: 860px; }
+.panel .media-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: .75rem; }
+.panel .media-card { display: grid; width: 100%; padding: 0; border: 2px solid var(--p-line); border-radius: 8px; background: #fff; cursor: pointer; text-align: left; overflow: hidden; font: inherit; color: inherit; }
+.panel .media-card:hover { border-color: var(--color-ink); }
+.panel .media-card.is-selected, .panel .media-card:focus-visible { border-color: var(--color-red); outline: 2px solid var(--color-red); outline-offset: 2px; }
+.panel .media-card img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; background: var(--color-cream); display: block; }
+.panel .media-meta { display: grid; gap: .2rem; padding: .45rem .55rem; font-size: .8rem; overflow-wrap: anywhere; }
+.panel .media-flag { font-size: .7rem; color: var(--color-red); }
+.panel .media-flag-ok { color: var(--color-ink); }
+.panel .media-big { max-width: 100%; height: auto; border-radius: 6px; background: var(--color-cream); }
+.panel .media-field .media-current { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; margin-bottom: .5rem; }
+.panel .media-field img { border-radius: 6px; height: auto; }
+.panel .body-sec, .panel .body-lines { border: 1px solid var(--p-line); border-radius: 8px; padding: .75rem; margin: 0 0 1rem; display: grid; gap: .75rem; }
+.panel .body-lines { padding: .5rem .75rem; border-style: dashed; }
+.panel .body-row { border-left: 4px solid var(--color-gold); padding-left: .75rem; display: grid; gap: .5rem; }
+.panel .body-row-head { display: flex; justify-content: space-between; align-items: center; gap: .5rem; flex-wrap: wrap; }
+.panel .body-line { display: flex; gap: .5rem; align-items: end; }
+.panel .body-line .p-field { flex: 1; }
+.panel .tr-card { display: grid; gap: .75rem; }
+.panel .pending-card { border-color: var(--color-gold); }
+.panel .pending-diff th, .panel .pending-diff td { vertical-align: top; overflow-wrap: anywhere; }
+.panel .pending-new { background: #fff7dc; }

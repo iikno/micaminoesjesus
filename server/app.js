@@ -1,5 +1,5 @@
-import { existsSync, mkdirSync } from 'node:fs';
-import { resolve } from 'node:path';
+import { existsSync, mkdirSync, readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import cookie from '@fastify/cookie';
 import helmet from '@fastify/helmet';
 import rateLimit from '@fastify/rate-limit';
@@ -7,10 +7,12 @@ import staticFiles from '@fastify/static';
 import Fastify from 'fastify';
 import { ZodError } from 'zod';
 import { config } from './config.js';
+import { TranslateError } from './lib/translate.js';
 import { one } from './db.js';
 import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
 import publicRoutes from './routes/public.js';
+import seoRoutes, { renderPage } from './routes/seo.js';
 
 export async function buildApp() {
   // Behind Coolify's Traefik the real client IP is in X-Forwarded-For (needed for rate limits and audit).
@@ -37,6 +39,7 @@ export async function buildApp() {
 
   app.setErrorHandler((err, req, reply) => {
     if (err instanceof ZodError) return reply.code(400).send({ error: 'validation', issues: err.issues.map((i) => ({ path: i.path.join('.'), message: i.message })) });
+    if (err instanceof TranslateError) return reply.code(err.status).send({ error: err.message });
     if (err.status && err.status < 500) return reply.code(err.status).send({ error: err.message });
     if (err.statusCode && err.statusCode < 500) return reply.code(err.statusCode).send({ error: err.code ?? err.message });
     if (err.code === 'ER_DUP_ENTRY') return reply.code(409).send({ error: 'duplicate' });
@@ -56,22 +59,27 @@ export async function buildApp() {
   await app.register(authRoutes);
   await app.register(adminRoutes);
   await app.register(publicRoutes);
+  await app.register(seoRoutes);
 
-  const uploads = resolve(config.UPLOAD_DIR);
+  // Only uploads/pub is public; photos flagged has_minors live in uploads/private and are never served from here.
+  const uploads = join(resolve(config.uploadsDir), 'pub');
   mkdirSync(uploads, { recursive: true });
-  await app.register(staticFiles, { root: uploads, prefix: '/uploads/', decorateReply: false, maxAge: '7d', immutable: true });
+  // Names are random per upload and never reused, so they can be cached for a year.
+  await app.register(staticFiles, { root: uploads, prefix: '/uploads/', decorateReply: false, maxAge: '365d', immutable: true, index: false });
 
   // The built SPA, with fallback to index.html for client-side routes. Skipped if there is no build (API-only dev).
   const dist = resolve(config.DIST_DIR);
   if (existsSync(dist)) {
     await app.register(staticFiles, {
-      root: dist, prefix: '/', wildcard: false, maxAge: '1h',
+      root: dist, prefix: '/', wildcard: false, maxAge: '1h', index: false, // '/' goes through renderPage below
       // Vite hashes everything under /assets, so it can be cached for a year; index.html must always be revalidated.
       setHeaders: (res, path) => res.header('Cache-Control', /[\/]assets[\/]/.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache'),
     });
-    app.setNotFoundHandler((req, reply) => {
-      if (req.url.startsWith('/api/') || (req.method !== 'GET' && req.method !== 'HEAD')) return reply.code(404).send({ error: 'not_found' });
-      return reply.header('Cache-Control', 'no-cache').sendFile('index.html');
+    const indexHtml = readFileSync(join(dist, 'index.html'), 'utf8');
+    app.setNotFoundHandler(async (req, reply) => {
+      if (req.url.startsWith('/api/') || req.url.startsWith('/uploads/') || (req.method !== 'GET' && req.method !== 'HEAD')) return reply.code(404).send({ error: 'not_found' });
+      const { status, html } = await renderPage(req.url, indexHtml);
+      return reply.code(status).type('text/html; charset=utf-8').header('Cache-Control', 'no-cache').send(html);
     });
   }
   return app;

@@ -7,6 +7,10 @@ import { can } from '../lib/perm.js';
 import { FlowError, canDecide, nextStatus, planApproval } from '../lib/review.js';
 import * as s from '../lib/schemas.js';
 import { inviteUser } from '../lib/users.js';
+import { srcHash } from '../lib/translate.js';
+import { autoTranslate, getTranslation, putTranslation, sourceFields } from '../lib/translations.js';
+import mediaRoutes from './media.js';
+import translateRoutes from './translate.js';
 import { one, q, tx } from '../db.js';
 
 const deny = (reply) => reply.code(403).send({ error: 'forbidden' });
@@ -63,6 +67,9 @@ export default async function adminRoutes(app) {
     return reply.code(204).send();
   });
 
+  await app.register(mediaRoutes);
+  await app.register(translateRoutes);
+
   // ---- review queue and audit log ----
   app.get('/api/admin/reviews/pending', async (req, reply) => {
     const mine = Object.entries(ENTITIES).filter(([, e]) => can(req.user.role, e.resource, 'approve'));
@@ -115,7 +122,7 @@ export default async function adminRoutes(app) {
 
     g.get('/api/admin/:entity', { preHandler: needs('read') }, async (req) => {
       const rows = await q(`SELECT * FROM ${req.ent.table} ORDER BY id`);
-      return rows.map(({ body: _b, published_snapshot: _s, ...r }) => r); // heavy JSON only on single-item reads
+      return rows.map(({ body: _b, published_snapshot: _s, pending_snapshot: _p, ...r }) => ({ ...r, has_pending: !!_p })); // heavy JSON only on single-item reads
     });
 
     g.get('/api/admin/:entity/:id', { preHandler: needs('read') }, async (req, reply) =>
@@ -186,7 +193,8 @@ export default async function adminRoutes(app) {
         const now = new Date();
         if (event === 'approve') {
           const plan = planApproval(r, now);
-          const snap = JSON.stringify(snapshotOf(req.ent, r));
+          const tr = req.ent.tr?.length ? await c.one("SELECT fields FROM translations WHERE entity = ? AND entity_id = ? AND lang = 'en'", [req.params.entity, r.id]) : null;
+          const snap = JSON.stringify(snapshotOf(req.ent, r, tr?.fields));
           if (plan.slot === 'pending') {
             await c.q(`UPDATE ${req.ent.table} SET status = ?, publish_at = ?, pending_snapshot = ?, pending_from = ? WHERE id = ?`, [status, r.publish_at, snap, plan.from, r.id]);
           } else {
@@ -206,6 +214,52 @@ export default async function adminRoutes(app) {
     };
     g.post('/api/admin/:entity/:id/approve', { preHandler: needs('approve') }, decide('approve'));
     g.post('/api/admin/:entity/:id/reject', { preHandler: needs('approve') }, decide('reject'));
+
+    // ---- English version: a draft in `translations`; it goes live with the item's next approval ----
+    const translatable = async (req) => {
+      if (!req.ent.tr?.length) fail(404, 'not_translatable');
+      return (await one(`SELECT * FROM ${req.ent.table} WHERE id = ?`, [req.params.id])) ?? fail(404, 'not_found');
+    };
+    const saveEn = async (c, req, fields, source, hash, action, extra = {}) => {
+      const row = await lockRow(c, req.ent, req.params.id);
+      if (srcHash(sourceFields(req.ent, row)) !== hash) fail(409, 'source_changed');
+      const status = nextStatus(row.status, 'edit'); // throws while under review
+      await putTranslation(c, req.params.entity, row.id, fields, source, hash);
+      await c.q(`UPDATE ${req.ent.table} SET status = ?, version = version + 1, updated_by = ? WHERE id = ?`, [status, req.user.id, row.id]);
+      await audit(c, req, action, req.params.entity, row.id, { source, ...extra });
+    };
+
+    g.get('/api/admin/:entity/:id/translation', { preHandler: needs('read') }, async (req) => getTranslation({ one }, req.ent, req.params.entity, await translatable(req)));
+
+    g.put('/api/admin/:entity/:id/translation', { preHandler: needs('write') }, async (req, reply) => {
+      const fields = s.translationFields[req.params.entity].parse(req.body?.fields ?? {});
+      const row = await translatable(req);
+      await tx((c) => saveEn(c, req, fields, 'humano', srcHash(sourceFields(req.ent, row)), 'translate_edit'));
+      return reply.code(204).send();
+    });
+
+    // "Traducir automáticamente": fills the English draft (source 'auto'). The provider call happens outside any transaction.
+    g.post('/api/admin/:entity/:id/translate', { preHandler: needs('write') }, async (req, reply) => {
+      const row = await translatable(req);
+      const cur = await getTranslation({ one }, req.ent, req.params.entity, row);
+      if (cur.fields && !cur.stale && cur.source === 'auto') return { ...cur, cached: true, warnings: [] }; // same Spanish: no second paid call
+      if (cur.source === 'humano' && req.body?.overwrite !== true) return reply.code(409).send({ error: 'manual_exists' });
+      const r = await autoTranslate(req.ent, row);
+      await tx((c) => saveEn(c, req, r.fields, 'auto', r.hash, 'translate_auto', { chars: r.chars }));
+      return { fields: r.fields, source: 'auto', stale: false, warnings: r.warnings, cached: false };
+    });
+
+    // Drops an approved edit that is scheduled for the future; the live version is untouched.
+    const canCancel = async (req, reply) => (can(req.user.role, req.ent.resource, 'write') || can(req.user.role, req.ent.resource, 'approve') ? undefined : deny(reply));
+    g.post('/api/admin/:entity/:id/cancel-pending', { preHandler: canCancel }, async (req, reply) => {
+      await tx(async (c) => {
+        const row = await lockRow(c, req.ent, req.params.id);
+        if (!row.pending_snapshot) fail(409, 'no_pending_change');
+        await c.q(`UPDATE ${req.ent.table} SET pending_snapshot = NULL, pending_from = NULL, publish_at = NULL, status = 'borrador' WHERE id = ?`, [row.id]);
+        await audit(c, req, 'cancel_pending', req.params.entity, row.id, { was_from: row.pending_from });
+      });
+      return reply.code(204).send();
+    });
 
     // Typo fix on live content without review: text columns only, comment required, diff audited.
     g.post('/api/admin/:entity/:id/quick-fix', { preHandler: needs('quick_fix') }, async (req, reply) => {

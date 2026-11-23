@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
+import { useLang, useMeta } from '../i18n';
 
 export default function AvisoPrivacidad() {
+  useMeta('privacidad');
+  const { lang, t, to } = useLang();
   return (
     <>
       <section className="page-head">
@@ -11,8 +14,9 @@ export default function AvisoPrivacidad() {
       </section>
 
       <section className="band">
-        <div className="wrap legal">
-          <p className="draft" role="note">
+        <div className="wrap legal" lang="es">
+          {lang === 'en' && <p className="draft" role="note" lang="en">{t('legal.en')}</p>}
+          <p className="draft" role="note" lang="es">
             <b>Borrador, pendiente de revisión legal.</b> El responsable legal aún no está
             constituido. Este texto es provisional, no es un aviso definitivo y no debe tomarse
             como garantía de cumplimiento de la ley.
@@ -42,7 +46,7 @@ export default function AvisoPrivacidad() {
           <p>
             Puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición, así como
             revocar tu consentimiento, enviándonos tu solicitud desde la página de{' '}
-            <Link to="/contacto">Contacto</Link> con el asunto &ldquo;Derechos ARCO&rdquo;.
+            <Link to={to('/contacto')}>Contacto</Link> con el asunto &ldquo;Derechos ARCO&rdquo;.
           </p>
 
           <h2 className="d">Cambios al aviso</h2>

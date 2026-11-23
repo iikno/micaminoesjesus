@@ -26,8 +26,26 @@ export async function api(method, path, body) {
   }
   return data;
 }
+// Multipart upload (one image). The browser sets the Content-Type with its boundary.
+export async function upload(path, file) {
+  const fd = new FormData();
+  fd.append('file', file);
+  let r;
+  try {
+    r = await fetch(path, { method: 'POST', credentials: 'same-origin', headers: { 'X-Requested-With': 'mcj', Accept: 'application/json' }, body: fd });
+  } catch {
+    throw new ApiError(0, { error: 'network' });
+  }
+  const data = await r.json().catch(() => null);
+  if (!r.ok) {
+    if (r.status === 401) window.dispatchEvent(new Event('mcj:unauth'));
+    throw new ApiError(r.status, data);
+  }
+  return data;
+}
 export const get = (p) => api('GET', p);
 export const post = (p, b = {}) => api('POST', p, b);
+export const put = (p, b) => api('PUT', p, b);
 export const patch = (p, b) => api('PATCH', p, b);
 export const del = (p) => api('DELETE', p);
 
@@ -48,6 +66,20 @@ const MSG = {
   user_not_active_yet: 'La persona aún no acepta su invitación.',
   invalid_token: 'El enlace no es válido o ya venció. Pide uno nuevo.',
   empty_patch: 'No hay cambios que guardar.',
+  unsupported_image_type: 'Solo se aceptan imágenes JPG, PNG o WebP.',
+  invalid_image: 'La imagen está dañada o es demasiado grande en píxeles.',
+  FST_REQ_FILE_TOO_LARGE: 'La imagen pesa demasiado (máximo 8 MB).',
+  no_file: 'Elige una imagen.',
+  media_in_use: 'La imagen está en uso (portada o foto): quítala de ahí antes de eliminarla.',
+  translate_disabled: 'La traducción automática no está activada: falta configurar la llave en el servidor.',
+  translate_limit: 'Se alcanzó el tope mensual de traducción automática.',
+  provider_error: 'El servicio de traducción falló. Inténtalo de nuevo.',
+  provider_rate_limited: 'El servicio de traducción está saturado. Espera un momento.',
+  provider_bad_output: 'El servicio devolvió una respuesta inválida. Inténtalo de nuevo.',
+  manual_exists: 'Ya hay una versión en inglés escrita a mano.',
+  source_changed: 'El texto en español cambió mientras traducías. Vuelve a intentarlo.',
+  no_pending_change: 'Ya no hay un cambio programado.',
+  not_translatable: 'Este contenido no tiene versión en inglés.',
   csrf: 'Solicitud rechazada por seguridad. Recarga la página.',
   internal: 'Error del servidor. Inténtalo de nuevo en un momento.',
   'Item is under review; wait for a decision': 'Está en revisión: espera la decisión antes de editarlo.',
@@ -55,6 +87,7 @@ const MSG = {
 };
 export const errText = (e) => {
   if (e?.status === 429) return 'Demasiados intentos. Espera un minuto.';
+  if (e?.status === 413) return MSG.FST_REQ_FILE_TOO_LARGE;
   if (e?.code === 'validation') return 'Revisa los campos marcados.';
   return MSG[e?.code] ?? (e?.code?.startsWith?.('Cannot') ? 'Esa acción no aplica al estado actual.' : 'Ocurrió un error inesperado.');
 };

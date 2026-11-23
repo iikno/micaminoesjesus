@@ -15,12 +15,13 @@
     "create-admin": "node server/cli/create-admin.js",
     "job:hourly": "node server/jobs/hourly.js",
     "test": "node --test server/test/",
-    "db:up": "docker compose --env-file .env.local up -d --wait db",
-    "db:down": "docker compose --env-file .env.local down"
+    "db:up": "docker compose -f docker-compose.local.yml --env-file .env.local up -d --wait db",
+    "db:down": "docker compose -f docker-compose.local.yml --env-file .env.local down"
   },
   "dependencies": {
     "@fastify/cookie": "^11.1.5",
     "@fastify/helmet": "^13.2.0",
+    "@fastify/multipart": "^10.1.9",
     "@fastify/rate-limit": "^11.3.0",
     "@fastify/static": "^10.1.12",
     "argon2": "^0.45.2",
@@ -30,6 +31,7 @@
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "react-router-dom": "^7.18.1",
+    "sharp": "^0.35.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
