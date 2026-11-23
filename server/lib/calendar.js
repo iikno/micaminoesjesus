@@ -31,7 +31,7 @@ export function buildCalendar({ sessions, retreats, derej, pilgrimages, today, l
         cuando: s.date_text || formatRange(s.starts_on, s.ends_on, lang),
         titulo: s.title || r?.title,
         nota: [s.note || derej.get(r?.derej_slug)?.name, free(s)].filter(Boolean).join(' · '),
-        estado: s.cal_state, destacado: s.highlight,
+        estado: s.cal_state, destacado: s.highlight, to: s.registration_mode === 'own' ? `/calendario/${s.id}` : null,
       },
     });
   }
@@ -42,7 +42,7 @@ export function buildCalendar({ sessions, retreats, derej, pilgrimages, today, l
       it: {
         id: `p${p.id}`, kind: 'peregrinacion', slug: p.slug, cuando: formatRange(p.starts_on, p.ends_on, lang),
         titulo: p.title, nota: ['Peregrinos', p.place, free(p)].filter(Boolean).join(' · '),
-        estado: 'confirmada', destacado: false,
+        estado: 'confirmada', destacado: false, to: `/proyectos/peregrinos/${p.slug}`,
       },
     });
   }

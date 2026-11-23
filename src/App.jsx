@@ -11,6 +11,8 @@ const Peregrinos = lazy(() => import('./pages/Peregrinos'));
 const PeregrinacionDetalle = lazy(() => import('./pages/PeregrinacionDetalle'));
 const ProyectoDetalle = lazy(() => import('./pages/ProyectoDetalle'));
 const Calendario = lazy(() => import('./pages/Calendario'));
+const SesionDetalle = lazy(() => import('./pages/SesionDetalle'));
+const Inscripcion = lazy(() => import('./pages/Inscripcion'));
 const Contacto = lazy(() => import('./pages/Contacto'));
 const AvisoPrivacidad = lazy(() => import('./pages/AvisoPrivacidad'));
 
@@ -28,6 +30,8 @@ const publicRoutes = (
     <Route path="proyectos/peregrinos/:slug" element={<PeregrinacionDetalle />} />
     <Route path="proyectos/:id" element={<ProyectoDetalle />} />
     <Route path="calendario" element={<Calendario />} />
+    <Route path="calendario/:id" element={<SesionDetalle />} />
+    <Route path="inscripcion/:token" element={<Inscripcion />} />
     <Route path="contacto" element={<Contacto />} />
     <Route path="aviso-de-privacidad" element={<AvisoPrivacidad />} />
   </>

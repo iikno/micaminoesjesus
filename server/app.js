@@ -12,6 +12,7 @@ import { one } from './db.js';
 import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
 import publicRoutes from './routes/public.js';
+import regPublicRoutes from './routes/regpublic.js';
 import seoRoutes, { renderPage } from './routes/seo.js';
 
 export async function buildApp() {
@@ -20,7 +21,7 @@ export async function buildApp() {
 
   await app.register(helmet, {
     contentSecurityPolicy: { directives: {
-      defaultSrc: ["'self'"], scriptSrc: ["'self'"], imgSrc: ["'self'", 'data:'], connectSrc: ["'self'"],
+      defaultSrc: ["'self'"], scriptSrc: ["'self'", 'https://www.google.com/recaptcha/', 'https://www.gstatic.com/recaptcha/'], frameSrc: ['https://www.google.com/recaptcha/', 'https://recaptcha.google.com/recaptcha/'], imgSrc: ["'self'", 'data:'], connectSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'], fontSrc: ['https://fonts.gstatic.com'],
       frameAncestors: ["'none'"], objectSrc: ["'none'"], upgradeInsecureRequests: config.secureCookies ? [] : null,
     } },
@@ -59,6 +60,7 @@ export async function buildApp() {
   await app.register(authRoutes);
   await app.register(adminRoutes);
   await app.register(publicRoutes);
+  await app.register(regPublicRoutes);
   await app.register(seoRoutes);
 
   // Only uploads/pub is public; photos flagged has_minors live in uploads/private and are never served from here.

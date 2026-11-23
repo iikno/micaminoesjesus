@@ -64,7 +64,7 @@ export function injectHead(html, { lang, tags }) {
 }
 
 export function robotsTxt(base) {
-  return `User-agent: *\nAllow: /\nDisallow: /panel\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
+  return `User-agent: *\nAllow: /\nDisallow: /panel\nDisallow: /inscripcion/\nDisallow: /en/inscripcion/\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
 }
 
 // Sitemap with both languages and xhtml alternates; callers pass published content only.

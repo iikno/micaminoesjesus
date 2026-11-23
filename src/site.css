@@ -307,9 +307,20 @@ img { display: block; max-width: 100%; }
 .form { display: grid; gap: 20px; border: 3px solid var(--ink); background: var(--surface); box-shadow: 8px 8px 0 var(--ink); padding: clamp(18px, 4vw, 32px); }
 .field { display: grid; gap: 6px; }
 .field label { font-weight: 800; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; }
-.field input, .field textarea { width: 100%; font: inherit; font-size: 1rem; padding: 12px 14px; min-height: 48px; border: 3px solid var(--ink); background: var(--bg); color: var(--ink); border-radius: 0; }
-.field input:focus-visible, .field textarea:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; background: var(--surface); }
-.field input[aria-invalid="true"] { border-color: var(--red); }
+.field input:not([type="checkbox"]), .field textarea, .field select { width: 100%; font: inherit; font-size: 1rem; padding: 12px 14px; min-height: 48px; border: 3px solid var(--ink); background: var(--bg); color: var(--ink); border-radius: 0; }
+.field input:focus-visible, .field textarea:focus-visible, .field select:focus-visible { outline: 3px solid var(--gold); outline-offset: 0; background: var(--surface); }
+.field input[aria-invalid="true"], .field textarea[aria-invalid="true"], .field select[aria-invalid="true"] { border-color: var(--red); }
+.field .opt { font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--gray); }
+.field.check label { display: flex; gap: 12px; align-items: flex-start; text-transform: none; letter-spacing: 0; font-size: .95rem; font-weight: 600; min-height: 44px; }
+.field.check input { width: 24px; height: 24px; flex: none; margin-top: 2px; accent-color: var(--red); }
+.field.check a { text-decoration: underline; }
+.reg-group { border: 3px solid var(--ink); padding: 16px; display: grid; gap: 16px; margin: 0; }
+.reg-group legend { font-weight: 800; font-size: .85rem; letter-spacing: .06em; text-transform: uppercase; padding: 0 8px; }
+.reg-note { border: 3px solid var(--ink); background: var(--cream); padding: 14px 18px; font-weight: 700; }
+.err-summary { outline: none; }
+.err-summary:empty { display: none; }
+.reg-form .d { font-size: clamp(1.8rem, 4vw, 2.6rem); }
+.cal-reg { display: inline-block; margin-top: 6px; font-weight: 800; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; text-decoration: underline; }
 .err { color: var(--red); font-weight: 700; font-size: .9rem; }
 .form .btn { justify-self: start; }
 .fine { font-size: .85rem; color: var(--gray); }

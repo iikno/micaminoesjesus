@@ -70,6 +70,7 @@ export const userPatch = z.strictObject({ name: str(120).min(1), role: roles, st
 export const password = z.string().min(12).max(200);
 export const login = z.strictObject({ email: z.email().transform((e) => e.toLowerCase()), password: z.string().min(1).max(200) });
 export const setPassword = z.strictObject({ token: z.string().min(20).max(200), password });
+export const changePassword = z.strictObject({ current: z.string().min(1).max(200), password });
 export const forgot = z.strictObject({ email: z.email().transform((e) => e.toLowerCase()) });
 
 export const decision = z.strictObject({ comment: str(2000).optional(), publish_at: when });

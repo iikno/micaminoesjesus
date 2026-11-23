@@ -29,6 +29,10 @@ const schema = z.object({
   DIST_DIR: z.string().default('./dist'),
   // Used by later phases (F3 translation/media, F4 contact/captcha); validated as present-or-not only.
   CONTACT_TO: opt, GC_SITE: opt, GC_SECRET: opt, CLAUDE: opt, ANTHROPIC_BASE_URL: opt, // CLAUDE = Anthropic API key; the base URL only exists so tests can point at a fake server
+  // F4: registrations. REG_ENC_KEY = 32 bytes (64 hex) for AES-256-GCM; ALLERGIES_ENABLED stays off until a legal entity exists.
+  REG_ENC_KEY: z.string().regex(/^([0-9a-f]{64}|[A-Za-z0-9+\/]{43}=)$/i, 'REG_ENC_KEY must be 32 bytes: 64 hex chars or base64').optional(), ALLERGIES_ENABLED: bool, RECAPTCHA_MIN_SCORE: z.coerce.number().min(0).max(1).default(0.5),
+  RECAPTCHA_VERIFY_URL: opt, // test-only: ignored in production
+  ADMIN_USER: opt, ADMIN_PASS: opt, ADMIN_NAME: opt, // first admin on first start (see lib/bootstrapAdmin.js); ignored once an admin exists
   S3_BUCKET: opt, S3_REGION: opt, S3_ACCESS_KEY_ID: opt, S3_SECRET_ACCESS_KEY: opt,
 }).refine((e) => e.MAIL_DISABLED || e.SMTP_HOST, { message: 'SMTP_HOST is required unless MAIL_DISABLED=1', path: ['SMTP_HOST'] });
 
@@ -58,6 +62,7 @@ export function parseConfig(env) {
     ...c,
     uploadsDir: c.UPLOADS_DIR || c.UPLOAD_DIR,
     isProd: c.NODE_ENV === 'production',
+    captchaUrl: c.NODE_ENV === 'production' ? undefined : c.RECAPTCHA_VERIFY_URL,
     secureCookies: origin.startsWith('https:'),
     allowedOrigins: [origin, ...alt, ...(c.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://localhost:3000'])],
   };

@@ -24,6 +24,7 @@ Decisión: la app se construye con el build pack **Docker Compose** (`docker-com
    - Recomendadas: `DB_SSL=1` (RDS), `TZ=America/Mexico_City`, `SMTP_SECURE=1` solo si el puerto es 465.
    - Opcionales (el compose usa el valor por defecto o vacío si no están): `PORT`, `TZ`, `DB_PORT`, `SMTP_PORT`, `SMTP_FROM`, `SMTP_USER`, `SMTP_PASS`, `CONTACT_TO`, `GC_SITE`, `GC_SECRET`.
    - Imágenes y traducción (F3b), todas opcionales: `UPLOADS_DIR` (carpeta de las imágenes subidas; el compose la fija en `/data/uploads`, el volumen persistente), `UPLOAD_MAX_MB` (8), `CLAUDE` (llave de la API de Anthropic: sin ella la traducción automática queda apagada y el panel lo dice), `TRANSLATE_PROVIDER` (`claude`), `TRANSLATE_MODEL` (`claude-haiku-5-5`) y `TRANSLATE_MONTHLY_LIMIT` (tope mensual en caracteres de texto fuente, 100000; el panel muestra el uso en *Glosario*).
+   - Inscripciones y contacto (F4): `REG_ENC_KEY` (**necesaria para inscripciones**; sin ella el formulario responde 503), `GC_SITE` y `GC_SECRET` (reCAPTCHA v3; sin `GC_SECRET` los formularios públicos se niegan a funcionar en producción), `CONTACT_TO` (a dónde llega el correo del formulario de contacto), `RECAPTCHA_MIN_SCORE` (0.5) y `ALLERGIES_ENABLED` (déjala **vacía/apagada** hasta que exista la entidad legal y el aviso sea definitivo: es un bloqueo de lanzamiento). Ver sección 3b.
    - **No** definas `MAIL_DISABLED` en producción (el servidor se niega a arrancar si está activo).
    - `S3_*`: la app no las lee hoy; los respaldos de la BD son los de RDS (paso 2.4).
    - Si falta algo, la app falla al arrancar con un mensaje que lista solo nombres de variables (revisa los logs del deploy).
@@ -32,14 +33,21 @@ Decisión: la app se construye con el build pack **Docker Compose** (`docker-com
 7. Compresión: la app no comprime. Activa gzip/brotli en Traefik con un middleware (etiqueta `traefik.http.middlewares.gzip.compress=true` y asignarlo al router en *Custom Labels*; (?) Coolify suele traer un toggle "Enable gzip compression").
 8. **Una sola réplica.** Migraciones y trabajo programado asumen una instancia (las migraciones usan `GET_LOCK`, así que un arranque doble no las corrompe, pero no escales sin revisar).
 
-## 4. Tarea programada (recordatorios, publicación programada, limpieza)
-En la app: *Scheduled Tasks > Add*: nombre `hourly`, comando `node server/jobs/hourly.js`, frecuencia `0 * * * *`, contenedor = el servicio `app`. Sale con código 0 si todo bien o si otra ejecución ya está corriendo (lock en MySQL), y 1 si falla. Es idempotente.
+## 3b. Inscripciones, contacto y reCAPTCHA (F4)
+- **`REG_ENC_KEY`**: genera 32 bytes aleatorios en hexadecimal con `openssl rand -hex 32` y pégalos en Coolify. Cifra (AES-256-GCM) el contacto de emergencia, los datos del tutor y las alergias. **Si pierdes la llave, esos datos quedan ilegibles para siempre** (los nombres, teléfonos y correos de las personas inscritas no están cifrados y siguen ahí). Guarda una copia en tu gestor de contraseñas y no la cambies: cambiarla deja ilegibles las inscripciones ya guardadas.
+- **reCAPTCHA v3**: en https://www.google.com/recaptcha/admin crea un sitio tipo v3 y agrega el dominio `micaminoesjesus.org` (y `www.micaminoesjesus.org`). La clave del sitio va en `GC_SITE` (la ve el navegador) y la secreta en `GC_SECRET`. La CSP ya permite `google.com/recaptcha` y `gstatic.com/recaptcha`.
+- **Enlaces de los correos** (`/inscripcion/<token>`): el token se deriva del id con `SESSION_SECRET`; cambiar `SESSION_SECRET` invalida los enlaces ya enviados.
+- **Retención** (la aplica la tarea `hourly`): alergias y contacto de emergencia se borran 30 días después del fin del evento; la inscripción completa, a los 90; mensajes de contacto 12 meses (spam 30 días); historial de auditoría 24 meses.
+- Las migraciones 005 y 006 (tablas `registrations` y `contact_messages`) son aditivas y corren solas al arrancar.
+
+## 4. Tarea programada (recordatorios, publicación programada, inscripciones, retención y limpieza)
+En la app: *Scheduled Tasks > Add*: nombre `hourly`, comando `node server/jobs/hourly.js`, frecuencia `0 * * * *`, contenedor = el servicio `app`. Sale con código 0 si todo bien o si otra ejecución ya está corriendo (lock en MySQL), y 1 si falla. Es idempotente. Además de lo anterior, cada hora: recuerda confirmar el correo a las 24 h, libera las inscripciones sin verificar a las 72 h, vence las ofertas de la lista de espera a las 48 h y pasa al siguiente, y aplica la retención.
 
 ## 5. Primer despliegue (checklist)
 1. Snapshot manual de RDS hecho (paso 2.4) y Security Group abierto a la IP del servidor.
 2. *Deploy*. Las migraciones corren solas al arrancar (antes de escuchar). El seed **nunca** corre automáticamente.
 3. Espera a que el contenedor figure *healthy*; abre `https://micaminoesjesus.org/api/health` (debe responder `{"ok":true}`) y el sitio.
-4. Crea el primer admin desde la terminal de la app en Coolify (*Terminal*):
+4. **Primer admin automático (recomendado):** antes del primer deploy define `ADMIN_USER` (correo) y `ADMIN_PASS` (mínimo 12 caracteres; opcional `ADMIN_NAME`). Al primer arranque, si no existe ningún admin, se crea uno activo con esa contraseña (en el log: "Admin inicial creado: <correo>", sin la contraseña). Si ya hay un admin las variables se ignoran y nunca cambian una contraseña existente. Entra a `/panel`, cambia la contraseña en **Cambiar contraseña** (menú lateral) y **quita `ADMIN_PASS` (y `ADMIN_USER`) de Coolify**. Alternativa manual: crea el primer admin desde la terminal de la app en Coolify (*Terminal*):
    `node server/cli/create-admin.js --email tu@correo.org --name "Tu Nombre"`
    Envía la invitación por SMTP; si el correo falla, imprime el enlace de un solo uso (válido 7 días). Ábrelo, crea tu contraseña (mínimo 12 caracteres) y entra a `/panel`.
 5. Prueba: login, "olvidé mi contraseña" (debe llegar el correo), y que los enlaces del correo apunten a `https://micaminoesjesus.org`.

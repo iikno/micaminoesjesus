@@ -1,9 +1,16 @@
 import { Link, useParams } from 'react-router-dom';
+import RegistrationForm from '../components/RegistrationForm';
 import { Async } from '../components/Status';
 import { useLang, useMeta } from '../i18n';
 import { pageTitle } from '../i18n/meta';
 import { useData } from '../lib/api';
 import { dateRange } from '../lib/dates';
+
+// Registration state is live (never cached with the page), so it is fetched on its own.
+function Register({ p }) {
+  const info = useData(`/api/public/registration-info/pilgrimage/${p.id}`);
+  return info.data ? <section className="detalle-sec"><div className="wrap detalle-body"><RegistrationForm kind="pilgrimage" eventId={p.id} info={info.data} /></div></section> : null;
+}
 
 function Detail({ p }) {
   const { lang, t, to } = useLang();
@@ -54,6 +61,8 @@ function Detail({ p }) {
           )}
         </div>
       </section>
+
+      {p.registration_mode === 'own' && p.state !== 'cancelada' && <Register p={p} />}
 
       <section className="band contact">
         <div className="wrap">

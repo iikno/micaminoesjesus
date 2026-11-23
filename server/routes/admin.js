@@ -10,6 +10,7 @@ import { inviteUser } from '../lib/users.js';
 import { srcHash } from '../lib/translate.js';
 import { autoTranslate, getTranslation, putTranslation, sourceFields } from '../lib/translations.js';
 import mediaRoutes from './media.js';
+import regAdminRoutes from './regadmin.js';
 import translateRoutes from './translate.js';
 import { one, q, tx } from '../db.js';
 
@@ -69,6 +70,7 @@ export default async function adminRoutes(app) {
 
   await app.register(mediaRoutes);
   await app.register(translateRoutes);
+  await app.register(regAdminRoutes);
 
   // ---- review queue and audit log ----
   app.get('/api/admin/reviews/pending', async (req, reply) => {

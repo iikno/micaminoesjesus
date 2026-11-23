@@ -3,10 +3,12 @@ import { Link, Route, Routes } from 'react-router-dom';
 import logo from '../assets/logos/logotipo.png';
 import './panel.css';
 import { Audit, Users } from './Admin';
-import { Forgot, Invite, Login, Reset } from './Auth';
+import { ChangePassword, Forgot, Invite, Login, Reset } from './Auth';
 import { ContentForm, ContentList } from './Content';
+import Bandeja from './Bandeja';
 import Dashboard from './Dashboard';
 import Glossary from './Glossary';
+import { RegistrationEvents, RegistrationList } from './Inscripciones';
 import MediaPage from './Media';
 import Review from './Review';
 import { RESOURCES } from './resources';
@@ -25,6 +27,8 @@ const ICONS = {
   media: 'M4 5h16v14H4zM8 10a1.5 1.5 0 100-3 1.5 1.5 0 000 3zM4 17l5-5 4 4 3-3 4 4',
   glossary: 'M5 4h12a2 2 0 012 2v14H7a2 2 0 01-2-2zM9 8h6M9 12h6',
   users: 'M12 12a4 4 0 100-8 4 4 0 000 8zM4 21c0-4 4-6 8-6s8 2 8 6',
+  regs: 'M9 11l3 3 8-8M4 12v7h14M4 5h10',
+  inbox: 'M4 4h16v12h-5l-2 3h-2l-2-3H4z',
   audit: 'M12 8v5l3 2M21 12a9 9 0 11-3-6.7M21 4v5h-5',
 };
 
@@ -36,6 +40,8 @@ function Shell() {
     ['/panel', 'Inicio', 'home', true, true],
     ['/panel/revision', 'Revisión', 'review', approver],
     ...Object.values(RESOURCES).map((r) => [`/panel/${r.path}`, r.title, r.entity, can(r.perm, 'read')]),
+    ['/panel/inscripciones', 'Inscripciones', 'regs', can('registrations', 'read')],
+    ['/panel/contacto', 'Bandeja de contacto', 'inbox', can('contact', 'read')],
     ['/panel/imagenes', 'Imágenes', 'media', can('media', 'read')],
     ['/panel/glosario', 'Glosario', 'glossary', can('glossary', 'read')],
     ['/panel/usuarios', 'Usuarios', 'users', can('users', 'read')],
@@ -62,6 +68,7 @@ function Shell() {
         </nav>
         <div className="side-foot">
           <p className="p-who"><strong>{user.name}</strong><br /><span>{ROLE[user.role]}</span></p>
+          <PNavLink to="/panel/contrasena" className="side-link" onClick={() => setOpen(false)}>Cambiar contraseña</PNavLink>
           <a href="/" className="side-link">Ver el sitio</a>
           <button className="p-btn p-btn-ghost" onClick={logout}>Cerrar sesión</button>
         </div>
@@ -88,6 +95,10 @@ function Guarded() {
         <Route key={r.path} path={r.path} element={<Allowed ok={can(r.perm, 'read')}><ContentList res={r} /></Allowed>} />,
         <Route key={`${r.path}-id`} path={`${r.path}/:id`} element={<Allowed ok={can(r.perm, 'read')}><ContentForm res={r} /></Allowed>} />,
       ])}
+      <Route path="inscripciones" element={<Allowed ok={can('registrations', 'read')}><RegistrationEvents /></Allowed>} />
+      <Route path="inscripciones/:kind/:id" element={<Allowed ok={can('registrations', 'read')}><RegistrationList /></Allowed>} />
+      <Route path="contacto" element={<Allowed ok={can('contact', 'read')}><Bandeja /></Allowed>} />
+      <Route path="contrasena" element={<ChangePassword />} />
       <Route path="imagenes" element={<Allowed ok={can('media', 'read')}><MediaPage /></Allowed>} />
       <Route path="glosario" element={<Allowed ok={can('glossary', 'read')}><Glossary /></Allowed>} />
       <Route path="usuarios" element={<Allowed ok={can('users', 'read')}><Users /></Allowed>} />

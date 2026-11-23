@@ -42,5 +42,11 @@ test('head tags: title, description, canonical, hreflang, og; injected into inde
 test('robots.txt hides the panel and points at the sitemap', () => {
   const r = robotsTxt(base);
   assert.match(r, /Disallow: \/panel/);
+  assert.match(r, /Disallow: \/inscripcion\//);
+  assert.match(r, /Disallow: \/en\/inscripcion\//);
   assert.match(r, /Sitemap: https:\/\/micaminoesjesus\.org\/sitemap\.xml/);
+});
+
+test('sitemap never lists registration links', () => {
+  assert.ok(!buildSitemap({ base, retreats: [], pilgrimages: [], lastmod: '2026-01-01' }).includes('/inscripcion'));
 });

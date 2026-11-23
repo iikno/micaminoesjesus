@@ -25,9 +25,15 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASS: ${SMTP_PASS:-}
       SMTP_FROM: ${SMTP_FROM:-no-reply@micaminoesjesus.org}
+      ADMIN_USER: ${ADMIN_USER:-}
+      ADMIN_PASS: ${ADMIN_PASS:-}
+      ADMIN_NAME: ${ADMIN_NAME:-}
       CONTACT_TO: ${CONTACT_TO:-}
       GC_SITE: ${GC_SITE:-}
       GC_SECRET: ${GC_SECRET:-}
+      RECAPTCHA_MIN_SCORE: ${RECAPTCHA_MIN_SCORE:-0.5}
+      REG_ENC_KEY: ${REG_ENC_KEY:-}
+      ALLERGIES_ENABLED: ${ALLERGIES_ENABLED:-}
       CLAUDE: ${CLAUDE:-}
       TRANSLATE_PROVIDER: ${TRANSLATE_PROVIDER:-claude}
       TRANSLATE_MODEL: ${TRANSLATE_MODEL:-claude-haiku-5-5}

@@ -104,8 +104,8 @@ export function Users() {
 }
 
 // ------------------------------------------------------------ Historial
-const ACTIONS = { create: 'Crear', update: 'Editar', delete: 'Eliminar', submit: 'Enviar a revisión', approve: 'Aprobar', reject: 'Rechazar', quick_fix: 'Corregir errata', invite: 'Invitar', accept_invite: 'Aceptar invitación', reset_password: 'Restablecer contraseña', lockout: 'Bloqueo de cuenta' };
-const ENTITY_NAME = { ...Object.fromEntries(Object.entries(RESOURCES).map(([k, r]) => [k, r.title])), users: 'Usuarios' };
+const ACTIONS = { create: 'Crear', update: 'Editar', delete: 'Eliminar', submit: 'Enviar a revisión', approve: 'Aprobar', reject: 'Rechazar', quick_fix: 'Corregir errata', invite: 'Invitar', accept_invite: 'Aceptar invitación', reset_password: 'Restablecer contraseña', lockout: 'Bloqueo de cuenta', register: 'Inscripción pública', cancel: 'Cancelar inscripción', reg_confirm: 'Confirmar inscripción', reg_cancel: 'Cancelar inscripción (panel)', reg_waitlist: 'Mover a lista de espera', export: 'Exportar CSV', view_sensitive: 'Ver datos sensibles', contact: 'Mensaje de contacto' };
+const ENTITY_NAME = { ...Object.fromEntries(Object.entries(RESOURCES).map(([k, r]) => [k, r.title])), users: 'Usuarios', registrations: 'Inscripciones', contact_messages: 'Contacto' };
 
 export function Audit() {
   const { can } = useAuth();

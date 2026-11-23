@@ -80,6 +80,8 @@ const MSG = {
   source_changed: 'El texto en español cambió mientras traducías. Vuelve a intentarlo.',
   no_pending_change: 'Ya no hay un cambio programado.',
   not_translatable: 'Este contenido no tiene versión en inglés.',
+  invalid_state: 'Esa acción no aplica al estado actual de la inscripción.',
+  wrong_password: 'La contraseña actual no es correcta.',
   csrf: 'Solicitud rechazada por seguridad. Recarga la página.',
   internal: 'Error del servidor. Inténtalo de nuevo en un momento.',
   'Item is under review; wait for a decision': 'Está en revisión: espera la decisión antes de editarlo.',

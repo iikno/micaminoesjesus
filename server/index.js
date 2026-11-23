@@ -2,9 +2,11 @@ import { buildApp } from './app.js';
 import { config } from './config.js';
 import { migrate } from './migrate.js';
 import { pool } from './db.js';
+import { bootstrapAdmin } from './lib/bootstrapAdmin.js';
 
 // Migrations run before listening, so a new image never serves against an old schema.
 await migrate();
+await bootstrapAdmin();
 const app = await buildApp();
 await app.listen({ port: config.PORT, host: '0.0.0.0' });
 
