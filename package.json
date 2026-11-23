@@ -12,6 +12,7 @@
     "start": "node server/index.js",
     "migrate": "node server/migrate.js",
     "seed": "node --import ./server/seed-loader.js server/seed.js",
+    "seed:sql": "node --import ./server/seed-loader.js server/cli/gen-seed-sql.js",
     "create-admin": "node server/cli/create-admin.js",
     "job:hourly": "node server/jobs/hourly.js",
     "test": "node --test server/test/",
