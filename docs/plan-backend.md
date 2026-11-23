@@ -177,10 +177,10 @@ Toda escritura pasa por `audit(user, action, entity, before, after)` en la misma
 **Arquitectura (1 recurso en Coolify + MySQL externo en AWS RDS)**
 1. **Application `mcj`** desde el repo Git (build pack **Docker Compose**, `docker-compose.yml` con solo el servicio `app`): una sola imagen donde la API Node sirve la API, el `dist/` del front y `/uploads` (`@fastify/static`, cache largo en estáticos). Menos contenedores que web+api separados; si luego se quiere nginx aparte, se pasa a build pack **Docker Compose** con `web` (nginx estático) + `api`.
 2. **MySQL 8 externo en AWS RDS** (no es recurso de Coolify ni servicio del compose); `DB_HOST` es el endpoint de RDS, `DB_SSL=1`, y el Security Group solo permite 3306 desde la IP del servidor de Coolify. Respaldos: automáticos y snapshots de RDS.
-- **Dockerfile** multi-stage: etapa 1 `node:22-bookworm-slim` hace `npm ci && vite build`; etapa 2 copia `server/`, `dist/` y deps de producción (argon2/sharp con binarios nativos funcionan en Debian slim), usuario no root, `HEALTHCHECK` a `/api/health`, `CMD ["node","server/index.js"]`. Las migraciones corren al arrancar (`npm run migrate && node server/index.js`) o como comando de pre-despliegue de Coolify.
+- **Dockerfile** multi-stage: etapa 1 `node:24-bookworm-slim` hace `npm ci && npm run build`; etapa 2 (`node:24-bookworm-slim`) copia `server/`, `src/i18n/meta.js` (títulos SEO), `dist/` y deps de producción (`npm ci --omit=dev`; argon2/sharp con binarios nativos funcionan en Debian slim), usuario no root (`USER node`), `EXPOSE 3000`, `VOLUME /data/uploads`, `HEALTHCHECK` a `/api/health`, `CMD ["node","server/index.js"]`. Las migraciones corren al arrancar dentro de `server/index.js`, antes de `listen` (no hay `npm run migrate` ni comando de pre-despliegue).
 - **Dominio y HTTPS**: se configura `micaminoesjesus.org` (y `www` → redirección) en la aplicación; el **proxy de Coolify (Traefik)** emite y renueva Let's Encrypt. **Se elimina Caddy/certbot.**
 - **Variables**: se cargan en la UI de Coolify (marcar como runtime y secretas); no hay `.env` en el repo ni en la imagen. `.env.example` solo documenta los nombres.
-- **Almacenamiento persistente**: volumen con nombre del compose montado en `UPLOAD_DIR=/data/uploads`; la BD vive en RDS.
+- **Almacenamiento persistente**: volumen con nombre del compose montado en `UPLOADS_DIR=/data/uploads`; la BD vive en RDS.
 - **Backups**: la BD usa los **respaldos automáticos y snapshots de RDS** (retención configurable); el siguiente texto sobre S3 aplica a los uploads. **¿Por qué S3?** Si el servidor o su disco muere, los respaldos guardados en el mismo servidor mueren con él; S3 es solo "otro lugar fuera del servidor". **Destino decidido: AWS S3.** Las credenciales ya existen en `.env` (nombres: `S3_BUCKET`, `S3_REGION`, `S3_ACCESS_KEY_ID`, `S3_SECRET_ACCESS_KEY`; no hay `S3_ENDPOINT` porque es AWS nativo); se cargan en Coolify como destino S3 y para el `rclone` de uploads. Buenas prácticas: usuario IAM con permisos **solo** sobre ese bucket, bucket privado con cifrado y versionado, regla de ciclo de vida alineada a la retención (sec. 10). Para este volumen cuesta pocos pesos al mes (verificar precios vigentes). **Plan B (riesgoso)**: backups locales de Coolify + descarga manual periódica; depende de acordarse, no se recomienda. El volumen de uploads no lo respalda Coolify de forma nativa (verificar en la versión instalada): una **Scheduled Task** semanal/diaria ejecuta `rclone sync /data/uploads s3:...` desde el contenedor, o un contenedor sidecar con ese comando. Los backups contienen datos personales: cifrar (SSE del bucket o `rclone crypt`) y aplicar la retención de la sec. 10. **Prueba de restauración trimestral.**
 - **Healthchecks**: el de Coolify/Docker sobre `/api/health` (comprueba BD) habilita despliegues sin corte (rolling) y reinicio automático.
 - **Cron / retención**: recomiendo una **Scheduled Task de Coolify** (`node server/jobs/retention.js`, horaria) porque tiene log visible y no se duplica si hay más de una réplica ni se pierde al reiniciar; alternativa, `node-cron` dentro de la API (más simple pero se ejecuta por réplica).
@@ -205,7 +205,7 @@ Toda escritura pasa por `audit(user, action, entity, before, after)` en la misma
 ## 13. `.env.example` (nombres; en producción van en la UI de Coolify)
 ```
 NODE_ENV=production
-PORT=3001
+PORT=3000
 PUBLIC_URL=https://micaminoesjesus.org
 DB_HOST DB_PORT DB_USER DB_PASS DB_NAME
 DB_SSL=1                    # TLS a RDS
@@ -225,7 +225,7 @@ TRANSLATE_MONTHLY_CAP       # tope de tokens/mes
 ALLERGIES_ENABLED=false     # hasta que exista el responsable legal
 MAIL_DISABLED=false         # true en previews
 S3_BUCKET S3_REGION S3_ACCESS_KEY_ID S3_SECRET_ACCESS_KEY   # backups off-server (AWS S3)
-UPLOAD_DIR=/data/uploads
+UPLOADS_DIR=/data/uploads
 UPLOAD_MAX_MB=8
 FIRST_ADMIN_EMAIL           # el seed crea el primer admin
 ```
