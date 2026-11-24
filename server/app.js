@@ -21,7 +21,7 @@ export async function buildApp() {
 
   await app.register(helmet, {
     contentSecurityPolicy: { directives: {
-      defaultSrc: ["'self'"], scriptSrc: ["'self'", 'https://www.google.com/recaptcha/', 'https://www.gstatic.com/recaptcha/'], frameSrc: ['https://www.google.com/recaptcha/', 'https://recaptcha.google.com/recaptcha/'], imgSrc: ["'self'", 'data:'], connectSrc: ["'self'"],
+      defaultSrc: ["'self'"], scriptSrc: ["'self'", 'https://www.google.com/recaptcha/', 'https://www.gstatic.com/recaptcha/'], frameSrc: ['https://www.google.com/recaptcha/', 'https://recaptcha.google.com/recaptcha/'], imgSrc: ["'self'", 'data:'], connectSrc: ["'self'"], manifestSrc: ["'self'"], workerSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'], fontSrc: ['https://fonts.gstatic.com'],
       frameAncestors: ["'none'"], objectSrc: ["'none'"], upgradeInsecureRequests: config.secureCookies ? [] : null,
     } },
@@ -75,7 +75,10 @@ export async function buildApp() {
     await app.register(staticFiles, {
       root: dist, prefix: '/', wildcard: false, maxAge: '1h', index: false, // '/' goes through renderPage below
       // Vite hashes everything under /assets, so it can be cached for a year; index.html must always be revalidated.
-      setHeaders: (res, path) => res.header('Cache-Control', /[\/]assets[\/]/.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache'),
+      setHeaders: (res, path) => {
+        res.header('Cache-Control', /[\/]assets[\/]/.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache');
+        if (path.endsWith('/panel/sw.js')) res.header('Service-Worker-Allowed', '/panel'); // the panel worker is registered with scope /panel (also covers the URL without a trailing slash)
+      },
     });
     const indexHtml = readFileSync(join(dist, 'index.html'), 'utf8');
     app.setNotFoundHandler(async (req, reply) => {

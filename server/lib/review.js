@@ -9,6 +9,11 @@ export class FlowError extends Error {
   }
 }
 
+// Optional optimistic check for a save: `seen` is the version the client read (undefined = no check).
+export const assertFresh = (row, seen) => {
+  if (seen != null && seen !== row.version) throw new FlowError('version_conflict');
+};
+
 // Pure state machine: borrador|rechazado -submit-> en_revision -approve-> publicado|programado,
 // en_revision -reject(comment)-> rechazado, any edit -> borrador (published content stays live via its snapshot).
 export function nextStatus(status, event, { publishAt = null, now = new Date(), comment = '' } = {}) {

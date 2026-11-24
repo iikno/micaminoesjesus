@@ -58,6 +58,25 @@ export class TranslateError extends Error {
   }
 }
 
+// Background step of "send to review": prepares the English draft the reviewer will see. Never throws and never
+// blocks the submit. Skips a hand-written draft and a still-fresh auto draft; a failure is recorded, not raised.
+// read() -> { row, cur }; translate(row) -> result; save(result) -> false when the draft changed meanwhile; mark(state, code).
+export async function draftOnSubmit({ enabled, read, translate, mark, save }) {
+  if (!enabled) return 'off';
+  try {
+    const { row, cur } = await read();
+    if (cur.fields && cur.source === 'humano') return 'manual';
+    if (cur.fields && cur.source === 'auto' && !cur.stale) return 'cached';
+    await mark('pendiente');
+    if (await save(await translate(row))) return 'saved';
+    await mark(null);
+    return 'skipped';
+  } catch (e) {
+    await mark('fallo', e instanceof TranslateError ? e.message : 'error').catch(() => {});
+    return 'failed';
+  }
+}
+
 // ---- Claude adapter: Messages API over fetch (the project has no SDK dependency; the call is one POST) ----
 const API_BASE = 'https://api.anthropic.com';
 const BATCH_CHARS = 30000;

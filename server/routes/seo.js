@@ -1,5 +1,6 @@
 import { config } from '../config.js';
 import { publishedBySlug, snaps } from '../lib/content.js';
+import { injectPanel, isPanelPath } from '../lib/pwa.js';
 import { buildSitemap, headTags, injectHead, parsePath, robotsTxt, routeOf } from '../lib/seo.js';
 
 const base = () => new URL(config.PUBLIC_URL).origin;
@@ -16,7 +17,9 @@ export default async function seoRoutes(app) {
 
 // index.html with the tags of the requested public route. Unknown paths and the panel get the file untouched.
 export async function renderPage(url, indexHtml) {
-  const { lang, path } = parsePath(new URL(url, 'http://x').pathname);
+  const pathname = new URL(url, 'http://x').pathname;
+  if (isPanelPath(pathname)) return { status: 200, html: injectPanel(indexHtml) };
+  const { lang, path } = parsePath(pathname);
   const route = routeOf(path);
   if (!route) return { status: 200, html: indexHtml };
   let item = null;

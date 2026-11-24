@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useState } from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { ApiError, get, post } from './api';
+import { disablePush } from './pwa';
 import { Skeleton } from './ui';
 
 const Ctx = createContext(null);
@@ -20,7 +21,7 @@ export function AuthProvider({ children }) {
     window.addEventListener('mcj:unauth', out);
     return () => window.removeEventListener('mcj:unauth', out);
   }, [check]);
-  const logout = async () => { await post('/api/auth/logout').catch(() => {}); setUser(null); };
+  const logout = async () => { await disablePush().catch(() => {}); await post('/api/auth/logout').catch(() => {}); setUser(null); };
   // Sections come from the server's permission map (/api/auth/me), never from a copy here.
   const can = (resource, action) => user?.perms?.[resource]?.includes(action) ?? false;
   return <Ctx.Provider value={{ user, setUser, reload: check, error, logout, can }}>{children}</Ctx.Provider>;

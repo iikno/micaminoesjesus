@@ -36,13 +36,13 @@ export default async function regAdminRoutes(app) {
     const out = [];
     for (const kind of R.scopeOf(req.user.role)) {
       const rows = kind === 'session'
-        ? await q(`SELECT e.id, COALESCE(e.title, r.title) title, e.starts_on, e.ends_on, e.cupo, e.registration_mode, e.published_snapshot snap FROM retreat_sessions e LEFT JOIN retreats r ON r.id = e.retreat_id ORDER BY e.starts_on DESC`)
-        : await q('SELECT id, title, starts_on, ends_on, cupo, registration_mode, published_snapshot snap FROM pilgrimages ORDER BY starts_on DESC');
+        ? await q(`SELECT e.id, COALESCE(e.title, r.title) title, e.starts_on, e.ends_on, e.cupo, e.registration_mode, e.place, r.cover, e.published_snapshot snap FROM retreat_sessions e LEFT JOIN retreats r ON r.id = e.retreat_id ORDER BY e.starts_on DESC`)
+        : await q('SELECT id, title, starts_on, ends_on, cupo, registration_mode, place, cover, published_snapshot snap FROM pilgrimages ORDER BY starts_on DESC');
       for (const e of rows) {
         const n = Object.fromEntries(counts.filter((c) => c.kind === kind && c.event_id === e.id).map((c) => [c.status, c.n]));
         if (e.registration_mode !== 'own' && !Object.keys(n).length) continue;
         out.push({
-          kind, id: e.id, title: e.title, starts_on: e.starts_on, ends_on: e.ends_on, mode: e.registration_mode,
+          kind, id: e.id, title: e.title, starts_on: e.starts_on, ends_on: e.ends_on, mode: e.registration_mode, place: e.place ?? null, cover: e.cover ?? null,
           cupo: e.snap ? e.snap.cupo ?? null : e.cupo, published: !!e.snap, counts: n,
         });
       }

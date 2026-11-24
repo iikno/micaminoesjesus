@@ -8,6 +8,8 @@ import { parseKey } from './crypto.js';
 import { verifyCaptcha } from './captcha.js';
 import { localize } from './i18n.js';
 import { trySend } from './mailer.js';
+import { pushFull } from './pushsvc.js';
+import { justFilled } from './push.js';
 import * as R from './regrules.js';
 
 export const TABLE = { session: 'retreat_sessions', pilgrimage: 'pilgrimages' };
@@ -58,6 +60,10 @@ const send = (reg, tpl, ev, extra) => {
 // Mails are queued during the transaction and sent after commit, so a rollback never mails anyone.
 async function flush(mails) {
   for (const m of mails) {
+    if (m.full) { // the spots taken reached the cupo in this transaction; the notice never blocks or breaks the response
+      liveEvent(m.full.kind, m.full.id).then((ev) => pushFull(m.full.kind, m.full.id, ev?.title ?? 'la actividad')).catch((e) => console.error('push full failed:', e.message));
+      continue;
+    }
     const ev = await liveEvent(m.reg.kind, m.reg.event_id, m.reg.lang) ?? { title: '' };
     let pos;
     if (m.tpl === 'waitlist') pos = R.position(await q("SELECT id, queue_at FROM registrations WHERE kind = ? AND event_id = ? AND status = 'lista_espera'", [m.reg.kind, m.reg.event_id]), m.reg.id);
@@ -71,6 +77,15 @@ async function lockEvent(c, kind, id) {
   return { kind, id, cupo: row ? (row.published_snapshot ? row.published_snapshot.cupo ?? null : row.cupo) : null };
 }
 const taken = async (c, ev) => (await c.one("SELECT COUNT(*) n FROM registrations WHERE kind = ? AND event_id = ? AND status IN ('confirmado','oferta')", [ev.kind, ev.id])).n;
+// Run inside the event lock: if the spots taken reach the cupo because of fn, queue one "full" notice.
+// Waitlist joins do not change `taken`, so they never repeat it; it fires again only after spots were freed and refilled.
+async function watchFull(c, ev, fn, mails) {
+  if (ev.cupo == null || !config.pushEnabled) return fn();
+  const before = await taken(c, ev);
+  const out = await fn();
+  if (justFilled(ev.cupo, before, await taken(c, ev))) mails.push({ full: { kind: ev.kind, id: ev.id } });
+  return out;
+}
 const setStatus = (c, id, status, extra = {}) => c.q(`UPDATE registrations SET status = ?${Object.keys(extra).map((k) => `, ${k} = ?`).join('')} WHERE id = ?`, [status, ...Object.values(extra), id]);
 
 // Fills free spots from the waitlist: each person gets an offer valid 48h.
@@ -94,14 +109,14 @@ async function act(id, fn) {
   const out = await tx(async (c) => {
     const ev = await lockEvent(c, head.kind, head.event_id);
     const reg = await c.one('SELECT * FROM registrations WHERE id = ? FOR UPDATE', [id]);
-    return fn(c, reg, ev, mails);
+    return watchFull(c, ev, () => fn(c, reg, ev, mails), mails);
   });
   await flush(mails);
   return out;
 }
 export async function withEvent(kind, eventId, fn) {
   const mails = [];
-  const out = await tx(async (c) => fn(c, await lockEvent(c, kind, eventId), mails));
+  const out = await tx(async (c) => { const ev = await lockEvent(c, kind, eventId); return watchFull(c, ev, () => fn(c, ev, mails), mails); });
   await flush(mails);
   return out;
 }

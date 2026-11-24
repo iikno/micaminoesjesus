@@ -4,12 +4,14 @@ import { authenticate, csrf } from '../lib/auth.js';
 import { ENTITIES, snapshotOf, toColumns } from '../lib/entities.js';
 import { labelOf, notifyDecision, notifySubmitted } from '../lib/notify.js';
 import { can } from '../lib/perm.js';
-import { FlowError, canDecide, nextStatus, planApproval } from '../lib/review.js';
+import { pushDecision, pushSubmitted } from '../lib/pushsvc.js';
+import { FlowError, assertFresh, canDecide, nextStatus, planApproval } from '../lib/review.js';
 import * as s from '../lib/schemas.js';
 import { inviteUser } from '../lib/users.js';
 import { srcHash } from '../lib/translate.js';
-import { autoTranslate, getTranslation, putTranslation, sourceFields } from '../lib/translations.js';
+import { autoTranslate, getTranslation, putTranslation, sourceFields, translateOnSubmit } from '../lib/translations.js';
 import mediaRoutes from './media.js';
+import pushRoutes from './push.js';
 import regAdminRoutes from './regadmin.js';
 import translateRoutes from './translate.js';
 import { one, q, tx } from '../db.js';
@@ -63,6 +65,7 @@ export default async function adminRoutes(app) {
       if (before.status === 'invited' && patch.status) fail(409, 'user_not_active_yet');
       await c.q(`UPDATE users SET ${SET(patch)} WHERE id = ?`, [...Object.values(patch), id]);
       if (patch.status === 'disabled' || patch.role) await c.q('DELETE FROM sessions WHERE user_id = ?', [id]);
+      if (patch.status === 'disabled') await c.q('DELETE FROM push_subscriptions WHERE user_id = ?', [id]);
       await audit(c, req, 'update', 'users', id, diffOf(before, patch));
     });
     return reply.code(204).send();
@@ -71,6 +74,7 @@ export default async function adminRoutes(app) {
   await app.register(mediaRoutes);
   await app.register(translateRoutes);
   await app.register(regAdminRoutes);
+  await app.register(pushRoutes);
 
   // ---- review queue and audit log ----
   app.get('/api/admin/reviews/pending', async (req, reply) => {
@@ -79,11 +83,11 @@ export default async function adminRoutes(app) {
     const out = [];
     for (const [key, e] of mine) {
       const rows = await q(
-        `SELECT r.id review_id, r.entity_id, r.version rv_version, r.submitted_by rv_by, r.created_at rv_at, t.*
-           FROM reviews r JOIN ${e.table} t ON t.id = r.entity_id WHERE r.entity = ? AND r.decision = 'pendiente' ORDER BY r.created_at`, [key]);
+        `SELECT r.id review_id, r.entity_id, r.version rv_version, r.submitted_by rv_by, r.created_at rv_at, u.name rv_name, t.*
+           FROM reviews r JOIN ${e.table} t ON t.id = r.entity_id LEFT JOIN users u ON u.id = r.submitted_by WHERE r.entity = ? AND r.decision = 'pendiente' ORDER BY r.created_at`, [key]);
       for (const r of rows) {
         out.push({ review_id: r.review_id, entity: key, id: r.entity_id, label: labelOf(r), version: r.rv_version,
-          submitted_by: r.rv_by, own: r.rv_by === req.user.id, hours: Math.floor((Date.now() - new Date(r.rv_at)) / 3600e3) });
+          submitted_by: r.rv_by, submitted_by_name: r.rv_name, own: r.rv_by === req.user.id, hours: Math.floor((Date.now() - new Date(r.rv_at)) / 3600e3) });
       }
     }
     return out;
@@ -146,15 +150,19 @@ export default async function adminRoutes(app) {
     });
 
     g.patch('/api/admin/:entity/:id', { preHandler: needs('write') }, async (req, reply) => {
-      const cols = toColumns(req.ent, req.ent.patch.parse(req.body));
+      const { version: seen, ...body } = req.body ?? {}; // optional: the version the client read; a mismatch is a 409 version_conflict
+      const expect = seen === undefined ? undefined : z.int().min(1).parse(seen);
+      const cols = toColumns(req.ent, req.ent.patch.parse(body));
       if (!Object.keys(cols).length) return reply.code(400).send({ error: 'empty_patch' });
-      await tx(async (c) => {
+      const version = await tx(async (c) => {
         const row = await lockRow(c, req.ent, req.params.id);
+        assertFresh(row, expect);
         const status = nextStatus(row.status, 'edit'); // throws while under review
         await c.q(`UPDATE ${req.ent.table} SET ?, status = ?, version = version + 1, updated_by = ? WHERE id = ?`, [cols, status, req.user.id, row.id]);
         await audit(c, req, 'update', req.params.entity, row.id, diffOf(row, cols));
+        return row.version + 1;
       });
-      return reply.code(204).send();
+      return { version };
     });
 
     // Only never-published items can be deleted; unpublishing live content is a later phase.
@@ -179,6 +187,8 @@ export default async function adminRoutes(app) {
         await audit(c, req, 'submit', req.params.entity, r.id, { version: r.version });
         return r;
       });
+      translateOnSubmit(req.ent, req.params.entity, row.id, req); // English draft for the reviewer, in the background
+      pushSubmitted(req.params.entity, req.ent.resource, req.user); // not awaited: a slow push service must not delay the answer
       await notifySubmitted(req.params.entity, row, req.user);
       return reply.code(202).send({ status: 'en_revision' });
     });
@@ -211,6 +221,7 @@ export default async function adminRoutes(app) {
         await audit(c, req, event, req.params.entity, r.id, { version: rv.version, comment: comment || null });
         return { row: r, review: rv };
       });
+      pushDecision(req.params.entity, row.id, review.submitted_by, event === 'approve');
       await notifyDecision(req.params.entity, row, review.submitted_by, req.user, event === 'approve' ? 'aprobado' : 'rechazado', comment);
       return reply.code(200).send({ ok: true });
     };

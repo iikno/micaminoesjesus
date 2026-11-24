@@ -34,7 +34,7 @@ export const ENTITIES = {
 export const snapshotOf = (e, row, en = null) => {
   const out = { id: row.id };
   for (const k of e.snap) out[k] = e.bool?.includes(k) ? !!row[k] : row[k];
-  if (en) out.en = en;
+  if (en && Object.keys(en).length) out.en = en;
   return out;
 };
 

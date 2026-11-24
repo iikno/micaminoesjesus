@@ -5,7 +5,9 @@ import { Async, Confirm, Empty, Field, PageHead, fmtDate, useLoad, useToast } fr
 import { imgUrl } from '../lib/img';
 
 const thumbSrc = (m) => `/api/admin/media/${m.id}/raw?thumb=1`;
-export const MEDIA_REF = /^media:(\d+)$/;
+const MEDIA_REF = /^media:(\d+)$/;
+// Photo for a cover/photo value: an uploaded media reference, a bundled legacy file, or null.
+export const photoUrl = (v) => { const m = MEDIA_REF.exec(v ?? ''); return m ? `/api/admin/media/${m[1]}/raw?thumb=1` : imgUrl(v); };
 
 // Upload button shared by the library screen and the picker.
 function UploadButton({ onDone, disabled }) {

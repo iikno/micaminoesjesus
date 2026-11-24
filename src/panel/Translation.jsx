@@ -2,7 +2,7 @@ import { useState } from 'react';
 import BodyEditor, { Rows, Text } from './BodyEditor';
 import { bodyErrors, bodyToForm, formToBody } from './body';
 import { ApiError, errText, get, post, put } from './api';
-import { fmtDateTime, useLoad } from './ui';
+import { Pill, fmtDateTime, useLoad } from './ui';
 
 const SOURCE = { auto: 'Traducción automática (borrador)', humano: 'Escrita o corregida a mano' };
 const short = (v) => { const s = typeof v === 'string' ? v : ''; return s.length > 140 ? `${s.slice(0, 140)}…` : s; };
@@ -73,10 +73,12 @@ function Body({ res, item, t, usage, warn, setWarn, canWrite, locked, esDirty, t
   return (
     <div className="tr-card">
       <p className="p-num">
-        <span className={`pill pill-${!t.fields ? 'borrador' : t.source === 'auto' ? 'en_revision' : 'publicado'}`}>{status}</span>
-        {t.stale && <span className="pill pill-rechazado" role="status"> Desactualizada: el español cambió</span>}
+        <Pill status={!t.fields ? 'borrador' : t.source === 'auto' ? 'en_revision' : 'publicado'}>{status}</Pill>
+        {t.stale && <Pill status="rechazado"> Desactualizada: el español cambió</Pill>}
       </p>
       <p className="help">El inglés pasa por la misma revisión que el español y se publica con él. Las citas bíblicas no se traducen aquí: se escriben a mano en Versículos.</p>
+      {t.auto?.state === 'pendiente' && <p className="help" role="status">Se está preparando el inglés automático que se envió con la revisión.</p>}
+      {t.auto?.state === 'fallo' && <p className="help" role="status">No se pudo preparar el inglés al enviar a revisión ({errText({ code: t.auto.error })}) Puedes usar «Traducir automáticamente».</p>}
       {esDirty && <p className="help" role="status">Guarda primero los cambios del español.</p>}
       {canWrite && usage && (
         <p className="help">

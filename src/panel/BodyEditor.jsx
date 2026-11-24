@@ -55,7 +55,10 @@ export const Text = ({ label, value, onChange, disabled, rows, help }) => (
 );
 
 // `value` is the form state from bodyToForm(); `onChange` receives the next state.
-export default function BodyEditor({ value: f, onChange, disabled, error }) {
+// compact: the rarely used sections fold into one "Más secciones" block (open when they already have content).
+const Fold = ({ compact, open, children }) => (compact ? <details className="fold" open={open}><summary>Más secciones: temas, ficha técnica y cronograma</summary>{children}</details> : children);
+
+export default function BodyEditor({ value: f, onChange, disabled, error, compact }) {
   const up = (patch) => onChange({ ...f, ...patch });
   return (
     <div className="body-editor span2">
@@ -73,6 +76,7 @@ export default function BodyEditor({ value: f, onChange, disabled, error }) {
         </>)}
       </Rows>
 
+      <Fold compact={compact} open={!!(f.temas.length || f.fichaTecnica.length || f.cronograma.length)}>
       <Rows legend="Pedagogía vivencial: temas" noun="Tema" empty="Aún no hay temas." items={f.temas} onChange={(temas) => up({ temas })} disabled={disabled}
         blank={{ titulo: '', resumen: '', puntos: [], evocacion: '', actividadIntroductoria: '', contenido: '', actividadesAdicionales: '', simbolos: [], reflexion: '' }}>
         {(t, set) => (<>
@@ -103,6 +107,7 @@ export default function BodyEditor({ value: f, onChange, disabled, error }) {
           <Field label="Duración (minutos)">{(p) => <input {...p} type="number" inputMode="numeric" min="0" max="1440" value={x.duracionMinutos} onChange={(e) => set({ duracionMinutos: e.target.value })} />}</Field>
         </>)}
       </Rows>
+      </Fold>
     </div>
   );
 }

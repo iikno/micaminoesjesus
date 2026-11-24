@@ -1,41 +1,98 @@
 import { get } from './api';
+import { photoUrl } from './Media';
+import { PendingGroups, pendingCount, usePending } from './Pendientes';
 import { RESOURCES } from './resources';
 import { useAuth } from './session';
-import { Async, Empty, PLink, PageHead, STATUS, StatusPill, fmtDate, useLoad } from './ui';
+import { InstallCard } from './Instalar';
+import { Async, Empty, ICONS, Icon, PLink, PageHead, STATUS, StatusPill, useLoad } from './ui';
 
 const ORDER = ['borrador', 'en_revision', 'programado', 'publicado', 'rechazado'];
+const day = (v) => new Date(`${v}T12:00:00`);
+
+// Big, labelled buttons for what this role does most.
+const ACTIONS = [
+  ['retreats', 'write', '/panel/retiros/nuevo', 'Nuevo retiro'],
+  ['sessions', 'write', '/panel/fechas/nuevo', 'Nueva fecha'],
+  ['pilgrimages', 'write', '/panel/peregrinaciones/nuevo', 'Nueva peregrinación'],
+];
 
 export default function Dashboard() {
   const { user, can } = useAuth();
+  const pend = usePending();
   const list = Object.values(RESOURCES).filter((r) => can(r.perm, 'read'));
   const approver = list.some((r) => can(r.perm, 'approve'));
-  const load = useLoad(async () => {
-    const [sets, pending, mine] = await Promise.all([
-      Promise.all(list.map((r) => get(`/api/admin/${r.entity}`).then((rows) => [r, rows]))),
-      approver ? get('/api/admin/reviews/pending') : [],
-      get('/api/admin/reviews/mine'),
-    ]);
-    const inbox = can('contact', 'read') ? await get('/api/admin/contact/summary') : null;
-    return { sets, pending, mine, inbox };
-  }, [user.id]);
+  const load = useLoad(async () => Promise.all(list.map((r) => get(`/api/admin/${r.entity}`).then((rows) => [r, rows]))), [user.id]);
+  const acts = ACTIONS.filter(([res, act]) => can(res, act));
+  const waiting = pendingCount(pend.data);
 
   return (
     <>
-      <PageHead title={`Hola, ${user.name.split(' ')[0]}`} sub="Resumen de lo que está a tu alcance." />
+      <PageHead title={`Hola, ${user.name.split(' ')[0]}`} sub="¿Qué quieres hacer hoy?" />
+      <InstallCard />
+      <div className="big-actions">
+        {acts.map(([, , to, label], i) => <PLink key={to} className={`p-btn p-btn-big${i ? '' : ' p-btn-primary'}`} to={to}><Icon d={ICONS.plus} />{label}</PLink>)}
+        {can('registrations', 'read') && <PLink className="p-btn p-btn-big" to="/panel/inscripciones"><Icon d={ICONS.regs} />Ver inscritos</PLink>}
+        {approver && <PLink className={`p-btn p-btn-big${acts.length ? '' : ' p-btn-primary'}`} to="/panel/revision"><Icon d={ICONS.review} />Revisar lo pendiente{pend.data ? ` (${pend.data.pending.length})` : ''}</PLink>}
+      </div>
+
+      <section className="card" aria-labelledby="h-today">
+        <h2 id="h-today">Te espera hoy{waiting > 0 && <span className="count p-num">{waiting}</span>}</h2>
+        <PendingGroups limit={3} />
+        {waiting > 0 && <PLink className="p-btn" to="/panel/pendientes">Ver todo lo pendiente</PLink>}
+      </section>
+
       <Async load={load} rows={6}>
-        {({ sets, pending, mine, inbox }) => {
-          const totals = Object.fromEntries(ORDER.map((s) => [s, sets.reduce((n, [, rows]) => n + rows.filter((r) => r.status === s).length, 0)]));
-          const drafts = sets.flatMap(([r, rows]) => rows.filter((x) => x.created_by === user.id && (x.status === 'borrador' || x.status === 'rechazado')).map((x) => ({ r, x })));
-          const comment = (r, x) => mine.find((m) => m.entity === r.entity && m.id === x.id)?.comment;
+        {(sets) => {
           const today = new Date().toISOString().slice(0, 10);
+          const covers = Object.fromEntries((sets.find(([r]) => r.entity === 'retreats')?.[1] ?? []).map((x) => [x.id, x.cover]));
+          const drafts = sets.flatMap(([r, rows]) => rows.filter((x) => x.created_by === user.id && (x.status === 'borrador' || x.status === 'rechazado')).map((x) => ({ r, x })));
           const next = sets.flatMap(([r, rows]) => (['sessions', 'pilgrimages'].includes(r.entity) ? rows.filter((x) => x.starts_on >= today && x.status !== 'rechazado').map((x) => ({ r, x })) : []))
             .sort((a, b) => a.x.starts_on.localeCompare(b.x.starts_on)).slice(0, 5);
+          const comment = (r, x) => pend.data?.mine.find((m) => m.entity === r.entity && m.id === x.id)?.comment;
           return (
-            <div className="dash">
-              <section aria-labelledby="h-status">
-                <h2 id="h-status" className="sr-only">Contenido por estado</h2>
+            <>
+              <section aria-labelledby="h-next">
+                <h2 id="h-next">Próximas fechas</h2>
+                {!next.length ? <Empty title="Sin fechas próximas.">Las fechas de retiros y peregrinaciones que registres aparecerán aquí.</Empty> : (
+                  <ul className="date-cards">
+                    {next.map(({ r, x }) => {
+                      const src = photoUrl(r.entity === 'sessions' ? covers[x.retreat_id] : x.cover);
+                      const d = day(x.starts_on);
+                      return (
+                        <li key={`${r.entity}${x.id}`}>
+                          <PLink className="date-card" to={`/panel/${r.path}/${x.id}`}>
+                            {src ? <img src={src} alt="" loading="lazy" /> : <span className="date-block" aria-hidden="true"><span className="p-num">{d.getDate()}</span>{d.toLocaleDateString('es-MX', { month: 'short' })}</span>}
+                            <span className="date-text">
+                              <strong>{r.label(x)}</strong>
+                              <span>{r.entity === 'sessions' ? 'Fecha de retiro' : 'Peregrinación'} · {d.toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long' })}</span>
+                              <StatusPill status={x.status} />
+                            </span>
+                          </PLink>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                )}
+              </section>
+
+              <section className="card" aria-labelledby="h-mine">
+                <h2 id="h-mine">Lo que estás escribiendo</h2>
+                {!drafts.length ? <p className="help">No tienes nada en proceso.</p> : (
+                  <ul className="list">
+                    {drafts.map(({ r, x }) => (
+                      <li key={`${r.entity}${x.id}`}>
+                        <PLink to={`/panel/${r.path}/${x.id}`}>{r.label(x)}</PLink> <StatusPill status={x.status} />
+                        {x.status === 'rechazado' && comment(r, x) && <blockquote>{comment(r, x)}</blockquote>}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </section>
+
+              <details className="card summary-box">
+                <summary>Resumen por estado</summary>
                 <ul className="p-tiles">
-                  {ORDER.map((s) => <li key={s} className={`p-tile p-tile-${s}`}><span className="p-tile-n p-num">{totals[s]}</span><span>{STATUS[s]}</span></li>)}
+                  {ORDER.map((s) => <li key={s} className={`p-tile p-tile-${s}`}><span className="p-tile-n p-num">{sets.reduce((n, [, rows]) => n + rows.filter((r) => r.status === s).length, 0)}</span><span>{STATUS[s]}</span></li>)}
                 </ul>
                 <div className="table-wrap">
                   <table className="tbl">
@@ -48,51 +105,8 @@ export default function Dashboard() {
                     </tbody>
                   </table>
                 </div>
-              </section>
-
-              {inbox && (
-                <section className="card" aria-labelledby="h-inbox">
-                  <h2 id="h-inbox">Bandeja de contacto <span className="count p-num">{inbox.nuevos}</span></h2>
-                  <p className="help">{inbox.nuevos} mensaje(s) nuevo(s) · {inbox.arco_abiertos} solicitud(es) ARCO abiertas{inbox.arco_vencidos ? ` · ${inbox.arco_vencidos} vencida(s)` : ''}.</p>
-                  <PLink className="p-btn p-btn-sm" to="/panel/contacto">Abrir la bandeja</PLink>
-                </section>
-              )}
-
-              {approver && (
-                <section className="card" aria-labelledby="h-pend">
-                  <h2 id="h-pend">Pendientes de revisión <span className="count p-num">{pending.length}</span></h2>
-                  {!pending.length ? <p className="help">No hay nada esperando decisión.</p> : (
-                    <ul className="list">
-                      {pending.slice(0, 6).map((p) => <li key={p.review_id}><PLink to="/panel/revision">{p.label}</PLink> <span className="help">· {RESOURCES[p.entity].one} · hace {p.hours} h{p.own ? ' · tuyo' : ''}</span></li>)}
-                    </ul>
-                  )}
-                  {pending.length > 0 && <PLink className="p-btn p-btn-sm" to="/panel/revision">Abrir la cola</PLink>}
-                </section>
-              )}
-
-              <section className="card" aria-labelledby="h-mine">
-                <h2 id="h-mine">Mis borradores y rechazados</h2>
-                {!drafts.length ? <p className="help">No tienes borradores pendientes.</p> : (
-                  <ul className="list">
-                    {drafts.map(({ r, x }) => (
-                      <li key={`${r.entity}${x.id}`}>
-                        <PLink to={`/panel/${r.path}/${x.id}`}>{r.label(x)}</PLink> <StatusPill status={x.status} />
-                        {x.status === 'rechazado' && comment(r, x) && <blockquote>{comment(r, x)}</blockquote>}
-                      </li>
-                    ))}
-                  </ul>
-                )}
-              </section>
-
-              <section className="card" aria-labelledby="h-next">
-                <h2 id="h-next">Próximas fechas</h2>
-                {!next.length ? <Empty title="Sin fechas próximas.">Las fechas de retiros y peregrinaciones que registres aparecerán aquí.</Empty> : (
-                  <ul className="list">
-                    {next.map(({ r, x }) => <li key={`${r.entity}${x.id}`}><span className="p-num">{fmtDate(x.starts_on)}</span> · <PLink to={`/panel/${r.path}/${x.id}`}>{r.label(x)}</PLink> <StatusPill status={x.status} /></li>)}
-                  </ul>
-                )}
-              </section>
-            </div>
+              </details>
+            </>
           );
         }}
       </Async>

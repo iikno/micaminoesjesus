@@ -33,8 +33,10 @@ const schema = z.object({
   REG_ENC_KEY: z.string().regex(/^([0-9a-f]{64}|[A-Za-z0-9+\/]{43}=)$/i, 'REG_ENC_KEY must be 32 bytes: 64 hex chars or base64').optional(), ALLERGIES_ENABLED: bool, RECAPTCHA_MIN_SCORE: z.coerce.number().min(0).max(1).default(0.5),
   RECAPTCHA_VERIFY_URL: opt, // test-only: ignored in production
   ADMIN_USER: opt, ADMIN_PASS: opt, ADMIN_NAME: opt, // first admin on first start (see lib/bootstrapAdmin.js); ignored once an admin exists
+  VAPID_PUBLIC_KEY: opt, VAPID_PRIVATE_KEY: opt, VAPID_SUBJECT: opt, // panel push; both keys or neither (see docs/deploy-coolify.md 3c). Without them the panel offers no avisos
   S3_BUCKET: opt, S3_REGION: opt, S3_ACCESS_KEY_ID: opt, S3_SECRET_ACCESS_KEY: opt,
-}).refine((e) => e.MAIL_DISABLED || e.SMTP_HOST, { message: 'SMTP_HOST is required unless MAIL_DISABLED=1', path: ['SMTP_HOST'] });
+}).refine((e) => !!e.VAPID_PUBLIC_KEY === !!e.VAPID_PRIVATE_KEY, { message: 'VAPID_PUBLIC_KEY and VAPID_PRIVATE_KEY go together', path: ['VAPID_PRIVATE_KEY'] })
+  .refine((e) => e.MAIL_DISABLED || e.SMTP_HOST, { message: 'SMTP_HOST is required unless MAIL_DISABLED=1', path: ['SMTP_HOST'] });
 
 // Production-only guards, checked on the raw env so defaults cannot hide a missing variable.
 const prodChecks = (env) => {
@@ -61,6 +63,7 @@ export function parseConfig(env) {
   return {
     ...c,
     uploadsDir: c.UPLOADS_DIR || c.UPLOAD_DIR,
+    pushEnabled: !!(c.VAPID_PUBLIC_KEY && c.VAPID_PRIVATE_KEY),
     isProd: c.NODE_ENV === 'production',
     captchaUrl: c.NODE_ENV === 'production' ? undefined : c.RECAPTCHA_VERIFY_URL,
     secureCookies: origin.startsWith('https:'),

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { FlowError, nextStatus, reminderDue } from '../lib/review.js';
+import { FlowError, assertFresh, nextStatus, reminderDue } from '../lib/review.js';
 
 const H = 3600e3;
 
@@ -56,4 +56,10 @@ test('promotionDue only when a pending snapshot exists and its time passed', () 
   assert.ok(promotionDue({ pending_snapshot: {}, pending_from: '2025-12-31T00:00:00Z' }, now));
   assert.ok(!promotionDue({ pending_snapshot: {}, pending_from: '2026-01-02T00:00:00Z' }, now));
   assert.ok(!promotionDue({ pending_snapshot: null, pending_from: '2025-12-31T00:00:00Z' }, now));
+});
+
+test('assertFresh: no version = no check; a stale version is a 409 version_conflict (not the duplicate-slug error)', () => {
+  assert.doesNotThrow(() => assertFresh({ version: 4 }));
+  assert.doesNotThrow(() => assertFresh({ version: 4 }, 4));
+  assert.throws(() => assertFresh({ version: 5 }, 4), (e) => e instanceof FlowError && e.status === 409 && e.message === 'version_conflict');
 });

@@ -1,5 +1,5 @@
-import { useMemo, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
+import { useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { ApiError, del, errText, fieldErrors, get, patch, post } from './api';
 import { useAuth, useCatalogs } from './session';
 import BodyEditor from './BodyEditor';
@@ -8,14 +8,17 @@ import { MediaPicker } from './Media';
 import PendingChange from './Pending';
 import { RESOURCES } from './resources';
 import Translation from './Translation';
+import { ChoiceCards, RetreatPick, StepBar, Summary } from './Wizard';
+import { layout, locate, minimalOk, norm, slugify, withSuffix } from './wizard';
 import {
-  Async, Confirm, Empty, Field, PLink, PageHead, StatusPill, fmtDate, fmtDateTime, fromLocalInput,
+  Async, Confirm, Empty, Field, Icon, PLink, PageHead, Pill, STATUS, StatusPill, fmtDate, fmtDateTime, fromLocalInput,
   clearDirty, toLocalInput, useDirty, useLoad, useToast,
 } from './ui';
 
-const norm = (s) => (s ?? '').toString().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
 // Retreat titles for the Fechas screens; only users who can read retreats get them.
 const useRetreats = (can) => useLoad(() => (can('retreats', 'read') ? get('/api/admin/retreats') : Promise.resolve([])), []);
+
+const nuevo = (res) => `${res.fem ? 'Nueva' : 'Nuevo'} ${res.one}`;
 
 // ------------------------------------------------------------ list
 export function ContentList({ res }) {
@@ -32,15 +35,22 @@ export function ContentList({ res }) {
 
   return (
     <>
+      {(isRetreat || res.entity === 'sessions') && can('retreats', 'read') && can('sessions', 'read') && (
+        <nav className="seg" aria-label="Retiros y fechas">
+          {[['retreats', 'retiros', 'Retiros'], ['sessions', 'fechas', 'Fechas']].map(([e, path, label]) => (
+            <PLink key={e} to={`/panel/${path}`} aria-current={e === res.entity ? 'page' : undefined}>{label}</PLink>
+          ))}
+        </nav>
+      )}
       <PageHead title={res.title}>
-        {canWrite && <PLink className="p-btn p-btn-primary" to={`/panel/${res.path}/nuevo${f.retreat ? `?retiro=${f.retreat}` : ''}`}>Nuevo {res.one}</PLink>}
+        {canWrite && <PLink className="p-btn p-btn-primary" to={`/panel/${res.path}/nuevo${f.retreat ? `?retiro=${f.retreat}` : ''}`}>{nuevo(res)}</PLink>}
       </PageHead>
       <div className="filters" role="search">
         <label>Buscar<input type="search" value={f.q} onChange={(e) => set('q', e.target.value)} placeholder="Texto del título…" /></label>
         <label>Estado
           <select value={f.status} onChange={(e) => set('estado', e.target.value)}>
             <option value="">Todos</option>
-            {['borrador', 'en_revision', 'programado', 'publicado', 'rechazado'].map((s) => <option key={s} value={s}>{{ borrador: 'Borrador', en_revision: 'En revisión', programado: 'Programado', publicado: 'Publicado', rechazado: 'Rechazado' }[s]}</option>)}
+            {Object.entries(STATUS).map(([s, label]) => <option key={s} value={s}>{label}</option>)}
           </select>
         </label>
         {isRetreat && <>
@@ -57,7 +67,7 @@ export function ContentList({ res }) {
             && (!f.status || r.status === f.status) && (!f.derej || r.derej_slug === f.derej)
             && (!f.season || r.season_slug === f.season || r.season_secondary?.includes(f.season)) && (!f.retreat || String(r.retreat_id) === f.retreat))
             .sort((a, b) => (res.entity === 'sessions' ? a.starts_on.localeCompare(b.starts_on) : new Date(b.updated_at) - new Date(a.updated_at)));
-          if (!rows.length) return <Empty title={`Aún no hay ${res.title.toLowerCase()}.`}>{canWrite ? `Crea el primero con el botón “Nuevo ${res.one}”.` : 'Cuando alguien los cree aparecerán aquí.'}</Empty>;
+          if (!rows.length) return <Empty title={`Aún no hay ${res.title.toLowerCase()}.`}>{canWrite ? `Crea el primero con el botón “${nuevo(res)}”.` : 'Cuando alguien los cree aparecerán aquí.'}</Empty>;
           if (!shown.length) return <Empty title="Nada coincide con esos filtros.">Prueba quitar alguno.</Empty>;
           return (
             <div className="table-wrap">
@@ -136,13 +146,15 @@ function validate(res, st) {
 }
 
 // ------------------------------------------------------------ inputs
-function Inputs({ res, st, setSt, errors, ctx, disabled }) {
+function Inputs({ res, fields = res.fields, st, setSt, errors, ctx, disabled }) {
   const up = (n, v) => setSt((s) => ({ ...s, [n]: v }));
   return (
     <div className="p-grid">
-      {res.fields.map((f) => {
+      {fields.map((f) => {
         const err = errors[f.n];
         const wrap = f.full ? 'span2' : '';
+        if (f.pick === 'retreat') return <div key={f.n} className="span2"><RetreatPick f={f} value={st[f.n]} onChange={(v) => up(f.n, v)} retreats={ctx.retreats ?? []} derej={ctx.derej} error={err} disabled={disabled} /></div>;
+        if (f.cards) return <div key={f.n} className="span2"><ChoiceCards f={f} value={st[f.n]} onChange={(v) => up(f.n, v)} opts={f.opts(ctx)} meta={(v) => f.cards(v, ctx)} error={err} disabled={disabled} /></div>;
         if (f.t === 'bool') {
           return <div key={f.n} className={`p-field ${wrap}`}><label className="p-check"><input type="checkbox" checked={st[f.n]} disabled={disabled} onChange={(e) => up(f.n, e.target.checked)} /> {f.label}</label></div>;
         }
@@ -161,7 +173,7 @@ function Inputs({ res, st, setSt, errors, ctx, disabled }) {
           return <div key={f.n} className={wrap}><MediaPicker label={f.label} help={f.help} error={err} value={st[f.n]} disabled={disabled} onChange={(v) => up(f.n, v)} /></div>;
         }
         if (f.t === 'body') {
-          return <fieldset key={f.n} className={`p-field ${wrap}`}><legend>{f.label}</legend><BodyEditor value={st[f.n]} onChange={(v) => up(f.n, v)} disabled={disabled} error={err} /></fieldset>;
+          return <fieldset key={f.n} className={`p-field ${wrap}`}><legend>{f.label}</legend><BodyEditor value={st[f.n]} onChange={(v) => up(f.n, v)} disabled={disabled} error={err} compact={!!res.steps} /></fieldset>;
         }
         if (f.t === 'itin') {
           const rows = st[f.n];
@@ -205,13 +217,20 @@ function Inputs({ res, st, setSt, errors, ctx, disabled }) {
 }
 
 // ------------------------------------------------------------ form screen
-// Keyed by id so moving from /nuevo to the saved item remounts instead of rendering stale (null) data.
-export const ContentForm = (props) => <FormScreen key={useParams().id} {...props} />;
+// Opening another record remounts the screen. When this screen creates its own record the address changes
+// (/nuevo -> /12?paso=3) but the form stays: same text, same step, and reloading opens that draft.
+export function ContentForm(props) {
+  const where = `${props.res.entity}:${useParams().id}`;
+  const k = useRef({ where, n: 0, own: null });
+  if (k.current.where !== where) k.current = { where, n: k.current.n + (where === k.current.own ? 0 : 1), own: where === k.current.own ? where : null };
+  return <FormScreen key={k.current.n} {...props} claim={(id) => { k.current.own = `${props.res.entity}:${id}`; }} />;
+}
 
-function FormScreen({ res }) {
+function FormScreen({ res, claim }) {
   const { id: idParam } = useParams();
-  const isNew = idParam === 'nuevo';
-  const id = isNew ? null : Number(idParam);
+  const [started] = useState(idParam === 'nuevo'); // stays true after the address learns the id
+  // A step-by-step form that creates its record on the first save keeps the screen (and its place) and just learns the id.
+  const [rid, setRid] = useState(started ? null : Number(idParam));
   const { can } = useAuth();
   const nav = useNavigate();
   const toast = useToast();
@@ -219,54 +238,179 @@ function FormScreen({ res }) {
   const cat = useCatalogs();
   const retreats = useRetreats(can);
   const ctx = { ...cat, retreats: retreats.data ?? [] };
-  const item = useLoad(() => (isNew ? Promise.resolve(null) : get(`/api/admin/${res.entity}/${id}`)), [res.entity, idParam]);
-  const reviews = useLoad(() => (isNew ? Promise.resolve([]) : get(`/api/admin/${res.entity}/${id}/reviews`)), [res.entity, idParam]);
+  const item = useLoad(() => (rid ? get(`/api/admin/${res.entity}/${rid}`) : Promise.resolve(null)), [res.entity, rid]);
+  const reviews = useLoad(() => (rid ? get(`/api/admin/${res.entity}/${rid}/reviews`) : Promise.resolve([])), [res.entity, rid]);
   const reload = () => { item.reload(); reviews.reload(); };
+  const body = (it) => (
+    <FormBody key={res.steps ? res.entity : `${res.entity}${idParam}${it?.version}${it?.status}`} res={res} item={it} isNew={!rid} reviews={reviews.data ?? []}
+      seed={{ retreat_id: sp.get('retiro') ?? '' }} startStep={Number(sp.get('paso')) || 1} ctx={ctx} can={can} nav={nav} toast={toast} reload={reload} onCreated={(id) => { claim(id); setRid(id); }} />
+  );
 
   return (
     <>
-      <nav aria-label="Ruta" className="crumbs"><PLink to={`/panel/${res.path}`}>{res.title}</PLink> <span aria-hidden="true">/</span> <span>{isNew ? `Nuevo ${res.one}` : 'Editar'}</span></nav>
-      <Async load={item}>
-        {(it) => (
-          <FormBody key={`${res.entity}${idParam}${it?.version}${it?.status}`} res={res} item={it} isNew={isNew} reviews={reviews.data ?? []}
-            seed={{ retreat_id: sp.get('retiro') ?? '' }} ctx={ctx} can={can} nav={nav} toast={toast} reload={reload} />
-        )}
-      </Async>
+      <nav aria-label="Ruta" className="crumbs"><PLink to={`/panel/${res.path}`}>{res.title}</PLink> <span aria-hidden="true">/</span> <span>{rid ? 'Editar' : nuevo(res)}</span></nav>
+      {/* Once the steps are on screen a failed background reload must never replace them (and the text typed in them). */}
+      {res.steps && (item.data || started) ? body(item.data) : <Async load={item}>{body}</Async>}
     </>
   );
 }
 
-function FormBody({ res, item, isNew, reviews, seed, ctx, can, nav, toast, reload }) {
-  const initial = useMemo(() => toState(res, item, seed), [res, item, seed]);
-  const [st, setSt] = useState(initial);
+function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, toast, reload, onCreated }) {
+  const wiz = !!res.steps;
+  const hasSlug = res.fields.some((f) => f.n === 'slug');
+  const [init] = useState(() => toState(res, item, seed));
+  const [st, setSt] = useState(init);
+  const [base, setBase] = useState(() => JSON.stringify(init)); // the last state the server has
   const [errors, setErrors] = useState({});
   const [busy, setBusy] = useState('');
   const [confirmDel, setConfirmDel] = useState(false);
-  const dirty = JSON.stringify(st) !== JSON.stringify(initial);
+  const [step, setStep] = useState(() => (wiz && item ? Math.min(Math.max(startStep, 1), res.steps.length) - 1 : 0)); // reloading /12?paso=3 reopens step 3
+  const [max, setMax] = useState(step);
+  const [made, setMade] = useState(item?.id ?? null); // id of the saved record: the address follows it
+  const [conflict, setConflict] = useState(null); // someone else saved first: { latest, changed }
+  const loc = useLocation();
+  const [moreOpen, setMoreOpen] = useState(false);
+  const [sv, setSv] = useState('idle'); // idle | saving | saved | error
+  const [done, setDone] = useState(null);
+  const [tick, setTick] = useState(0);
+  const stRef = useRef(st);
+  stRef.current = st;
+  const ridRef = useRef(item?.id ?? null);
+  const verRef = useRef(item?.version ?? null); // the version this form is editing from; sent so a concurrent save is noticed
+  const baseRef = useRef(null);
+  const slugManual = useRef(false);
+  const queue = useRef(Promise.resolve());
+  const root = useRef(null);
+  const head = useRef(null);
+  const seen = useRef(false);
+  const wasRejected = useRef(false);
+  baseRef.current = base;
+  const dirty = JSON.stringify(st) !== base;
+  const dirtyRef = useRef(dirty);
+  dirtyRef.current = dirty;
   useDirty(dirty);
 
+  const have = !isNew && !!item;
   const status = item?.status ?? 'borrador';
+  if (status === 'rechazado') wasRejected.current = true;
   const canWrite = can(res.perm, 'write');
   const locked = !canWrite || status === 'en_revision';
-  const lastReject = status === 'rechazado' ? reviews.find((r) => r.decision === 'rechazado') : null;
+  // Autosave only touches drafts and rejected items; published/scheduled content keeps the explicit save.
+  const canAuto = wiz && canWrite && !conflict && (status === 'borrador' || status === 'rechazado');
+  const lastReject = wasRejected.current ? reviews.find((r) => r.decision === 'rechazado') : null;
+  const lay = wiz ? layout(res, st, ctx) : null;
+  const tstat = useLoad(() => (wiz && canWrite && res.tr?.length ? get('/api/admin/translate/status') : Promise.resolve(null)), []);
 
-  const fail = (e) => {
-    const fe = fieldErrors(e);
-    setErrors(Object.fromEntries(Object.entries(fe).map(([k, v]) => [k.split('.')[0], v])));
-    toast(errText(e), 'error');
+  // Someone else changed the record (a quick fix, a translation, our own save): follow it unless there is unsaved typing.
+  useEffect(() => {
+    if (!wiz || !item || dirtyRef.current) return;
+    if (verRef.current != null && item.version < verRef.current) return; // an older reload arriving late
+    verRef.current = item.version;
+    const n = toState(res, item);
+    setSt(n);
+    setBase(JSON.stringify(n));
+  }, [item?.version, item?.status]); // eslint-disable-line
+
+  // The address always points at the saved record and its step, replacing the entry so Back never lands on an empty /nuevo.
+  useEffect(() => {
+    if (!wiz || !made) return;
+    const to = `/panel/${res.path}/${made}?paso=${step + 1}`;
+    if (loc.pathname + loc.search !== to) nav(to, { replace: true });
+  }, [made, step]); // eslint-disable-line
+
+  // New step: focus its title (screen readers announce it); after an error, the first wrong field instead.
+  useEffect(() => {
+    if (!seen.current) { seen.current = true; return; }
+    (root.current?.querySelector('[aria-invalid="true"]') ?? head.current)?.focus();
+  }, [step, tick]);
+
+  // The address follows the title only while creating and until someone types in it.
+  const change = (fn) => setSt((s) => {
+    const n = typeof fn === 'function' ? fn(s) : fn;
+    if (!hasSlug || !wiz || ridRef.current) return n;
+    if (n.slug !== s.slug) { slugManual.current = n.slug !== ''; return n; }
+    return !slugManual.current && n.title !== s.title ? { ...n, slug: slugify(n.title) } : n;
+  });
+  const autoSlug = () => hasSlug && wiz && !ridRef.current && !slugManual.current;
+  // An address that cannot be built from the title is a problem with the title, which is what the person can fix.
+  const remap = (e) => {
+    if (!e.slug || !autoSlug() || e.title) return e;
+    const { slug: _, ...rest } = e;
+    return { ...rest, title: 'Escribe un nombre con al menos 2 letras o números.' };
   };
+
+  // Shows a server/field error where it lives: its step, or "Más opciones" at the end.
+  const reveal = (m) => {
+    const at = Object.keys(m).map((n) => locate(layout(res, stRef.current, ctx), n));
+    if (!at.length) return;
+    if (at.includes(-1)) setMoreOpen(true);
+    const to = Math.min(...at.filter((i) => i >= 0), res.steps.length - 1);
+    setStep(to);
+    setMax((x) => Math.max(x, to));
+    setTick((t) => t + 1);
+  };
+  const fail = (e) => {
+    let m = Object.fromEntries(Object.entries(fieldErrors(e)).map(([k, v]) => [k.split('.')[0], v]));
+    if (e.code === 'duplicate' && hasSlug) m = { slug: 'Ya hay otro con esta dirección. Cámbiala en «Más opciones», por ejemplo agregando un número.' };
+    setErrors(m);
+    toast(errText(e), 'error');
+    if (wiz) reveal(m);
+  };
+
+  // A PATCH carrying the version we read. If someone saved first and changed nothing we edited, adopt their version and
+  // go on (translations and our own chained saves land here); otherwise keep our text and offer to load theirs.
+  async function patchWithVersion(id, body) {
+    const url = `/api/admin/${res.entity}/${id}`;
+    const send = async () => (await patch(url, verRef.current ? { ...body, version: verRef.current } : body))?.version ?? verRef.current;
+    try { verRef.current = await send(); } catch (x) {
+      if (x?.code !== 'version_conflict') throw x;
+      const latest = await get(url);
+      const was = toPayload(res, JSON.parse(baseRef.current)); // compared as payloads, so trimming etc. is not a "change"
+      const now = toPayload(res, toState(res, latest));
+      const changed = res.fields.filter((f) => JSON.stringify(now[f.n]) !== JSON.stringify(was[f.n])).map((f) => f.label);
+      if (changed.length) { setConflict({ latest, changed }); throw x; }
+      verRef.current = latest.version;
+      verRef.current = await send();
+    }
+  }
+
+  // Writes the current state: creates the record the first time, updates it after. Never throws; nothing typed is cleared.
+  async function persist() {
+    const snap = stRef.current;
+    setSv('saving');
+    try {
+      const body = toPayload(res, snap);
+      let id = ridRef.current;
+      let saved = snap;
+      if (id) await patchWithVersion(id, body);
+      else {
+        const auto = autoSlug();
+        for (let n = 1; ; n++) { // a taken address gets -2, -3… when we built it; a hand-typed one is reported instead
+          const b = auto && n > 1 ? { ...body, slug: withSuffix(slugify(snap.title), n) } : body;
+          try { id = (await post(`/api/admin/${res.entity}`, b)).id; if (b !== body) saved = { ...snap, slug: b.slug }; break; } catch (x) { if (!(auto && n < 6 && x?.code === 'duplicate')) throw x; }
+        }
+        verRef.current = 1; // a new row starts at version 1
+        if (wiz) { ridRef.current = id; setMade(id); onCreated(id); } // claim the new address before the URL follows
+        if (saved !== snap) setSt((s) => (s.slug === snap.slug ? { ...s, slug: saved.slug } : s));
+      }
+      setBase(JSON.stringify(saved));
+      setSv('saved');
+      if (wiz && item) reload();
+      return id;
+    } catch (x) {
+      setSv('error');
+      if (x instanceof ApiError) fail(x); else toast('Ocurrió un error inesperado.', 'error');
+      return null;
+    }
+  }
+  const enqueue = (fn) => { const p = queue.current.then(fn); queue.current = p.catch(() => {}); return p; };
 
   // Returns the item id on success, null if validation/server rejected it.
   async function save() {
-    const e = validate(res, st);
+    const e = remap(validate(res, stRef.current));
     setErrors(e);
-    if (Object.keys(e).length) { toast('Revisa los campos marcados.', 'error'); return null; }
-    try {
-      const body = toPayload(res, st);
-      if (isNew) return (await post(`/api/admin/${res.entity}`, body)).id;
-      await patch(`/api/admin/${res.entity}/${item.id}`, body);
-      return item.id;
-    } catch (x) { if (x instanceof ApiError) fail(x); else toast('Ocurrió un error inesperado.', 'error'); return null; }
+    if (Object.keys(e).length) { toast('Revisa los campos marcados.', 'error'); if (wiz) reveal(e); return null; }
+    return enqueue(persist);
   }
   const run = (name, fn) => async () => { setBusy(name); try { await fn(); } finally { setBusy(''); } };
 
@@ -275,55 +419,175 @@ function FormBody({ res, item, isNew, reviews, seed, ctx, can, nav, toast, reloa
     if (!nid) return;
     toast('Borrador guardado.');
     clearDirty();
+    if (wiz) return;
     if (isNew) nav(`/panel/${res.path}/${nid}`, { replace: true }); else reload();
   });
+  const loadTheirs = () => {
+    const n = toState(res, conflict.latest);
+    setSt(n); setBase(JSON.stringify(n)); setErrors({}); setSv('idle');
+    verRef.current = conflict.latest.version;
+    setConflict(null);
+    reload();
+  };
+  const keepMine = async () => { verRef.current = conflict.latest.version; setConflict(null); await saveDraft(); };
   const submit = run('submit', async () => {
-    const nid = dirty || isNew ? await save() : item.id;
+    const nid = dirty || !ridRef.current ? await save() : ridRef.current;
     if (!nid) return;
     try {
       await post(`/api/admin/${res.entity}/${nid}/submit`);
       toast('Enviado a revisión. Te avisaremos con la decisión.');
       clearDirty();
-      if (isNew) nav(`/panel/${res.path}/${nid}`, { replace: true }); else reload();
+      if (wiz) { setDone({ id: nid }); reload(); } else if (isNew) nav(`/panel/${res.path}/${nid}`, { replace: true }); else reload();
     } catch (x) { toast(errText(x), 'error'); }
   });
   const remove = run('del', async () => {
     try { await del(`/api/admin/${res.entity}/${item.id}`); toast('Eliminado.'); clearDirty(); nav(`/panel/${res.path}`, { replace: true }); } catch (x) { toast(errText(x), 'error'); setConfirmDel(false); }
   });
 
+  // ---- steps
+  function go(to) {
+    if (canAuto && dirty && minimalOk(res, validate(res, st))) enqueue(persist); // leaving a step saves the draft once the server's minimum is there
+    setStep(to);
+    setMax((x) => Math.max(x, to));
+    setErrors({});
+  }
+  function next() {
+    const names = lay.steps[step].fields.map((f) => f.n);
+    const e = Object.fromEntries(Object.entries(remap(validate(res, st))).filter(([n]) => names.includes(n)));
+    setErrors(e);
+    if (Object.keys(e).length) setTick((t) => t + 1); else go(step + 1);
+  }
+
+  if (done) return <Done res={res} id={done.id} title={res.label(st)} can={can} en={!!tstat.data?.enabled && !!res.tr?.length} headRef={head} />;
+
+  const last = wiz && step === res.steps.length - 1;
+  const form = wiz ? (
+    <div className="wiz" ref={root}>
+      <StepBar steps={lay.steps} step={step} max={max} free={have} go={go} />
+      <div className="wiz-prog" role="progressbar" aria-label="Avance" aria-valuemin={1} aria-valuemax={lay.steps.length} aria-valuenow={step + 1}><span style={{ width: `${((step + 1) / lay.steps.length) * 100}%` }} /></div>
+      <h2 className="wiz-title" ref={head} tabIndex={-1}><span className="wiz-count">Paso {step + 1} de {lay.steps.length}</span>{lay.steps[step].title}</h2>
+      <p className="help">{lay.steps[step].ask}</p>
+      {last ? (
+        <Final res={res} lay={lay} st={st} ctx={ctx} errors={{ ...remap(validate(res, st)), ...errors }} change={change} disabled={locked} moreOpen={moreOpen} setMoreOpen={setMoreOpen} go={go} en={!!tstat.data?.enabled} locked={locked} canWrite={canWrite} />
+      ) : <Inputs res={res} fields={lay.steps[step].fields} st={st} setSt={change} errors={errors} ctx={ctx} disabled={locked} />}
+    </div>
+  ) : <Inputs res={res} st={st} setSt={setSt} errors={errors} ctx={ctx} disabled={locked} />;
+
+  const saveText = sv === 'saving' ? 'Guardando…' : sv === 'error' ? 'No se pudo guardar. Lo que escribiste sigue aquí.'
+    : dirty ? (canAuto ? 'Se guardará al cambiar de paso.' : 'Cambios sin guardar.') : sv === 'saved' ? 'Guardado' : isNew ? 'Se guarda solo al pasar al siguiente paso.' : 'Todo guardado.';
+
   return (
     <div className="split">
       <div className="main-col">
-      <form className="card" onSubmit={(e) => { e.preventDefault(); saveDraft(); }} noValidate>
-        <PageHead title={isNew ? `Nuevo ${res.one}` : res.label(item)}>
-          {!isNew && <StatusPill status={status} />}
+      <form className="card" onSubmit={(e) => { e.preventDefault(); if (!wiz) saveDraft(); else if (!last) next(); }} noValidate>
+        <PageHead title={have ? res.label(item) : nuevo(res)}>
+          {have && <StatusPill status={status} />}
         </PageHead>
         {lastReject && <div className="banner banner-red" role="alert"><strong>Rechazado por {lastReject.reviewer_name ?? 'quien revisa'}:</strong> {lastReject.comment}<br /><span className="help">Corrige y vuelve a enviar a revisión.</span></div>}
+        {conflict && (
+          <div className="banner banner-red" role="alert">
+            <strong>Alguien más guardó cambios mientras escribías.</strong> Cambió: {conflict.changed.join(', ')}. Lo que escribiste sigue aquí, no se perdió nada.
+            <div className="p-row wrap">
+              <button type="button" className="p-btn p-btn-big" disabled={!!busy} onClick={loadTheirs}>Cargar lo nuevo</button>
+              <button type="button" className="p-btn p-btn-big" disabled={!!busy} onClick={keepMine}>Guardar lo mío encima</button>
+            </div>
+            <p className="help">«Cargar lo nuevo» cambia lo que ves por lo que guardó la otra persona. «Guardar lo mío encima» deja tu texto como versión final.</p>
+          </div>
+        )}
         {status === 'en_revision' && <div className="banner banner-gold" role="status">Está en revisión: no se puede editar hasta que haya una decisión.</div>}
         {!canWrite && <div className="banner" role="status">Tu rol solo puede consultar este contenido{can(res.perm, 'quick_fix') && item?.published_snapshot ? ' y corregir erratas en lo publicado' : ''}.</div>}
         {errors._ && <p className="form-error" role="alert">{errors._}</p>}
-        <Inputs res={res} st={st} setSt={setSt} errors={errors} ctx={ctx} disabled={locked} />
-        {canWrite && (
+        {form}
+        {wiz ? (
+          <div className="actions wiz-bar">
+            <p className={`wiz-save wiz-save-${sv}`} role="status"><Icon d={sv === 'error' ? ICON_ALERT : sv === 'saved' && !dirty ? ICON_OK : ICON_DOT} />{saveText}</p>
+            <div className="wiz-nav">
+              {step > 0 && <button type="button" className="p-btn" onClick={() => go(step - 1)}>Atrás</button>}
+              {sv === 'error' && canWrite && <button type="button" className="p-btn" disabled={!!busy} onClick={run('retry', saveDraft)}>Reintentar</button>}
+              {!last && <button type="button" className="p-btn p-btn-primary" onClick={next}>Siguiente</button>}
+              {!canAuto && canWrite && !locked && dirty && <button type="button" className="p-btn" disabled={!!busy} onClick={saveDraft}>{busy === 'save' ? 'Guardando…' : 'Guardar cambios'}</button>}
+              {last && canWrite && !locked && <>
+                <button type="button" className="p-btn" disabled={!!busy || (!dirty && !isNew)} onClick={saveDraft}>{busy === 'save' ? 'Guardando…' : 'Guardar borrador'}</button>
+                <button type="button" className="p-btn p-btn-primary" onClick={submit} disabled={!!busy || (!isNew && status !== 'borrador' && status !== 'rechazado' && !dirty)}>{busy === 'submit' ? 'Enviando…' : 'Enviar a revisión'}</button>
+              </>}
+              {have && !item.published_snapshot && status !== 'en_revision' && canWrite && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}>Eliminar</button>}
+            </div>
+          </div>
+        ) : canWrite && (
           <div className="actions">
             <button type="submit" className="p-btn" disabled={locked || !!busy || (!dirty && !isNew)}>{busy === 'save' ? 'Guardando…' : 'Guardar borrador'}</button>
             <button type="button" className="p-btn p-btn-primary" onClick={submit} disabled={locked || !!busy || (!isNew && status !== 'borrador' && status !== 'rechazado' && !dirty)}>{busy === 'submit' ? 'Enviando…' : 'Enviar a revisión'}</button>
-            {!isNew && !item.published_snapshot && status !== 'en_revision' && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}>Eliminar</button>}
+            {have && !item.published_snapshot && status !== 'en_revision' && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}>Eliminar</button>}
             {dirty && <span className="help" role="status">Cambios sin guardar</span>}
           </div>
         )}
       </form>
-      {!isNew && res.tr?.length > 0 && <Translation res={res} item={item} canWrite={canWrite} locked={status === 'en_revision'} esDirty={dirty} toast={toast} reload={reload} />}
+      {have && res.tr?.length > 0 && <Translation res={res} item={item} canWrite={canWrite} locked={status === 'en_revision'} esDirty={dirty} toast={toast} reload={reload} />}
       </div>
       <aside className="side">
-        {!isNew && <Facts item={item} res={res} />}
-        {!isNew && <PendingChange res={res} item={item} canAct={can(res.perm, 'write') || can(res.perm, 'approve')} toast={toast} reload={reload} />}
-        {!isNew && can(res.perm, 'quick_fix') && item.published_snapshot && <QuickFix res={res} item={item} toast={toast} reload={reload} />}
-        {!isNew && <History reviews={reviews} />}
-        {res.entity === 'retreats' && !isNew && can('sessions', 'read') && <section className="card"><h2>Fechas</h2><PLink to={`/panel/fechas?retiro=${item.id}`}>Ver las fechas de este retiro</PLink></section>}
+        {have && <Facts item={item} res={res} />}
+        {have && <PendingChange res={res} item={item} canAct={can(res.perm, 'write') || can(res.perm, 'approve')} toast={toast} reload={reload} />}
+        {have && can(res.perm, 'quick_fix') && item.published_snapshot && <QuickFix res={res} item={item} toast={toast} reload={reload} />}
+        {have && <History reviews={reviews} />}
+        {res.entity === 'retreats' && have && can('sessions', 'read') && <section className="card"><h2>Fechas</h2><PLink to={`/panel/fechas?retiro=${item.id}`}>Ver las fechas de este retiro</PLink></section>}
       </aside>
       {confirmDel && <Confirm title="Eliminar borrador" danger confirmLabel="Eliminar" onConfirm={remove} onCancel={() => setConfirmDel(false)} busy={busy === 'del'}>
         <p>Se eliminará “{res.label(item)}” de forma permanente. Solo se puede si nunca se publicó.</p></Confirm>}
     </div>
+  );
+}
+
+const ICON_OK = 'M5 12l5 5 9-10';
+const ICON_ALERT = 'M12 4l9 16H3zM12 10v4M12 17.5v.01';
+const ICON_DOT = 'M12 12m-2 0a2 2 0 104 0 2 2 0 10-4 0';
+
+// Last step: what is still missing, the written summary, the extra options, and what happens after sending.
+function Final({ res, lay, st, ctx, errors, change, disabled, moreOpen, setMoreOpen, go, en, locked, canWrite }) {
+  const keys = Object.keys(errors);
+  const label = (n) => res.fields.find((f) => f.n === n)?.label ?? n;
+  const open = moreOpen || keys.some((n) => lay.more.some((f) => f.n === n));
+  return (
+    <>
+      {keys.length > 0 && !locked && (
+        <div className="banner banner-red" role="alert">
+          <strong>Antes de enviar hay que arreglar esto:</strong>
+          <ul className="fix-list">{keys.map((n) => {
+            const at = locate(lay, n);
+            return <li key={n}><span>{label(n)}: {errors[n]}</span> <button type="button" className="p-btn p-btn-sm" onClick={() => (at >= 0 ? go(at) : setMoreOpen(true))}>{at >= 0 ? `Ir al paso ${at + 1}` : 'Ver en Más opciones'}</button></li>;
+          })}</ul>
+        </div>
+      )}
+      <Summary steps={lay.steps} st={st} ctx={ctx} go={go} />
+      {lay.more.length > 0 && (
+        <details className="more-opts" open={open} onToggle={(e) => setMoreOpen(e.currentTarget.open)}>
+          <summary>Más opciones</summary>
+          <p className="help">{lay.more.map((f) => f.label).join(', ')}.</p>
+          <Inputs res={res} fields={lay.more} st={st} setSt={change} errors={errors} ctx={ctx} disabled={disabled} />
+        </details>
+      )}
+      {canWrite && !locked && en && <p className="banner banner-gold">Al enviarlo preparamos una traducción al inglés para que quien revise la vea antes de publicar. No cambiamos una versión escrita a mano y los versículos nunca se traducen solos.</p>}
+    </>
+  );
+}
+
+// Shown after sending; a retreat offers to add its first date right away.
+function Done({ res, id, title, can, en, headRef }) {
+  const dates = res.entity === 'retreats' && can('sessions', 'write');
+  useEffect(() => { headRef.current?.focus(); }, [headRef]);
+  return (
+    <section className="card wiz-done">
+      <h2 ref={headRef} tabIndex={-1}>Listo, enviaste «{title}» a revisión</h2>
+      <p>Nadie lo verá en el sitio hasta que alguien lo apruebe. Te avisaremos cuando haya una decisión.</p>
+      {en && <p className="help">También se prepara la versión en inglés para quien revise.</p>}
+      {dates && (
+        <>
+          <h3>¿Agregar una fecha?</h3>
+          <p>Puedes preparar la fecha ahora, aunque el retiro todavía esté en revisión. La fecha también pasa por revisión.</p>
+          <PLink className="p-btn p-btn-primary p-btn-big" to={`/panel/fechas/nuevo?retiro=${id}`}>Agregar una fecha</PLink>
+        </>
+      )}
+      <p><PLink className="p-btn" to={`/panel/${res.path}`}>Volver a {res.title.toLowerCase()}</PLink></p>
+    </section>
   );
 }
 
@@ -349,7 +613,7 @@ function History({ reviews }) {
         <ol className="timeline">
           {reviews.map((r) => (
             <li key={r.id}>
-              <span className={`pill pill-${{ pendiente: 'en_revision', aprobado: 'publicado', rechazado: 'rechazado' }[r.decision]}`}>{{ pendiente: 'Pendiente', aprobado: 'Aprobado', rechazado: 'Rechazado' }[r.decision]}</span>
+              <Pill status={{ pendiente: 'en_revision', aprobado: 'publicado', rechazado: 'rechazado' }[r.decision]}>{{ pendiente: 'Pendiente', aprobado: 'Aprobado', rechazado: 'Rechazado' }[r.decision]}</Pill>
               <span className="p-num"> v{r.version} · {fmtDateTime(r.decided_at ?? r.created_at)}</span>
               <p className="help">Envió {r.submitted_by_name}{r.reviewer_name ? ` · revisó ${r.reviewer_name}` : ''}</p>
               {r.comment && <blockquote>{r.comment}</blockquote>}

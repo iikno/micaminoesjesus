@@ -5,6 +5,7 @@ import { labelOf, notifyReminders } from '../lib/notify.js';
 import { audit } from '../lib/audit.js';
 import { promotionDue, reminderDue } from '../lib/review.js';
 import { runRegistrationJobs } from '../lib/regsvc.js';
+import { runDailyDigest } from '../lib/pushsvc.js';
 import { AUDIT_MONTHS, CONTACT_MONTHS, SPAM_DAYS, monthsAgo } from '../lib/regrules.js';
 import { pool, q, tx } from '../db.js';
 
@@ -52,6 +53,8 @@ export async function runHourly(log = console.log) {
   const reg = await runRegistrationJobs(now);
   const cm = await q("DELETE FROM contact_messages WHERE created_at < ? OR (status = 'spam' AND created_at < ?)", [monthsAgo(now, CONTACT_MONTHS), new Date(now - SPAM_DAYS * 24 * 3600e3)]);
   const al = await q('DELETE FROM audit_log WHERE created_at < ?', [monthsAgo(now, AUDIT_MONTHS)]);
+  const digest = await runDailyDigest(now).catch((e) => ({ error: e.message })); // a failed push summary never fails the job
+  log(`hourly push digest: ${JSON.stringify(digest)}`);
   log(`hourly registrations: ${JSON.stringify(reg)}, contact purged ${cm.affectedRows}, audit purged ${al.affectedRows}`);
   log(`hourly: sessions purged ${s.affectedRows}, tokens purged ${t.affectedRows}, scheduled->published ${flipped}, promoted ${promoted}, reminders ${due.length}`);
 }

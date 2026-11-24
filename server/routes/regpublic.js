@@ -8,6 +8,7 @@ import { arcoDue, contactSchema } from '../lib/contact.js';
 import { encrypt } from '../lib/crypto.js';
 import { normLang } from '../lib/i18n.js';
 import { trySend } from '../lib/mailer.js';
+import { pushContact } from '../lib/pushsvc.js';
 import * as R from '../lib/regrules.js';
 import * as svc from '../lib/regsvc.js';
 
@@ -120,6 +121,7 @@ export default async function regPublicRoutes(app) {
       await audit(c, req, 'contact', 'contact_messages', r.insertId);
       return r.insertId;
     });
+    if (!spam) pushContact(); // discarded spam never notifies
     if (!spam && config.CONTACT_TO) {
       await trySend({
         to: config.CONTACT_TO, replyTo: d.email, subject: `${arco ? '[ARCO] ' : ''}Contacto web: ${d.name} (#${id})`,

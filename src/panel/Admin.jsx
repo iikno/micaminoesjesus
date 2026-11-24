@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ApiError, errText, fieldErrors, get, patch, post } from './api';
 import { useAuth } from './session';
 import { RESOURCES } from './resources';
-import { Async, Confirm, Empty, Field, PageHead, ROLE, fmtDateTime, useLoad, useToast } from './ui';
+import { Async, Confirm, Empty, Field, PageHead, Pill, ROLE, fmtDateTime, useLoad, useToast } from './ui';
 
 // ------------------------------------------------------------ Usuarios
 const userState = (u) => {
@@ -83,7 +83,7 @@ export function Users() {
                           {Object.entries(ROLE).map(([k, l]) => <option key={k} value={k}>{l}</option>)}
                         </select>
                       </td>
-                      <td data-label="Estado"><span className={`pill pill-${cls}`}>{label}</span></td>
+                      <td data-label="Estado"><Pill status={cls}>{label}</Pill></td>
                       <td data-label="Alta" className="p-num">{fmtDateTime(u.created_at)}</td>
                       <td data-label="Acciones" className="cell-actions">
                         {u.status === 'invited' && <button className="p-btn p-btn-sm" onClick={() => reinvite(u)}>Reenviar invitación</button>}
