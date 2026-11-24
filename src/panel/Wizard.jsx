@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { photoUrl } from './Media';
 import { formToBody } from './body';
 import { Icon, StatusPill, fmtDate, fmtDateTime, fromLocalInput } from './ui';
-import { norm } from './wizard';
+import { norm } from './wizardLogic';
 
 const NONE = 'M6 12h12';
 const CHECK = 'M5 12l5 5 9-10';

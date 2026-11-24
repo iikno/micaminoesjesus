@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { buildSitemap, headTags, injectHead, parsePath, robotsTxt, routeOf } from '../lib/seo.js';
+import { PANEL_ROBOTS, buildSitemap, headTags, injectHead, parsePath, robotsTxt, routeOf } from '../lib/seo.js';
 
 const base = 'https://micaminoesjesus.org';
 
@@ -45,6 +45,11 @@ test('robots.txt hides the panel and points at the sitemap', () => {
   assert.match(r, /Disallow: \/inscripcion\//);
   assert.match(r, /Disallow: \/en\/inscripcion\//);
   assert.match(r, /Sitemap: https:\/\/micaminoesjesus\.org\/sitemap\.xml/);
+});
+
+test('panel host robots disallow everything and name no sitemap', () => {
+  assert.equal(PANEL_ROBOTS, 'User-agent: *\nDisallow: /\n');
+  assert.doesNotMatch(PANEL_ROBOTS, /Sitemap/);
 });
 
 test('sitemap never lists registration links', () => {

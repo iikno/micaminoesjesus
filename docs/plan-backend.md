@@ -44,7 +44,7 @@
 | Estáticos | `@fastify/static` sirve `dist/` y `/uploads` desde la misma app | Un solo contenedor, sin nginx |
 | Seguridad | `@fastify/helmet`, `rate-limit`, `cookie`, `multipart` | Oficiales |
 | Traducción | Módulo `lib/translate.js`, proveedor por defecto **Claude API**, adaptadores intercambiables (sec. 9) | Sin SDK obligatorio: `fetch` basta |
-| Panel | Misma app Vite, rutas `/panel/*` lazy | Cero stack nuevo |
+| Panel | Misma app Vite, lazy, en el subdominio `panel.<dominio>` con URLs limpias (antes `/panel/*`; `/panel/*` redirige) | Cero stack nuevo |
 La retención diaria ya no necesita `node-cron`: ver sec. 11.
 
 ## 3. Estructura del repo

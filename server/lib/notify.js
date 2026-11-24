@@ -3,7 +3,7 @@ import { q } from '../db.js';
 import { trySend } from './mailer.js';
 
 export const labelOf = (row) => row.title ?? row.name ?? row.ref ?? `#${row.id}`;
-const panel = `${config.PUBLIC_URL}/panel/revision`;
+const panel = `${config.panelUrl}/revision`;
 
 // Active admins and asesores, optionally without one user (the author never reviews their own item).
 export const approvers = (exceptId = 0) =>

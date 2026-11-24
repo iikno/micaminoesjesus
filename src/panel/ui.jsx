@@ -1,6 +1,10 @@
 import { createContext, useCallback, useContext, useEffect, useId, useRef, useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { errText } from './api';
+import photo from '../assets/fotos-web/panel-portada.webp';
+
+// One small decorative photo for login, Inicio and empty states (alt="": every screen says the same in words).
+export const PHOTO = photo;
 
 export const Icon = ({ d }) => <svg className="ico" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d={d} fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" /></svg>;
 export const ICONS = {
@@ -28,6 +32,7 @@ export const ICONS = {
   mail: 'M3 6h18v12H3zM3 7l9 6 9-6',
   chat: 'M4 5h16v11H9l-5 4zM8 9h8M8 12h5',
   down: 'M12 4v11M7 11l5 5 5-5M5 20h14',
+  trash: 'M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3',
 };
 
 // Status = color + icon + words, never color alone. Labels are for people; the keys are the DB values.
@@ -119,7 +124,7 @@ export const ErrorBox = ({ error, retry }) => (
   </div>
 );
 export const Empty = ({ title, children }) => (
-  <div className="state"><p className="state-title">{title}</p>{children && <p>{children}</p>}</div>
+  <div className="state"><span className="state-pic" aria-hidden="true"><img src={PHOTO} alt="" width="92" height="72" loading="lazy" /><i className="tape" /></span><p className="state-title">{title}</p>{children && <p>{children}</p>}</div>
 );
 // Renders children(data) once loaded; skeleton / error+retry otherwise.
 export function Async({ load, rows, children }) {
@@ -162,7 +167,7 @@ export function Confirm({ title, children, confirmLabel, danger, onConfirm, onCa
       <div>{children}</div>
       <div className="p-row end">
         <button className="p-btn" onClick={onCancel}>Cancelar</button>
-        <button className={`p-btn ${danger ? 'p-btn-danger' : 'p-btn-primary'}`} onClick={onConfirm} disabled={busy}>{confirmLabel}</button>
+        <button className={`p-btn ${danger ? 'p-btn-danger' : 'p-btn-primary'}`} onClick={onConfirm} disabled={busy}>{danger && <Icon d={ICONS.trash} />}{confirmLabel}</button>
       </div>
     </dialog>
   );

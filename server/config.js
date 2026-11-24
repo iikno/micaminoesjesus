@@ -60,14 +60,17 @@ export function parseConfig(env) {
   const origin = u.origin;
   const www = u.hostname.startsWith('www.') ? u.hostname.slice(4) : 'www.' + u.hostname; // Coolify redirects one to the other; accept both
   const alt = u.hostname === 'localhost' ? [] : [`${u.protocol}//${www}${u.port ? ':' + u.port : ''}`];
+  // The panel lives on panel.<apex> (same protocol and port); localhost -> panel.localhost.
+  const panelOrigin = `${u.protocol}//panel.${u.hostname.replace(/^www\./, '')}${u.port ? ':' + u.port : ''}`;
   return {
     ...c,
+    panelUrl: panelOrigin,
     uploadsDir: c.UPLOADS_DIR || c.UPLOAD_DIR,
     pushEnabled: !!(c.VAPID_PUBLIC_KEY && c.VAPID_PRIVATE_KEY),
     isProd: c.NODE_ENV === 'production',
     captchaUrl: c.NODE_ENV === 'production' ? undefined : c.RECAPTCHA_VERIFY_URL,
     secureCookies: origin.startsWith('https:'),
-    allowedOrigins: [origin, ...alt, ...(c.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://localhost:3000'])],
+    allowedOrigins: [origin, ...alt, panelOrigin, ...(c.NODE_ENV === 'production' ? [] : ['http://localhost:5173', 'http://localhost:3000', 'http://panel.localhost:5173', 'http://panel.localhost:3000'])],
   };
 }
 

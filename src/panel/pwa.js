@@ -25,7 +25,7 @@ export function useInstallPrompt() {
   return { can, prompt };
 }
 
-export const registerPanelWorker = () => { navigator.serviceWorker?.register('/panel/sw.js', { scope: '/panel' }).catch(() => {}); };
+export const registerPanelWorker = () => { navigator.serviceWorker?.register('/panel/sw.js', { scope: '/' }).catch(() => {}); };
 
 // ---- push ----
 export const pushSupported = () => typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
@@ -37,7 +37,7 @@ export function usePushKey() {
   return k;
 }
 const b64ToBytes = (s) => Uint8Array.from(atob(s.replace(/-/g, '+').replace(/_/g, '/').padEnd(Math.ceil(s.length / 4) * 4, '=')), (c) => c.charCodeAt(0));
-const registration = () => navigator.serviceWorker.getRegistration('/panel');
+const registration = () => navigator.serviceWorker.getRegistration('/');
 export const thisDevice = async () => (await registration())?.pushManager.getSubscription() ?? null;
 
 // Turn on for this device. Permission is asked first and only from a tap (iPhone refuses it after other awaits).

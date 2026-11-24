@@ -9,9 +9,9 @@ import PendingChange from './Pending';
 import { RESOURCES } from './resources';
 import Translation from './Translation';
 import { ChoiceCards, RetreatPick, StepBar, Summary } from './Wizard';
-import { layout, locate, minimalOk, norm, slugify, withSuffix } from './wizard';
+import { layout, locate, minimalOk, norm, slugify, withSuffix } from './wizardLogic';
 import {
-  Async, Confirm, Empty, Field, Icon, PLink, PageHead, Pill, STATUS, StatusPill, fmtDate, fmtDateTime, fromLocalInput,
+  Async, Confirm, Empty, Field, ICONS, Icon, PLink, PageHead, Pill, STATUS, StatusPill, fmtDate, fmtDateTime, fromLocalInput,
   clearDirty, toLocalInput, useDirty, useLoad, useToast,
 } from './ui';
 
@@ -38,12 +38,12 @@ export function ContentList({ res }) {
       {(isRetreat || res.entity === 'sessions') && can('retreats', 'read') && can('sessions', 'read') && (
         <nav className="seg" aria-label="Retiros y fechas">
           {[['retreats', 'retiros', 'Retiros'], ['sessions', 'fechas', 'Fechas']].map(([e, path, label]) => (
-            <PLink key={e} to={`/panel/${path}`} aria-current={e === res.entity ? 'page' : undefined}>{label}</PLink>
+            <PLink key={e} to={`/${path}`} aria-current={e === res.entity ? 'page' : undefined}>{label}</PLink>
           ))}
         </nav>
       )}
       <PageHead title={res.title}>
-        {canWrite && <PLink className="p-btn p-btn-primary" to={`/panel/${res.path}/nuevo${f.retreat ? `?retiro=${f.retreat}` : ''}`}>{nuevo(res)}</PLink>}
+        {canWrite && <PLink className="p-btn p-btn-primary" to={`/${res.path}/nuevo${f.retreat ? `?retiro=${f.retreat}` : ''}`}>{nuevo(res)}</PLink>}
       </PageHead>
       <div className="filters" role="search">
         <label>Buscar<input type="search" value={f.q} onChange={(e) => set('q', e.target.value)} placeholder="Texto del título…" /></label>
@@ -76,8 +76,8 @@ export function ContentList({ res }) {
                 <thead><tr><th scope="col">Nombre</th><th scope="col">Detalle</th><th scope="col">Estado</th><th scope="col">Actualizado</th></tr></thead>
                 <tbody>
                   {shown.map((r) => (
-                    <tr key={r.id}>
-                      <td data-label="Nombre"><PLink className="p-row-link" to={`/panel/${res.path}/${r.id}`}>{res.label(r)}</PLink></td>
+                    <tr key={r.id} style={r.season_slug ? { '--season': `var(--season-${r.season_slug}, var(--p-line))` } : undefined}>
+                      <td data-label="Nombre"><PLink className="p-row-link" to={`/${res.path}/${r.id}`}>{res.label(r)}</PLink></td>
                       <td data-label="Detalle">{res.meta(r, ctx)}</td>
                       <td data-label="Estado"><StatusPill status={r.status} /></td>
                       <td data-label="Actualizado" className="p-num">{fmtDate(r.updated_at)}</td>
@@ -248,7 +248,7 @@ function FormScreen({ res, claim }) {
 
   return (
     <>
-      <nav aria-label="Ruta" className="crumbs"><PLink to={`/panel/${res.path}`}>{res.title}</PLink> <span aria-hidden="true">/</span> <span>{rid ? 'Editar' : nuevo(res)}</span></nav>
+      <nav aria-label="Ruta" className="crumbs"><PLink to={`/${res.path}`}>{res.title}</PLink> <span aria-hidden="true">/</span> <span>{rid ? 'Editar' : nuevo(res)}</span></nav>
       {/* Once the steps are on screen a failed background reload must never replace them (and the text typed in them). */}
       {res.steps && (item.data || started) ? body(item.data) : <Async load={item}>{body}</Async>}
     </>
@@ -314,7 +314,7 @@ function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, t
   // The address always points at the saved record and its step, replacing the entry so Back never lands on an empty /nuevo.
   useEffect(() => {
     if (!wiz || !made) return;
-    const to = `/panel/${res.path}/${made}?paso=${step + 1}`;
+    const to = `/${res.path}/${made}?paso=${step + 1}`;
     if (loc.pathname + loc.search !== to) nav(to, { replace: true });
   }, [made, step]); // eslint-disable-line
 
@@ -420,7 +420,7 @@ function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, t
     toast('Borrador guardado.');
     clearDirty();
     if (wiz) return;
-    if (isNew) nav(`/panel/${res.path}/${nid}`, { replace: true }); else reload();
+    if (isNew) nav(`/${res.path}/${nid}`, { replace: true }); else reload();
   });
   const loadTheirs = () => {
     const n = toState(res, conflict.latest);
@@ -437,11 +437,11 @@ function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, t
       await post(`/api/admin/${res.entity}/${nid}/submit`);
       toast('Enviado a revisión. Te avisaremos con la decisión.');
       clearDirty();
-      if (wiz) { setDone({ id: nid }); reload(); } else if (isNew) nav(`/panel/${res.path}/${nid}`, { replace: true }); else reload();
+      if (wiz) { setDone({ id: nid }); reload(); } else if (isNew) nav(`/${res.path}/${nid}`, { replace: true }); else reload();
     } catch (x) { toast(errText(x), 'error'); }
   });
   const remove = run('del', async () => {
-    try { await del(`/api/admin/${res.entity}/${item.id}`); toast('Eliminado.'); clearDirty(); nav(`/panel/${res.path}`, { replace: true }); } catch (x) { toast(errText(x), 'error'); setConfirmDel(false); }
+    try { await del(`/api/admin/${res.entity}/${item.id}`); toast('Eliminado.'); clearDirty(); nav(`/${res.path}`, { replace: true }); } catch (x) { toast(errText(x), 'error'); setConfirmDel(false); }
   });
 
   // ---- steps
@@ -510,14 +510,14 @@ function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, t
                 <button type="button" className="p-btn" disabled={!!busy || (!dirty && !isNew)} onClick={saveDraft}>{busy === 'save' ? 'Guardando…' : 'Guardar borrador'}</button>
                 <button type="button" className="p-btn p-btn-primary" onClick={submit} disabled={!!busy || (!isNew && status !== 'borrador' && status !== 'rechazado' && !dirty)}>{busy === 'submit' ? 'Enviando…' : 'Enviar a revisión'}</button>
               </>}
-              {have && !item.published_snapshot && status !== 'en_revision' && canWrite && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}>Eliminar</button>}
+              {have && !item.published_snapshot && status !== 'en_revision' && canWrite && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}><Icon d={ICONS.trash} />Eliminar</button>}
             </div>
           </div>
         ) : canWrite && (
           <div className="actions">
             <button type="submit" className="p-btn" disabled={locked || !!busy || (!dirty && !isNew)}>{busy === 'save' ? 'Guardando…' : 'Guardar borrador'}</button>
             <button type="button" className="p-btn p-btn-primary" onClick={submit} disabled={locked || !!busy || (!isNew && status !== 'borrador' && status !== 'rechazado' && !dirty)}>{busy === 'submit' ? 'Enviando…' : 'Enviar a revisión'}</button>
-            {have && !item.published_snapshot && status !== 'en_revision' && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}>Eliminar</button>}
+            {have && !item.published_snapshot && status !== 'en_revision' && <button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirmDel(true)}><Icon d={ICONS.trash} />Eliminar</button>}
             {dirty && <span className="help" role="status">Cambios sin guardar</span>}
           </div>
         )}
@@ -529,7 +529,7 @@ function FormBody({ res, item, isNew, reviews, seed, startStep, ctx, can, nav, t
         {have && <PendingChange res={res} item={item} canAct={can(res.perm, 'write') || can(res.perm, 'approve')} toast={toast} reload={reload} />}
         {have && can(res.perm, 'quick_fix') && item.published_snapshot && <QuickFix res={res} item={item} toast={toast} reload={reload} />}
         {have && <History reviews={reviews} />}
-        {res.entity === 'retreats' && have && can('sessions', 'read') && <section className="card"><h2>Fechas</h2><PLink to={`/panel/fechas?retiro=${item.id}`}>Ver las fechas de este retiro</PLink></section>}
+        {res.entity === 'retreats' && have && can('sessions', 'read') && <section className="card"><h2>Fechas</h2><PLink to={`/fechas?retiro=${item.id}`}>Ver las fechas de este retiro</PLink></section>}
       </aside>
       {confirmDel && <Confirm title="Eliminar borrador" danger confirmLabel="Eliminar" onConfirm={remove} onCancel={() => setConfirmDel(false)} busy={busy === 'del'}>
         <p>Se eliminará “{res.label(item)}” de forma permanente. Solo se puede si nunca se publicó.</p></Confirm>}
@@ -583,10 +583,10 @@ function Done({ res, id, title, can, en, headRef }) {
         <>
           <h3>¿Agregar una fecha?</h3>
           <p>Puedes preparar la fecha ahora, aunque el retiro todavía esté en revisión. La fecha también pasa por revisión.</p>
-          <PLink className="p-btn p-btn-primary p-btn-big" to={`/panel/fechas/nuevo?retiro=${id}`}>Agregar una fecha</PLink>
+          <PLink className="p-btn p-btn-primary p-btn-big" to={`/fechas/nuevo?retiro=${id}`}>Agregar una fecha</PLink>
         </>
       )}
-      <p><PLink className="p-btn" to={`/panel/${res.path}`}>Volver a {res.title.toLowerCase()}</PLink></p>
+      <p><PLink className="p-btn" to={`/${res.path}`}>Volver a {res.title.toLowerCase()}</PLink></p>
     </section>
   );
 }

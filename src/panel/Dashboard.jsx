@@ -4,16 +4,16 @@ import { PendingGroups, pendingCount, usePending } from './Pendientes';
 import { RESOURCES } from './resources';
 import { useAuth } from './session';
 import { InstallCard } from './Instalar';
-import { Async, Empty, ICONS, Icon, PLink, PageHead, STATUS, StatusPill, useLoad } from './ui';
+import { Async, Empty, ICONS, Icon, PHOTO, PLink, PageHead, STATUS, StatusPill, useLoad } from './ui';
 
 const ORDER = ['borrador', 'en_revision', 'programado', 'publicado', 'rechazado'];
 const day = (v) => new Date(`${v}T12:00:00`);
 
 // Big, labelled buttons for what this role does most.
 const ACTIONS = [
-  ['retreats', 'write', '/panel/retiros/nuevo', 'Nuevo retiro'],
-  ['sessions', 'write', '/panel/fechas/nuevo', 'Nueva fecha'],
-  ['pilgrimages', 'write', '/panel/peregrinaciones/nuevo', 'Nueva peregrinación'],
+  ['retreats', 'write', '/retiros/nuevo', 'Nuevo retiro'],
+  ['sessions', 'write', '/fechas/nuevo', 'Nueva fecha'],
+  ['pilgrimages', 'write', '/peregrinaciones/nuevo', 'Nueva peregrinación'],
 ];
 
 export default function Dashboard() {
@@ -27,18 +27,22 @@ export default function Dashboard() {
 
   return (
     <>
-      <PageHead title={`Hola, ${user.name.split(' ')[0]}`} sub="¿Qué quieres hacer hoy?" />
+      <div className="home-head">
+        <img className="hh-photo" src={PHOTO} alt="" width="640" height="480" />
+        <span className="polaroid" aria-hidden="true"><img src={PHOTO} alt="" width="96" height="72" /><i className="tape" /></span>
+        <PageHead title={`Hola, ${user.name.split(' ')[0]}`} sub="¿Qué quieres hacer hoy?" />
+      </div>
       <InstallCard />
       <div className="big-actions">
         {acts.map(([, , to, label], i) => <PLink key={to} className={`p-btn p-btn-big${i ? '' : ' p-btn-primary'}`} to={to}><Icon d={ICONS.plus} />{label}</PLink>)}
-        {can('registrations', 'read') && <PLink className="p-btn p-btn-big" to="/panel/inscripciones"><Icon d={ICONS.regs} />Ver inscritos</PLink>}
-        {approver && <PLink className={`p-btn p-btn-big${acts.length ? '' : ' p-btn-primary'}`} to="/panel/revision"><Icon d={ICONS.review} />Revisar lo pendiente{pend.data ? ` (${pend.data.pending.length})` : ''}</PLink>}
+        {can('registrations', 'read') && <PLink className="p-btn p-btn-big" to="/inscripciones"><Icon d={ICONS.regs} />Ver inscritos</PLink>}
+        {approver && <PLink className={`p-btn p-btn-big${acts.length ? '' : ' p-btn-primary'}`} to="/revision"><Icon d={ICONS.review} />Revisar lo pendiente{pend.data ? ` (${pend.data.pending.length})` : ''}</PLink>}
       </div>
 
       <section className="card" aria-labelledby="h-today">
         <h2 id="h-today">Te espera hoy{waiting > 0 && <span className="count p-num">{waiting}</span>}</h2>
         <PendingGroups limit={3} />
-        {waiting > 0 && <PLink className="p-btn" to="/panel/pendientes">Ver todo lo pendiente</PLink>}
+        {waiting > 0 && <PLink className="p-btn" to="/pendientes">Ver todo lo pendiente</PLink>}
       </section>
 
       <Async load={load} rows={6}>
@@ -60,7 +64,7 @@ export default function Dashboard() {
                       const d = day(x.starts_on);
                       return (
                         <li key={`${r.entity}${x.id}`}>
-                          <PLink className="date-card" to={`/panel/${r.path}/${x.id}`}>
+                          <PLink className="date-card" to={`/${r.path}/${x.id}`}>
                             {src ? <img src={src} alt="" loading="lazy" /> : <span className="date-block" aria-hidden="true"><span className="p-num">{d.getDate()}</span>{d.toLocaleDateString('es-MX', { month: 'short' })}</span>}
                             <span className="date-text">
                               <strong>{r.label(x)}</strong>
@@ -81,7 +85,7 @@ export default function Dashboard() {
                   <ul className="list">
                     {drafts.map(({ r, x }) => (
                       <li key={`${r.entity}${x.id}`}>
-                        <PLink to={`/panel/${r.path}/${x.id}`}>{r.label(x)}</PLink> <StatusPill status={x.status} />
+                        <PLink to={`/${r.path}/${x.id}`}>{r.label(x)}</PLink> <StatusPill status={x.status} />
                         {x.status === 'rechazado' && comment(r, x) && <blockquote>{comment(r, x)}</blockquote>}
                       </li>
                     ))}
@@ -100,7 +104,7 @@ export default function Dashboard() {
                     <thead><tr><th scope="col">Sección</th>{ORDER.map((s) => <th key={s} scope="col" className="p-num">{STATUS[s]}</th>)}</tr></thead>
                     <tbody>
                       {sets.map(([r, rows]) => (
-                        <tr key={r.entity}><th scope="row"><PLink to={`/panel/${r.path}`}>{r.title}</PLink></th>{ORDER.map((s) => <td key={s} className="p-num">{rows.filter((x) => x.status === s).length}</td>)}</tr>
+                        <tr key={r.entity}><th scope="row"><PLink to={`/${r.path}`}>{r.title}</PLink></th>{ORDER.map((s) => <td key={s} className="p-num">{rows.filter((x) => x.status === s).length}</td>)}</tr>
                       ))}
                     </tbody>
                   </table>

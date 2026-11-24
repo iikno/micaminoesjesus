@@ -27,6 +27,7 @@ export const inboxRoles = () => rolesWith((r) => can(r, 'contact', 'read'));
 const ITEM = { retreats: ['retiro', 'o'], sessions: ['fecha', 'a'], pilgrimages: ['peregrinación', 'a'], team: ['integrante', 'o'], verses: ['versículo', 'o'] };
 const PATH = { retreats: 'retiros', sessions: 'fechas', pilgrimages: 'peregrinaciones', team: 'equipo', verses: 'versiculos' };
 
+// Payload URLs keep the /panel prefix on purpose: service workers installed before the move clamp to /panel, and the /panel -> panel host redirect serves both.
 export const submittedMsg = (entity) => ({ title: 'Algo espera tu aprobación', body: `Un${ITEM[entity][1] === 'a' ? 'a' : ''} ${ITEM[entity][0]} está en revisión.`, url: '/panel/revision', tag: 'review' });
 export const decisionMsg = (entity, id, approved) => ({
   title: approved ? 'Aprobado' : 'Necesita cambios',

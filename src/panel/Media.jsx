@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ApiError, del, errText, get, patch, upload } from './api';
 import { useAuth } from './session';
-import { Async, Confirm, Empty, Field, PageHead, fmtDate, useLoad, useToast } from './ui';
+import { Async, Confirm, Empty, Field, ICONS, Icon, PageHead, fmtDate, useLoad, useToast } from './ui';
 import { imgUrl } from '../lib/img';
 
 const thumbSrc = (m) => `/api/admin/media/${m.id}/raw?thumb=1`;
@@ -135,7 +135,7 @@ function Editor({ m, canWrite, reload, onDeleted }) {
       {canWrite && (
         <div className="actions">
           <button className="p-btn p-btn-primary" disabled={busy}>{busy ? 'Guardando…' : 'Guardar'}</button>
-          <button type="button" className="p-btn p-btn-danger-ghost" disabled={m.used} title={m.used ? 'Está en uso como portada o foto' : undefined} onClick={() => setConfirm(true)}>Eliminar</button>
+          <button type="button" className="p-btn p-btn-danger-ghost" disabled={m.used} title={m.used ? 'Está en uso como portada o foto' : undefined} onClick={() => setConfirm(true)}><Icon d={ICONS.trash} />Eliminar</button>
           {m.used && <span className="help">En uso: no se puede eliminar.</span>}
         </div>
       )}

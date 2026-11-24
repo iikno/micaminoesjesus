@@ -13,7 +13,8 @@ import adminRoutes from './routes/admin.js';
 import authRoutes from './routes/auth.js';
 import publicRoutes from './routes/public.js';
 import regPublicRoutes from './routes/regpublic.js';
-import seoRoutes, { renderPage } from './routes/seo.js';
+import { panelRedirect } from './lib/pwa.js';
+import seoRoutes, { onPanelHost, renderPage } from './routes/seo.js';
 
 export async function buildApp() {
   // Behind Coolify's Traefik the real client IP is in X-Forwarded-For (needed for rate limits and audit).
@@ -77,13 +78,16 @@ export async function buildApp() {
       // Vite hashes everything under /assets, so it can be cached for a year; index.html must always be revalidated.
       setHeaders: (res, path) => {
         res.header('Cache-Control', /[\/]assets[\/]/.test(path) ? 'public, max-age=31536000, immutable' : 'no-cache');
-        if (path.endsWith('/panel/sw.js')) res.header('Service-Worker-Allowed', '/panel'); // the panel worker is registered with scope /panel (also covers the URL without a trailing slash)
+        if (/[\\/]panel[\\/]sw\.js$/.test(path)) res.header('Service-Worker-Allowed', '/'); // the worker lives under /panel but the panel host registers it with scope /
       },
     });
     const indexHtml = readFileSync(join(dist, 'index.html'), 'utf8');
     app.setNotFoundHandler(async (req, reply) => {
       if (req.url.startsWith('/api/') || req.url.startsWith('/uploads/') || (req.method !== 'GET' && req.method !== 'HEAD')) return reply.code(404).send({ error: 'not_found' });
-      const { status, html } = await renderPage(req.url, indexHtml);
+      // Old /panel/... links (mails, bookmarks, pushes) move to the panel host. 302, not 301: browsers would cache it forever.
+      const to = panelRedirect(req.url, config.panelUrl);
+      if (to) return reply.code(302).header('Cache-Control', 'no-store').redirect(to);
+      const { status, html } = await renderPage(req.url, indexHtml, onPanelHost(req));
       return reply.code(status).type('text/html; charset=utf-8').header('Cache-Control', 'no-cache').send(html);
     });
   }

@@ -33,7 +33,7 @@ export function RequireAuth({ children }) {
   const loc = useLocation();
   if (error) return <div className="auth-wrap"><div className="state state-error" role="alert"><p>No se pudo comprobar la sesión.</p><button className="p-btn" onClick={reload}>Reintentar</button></div></div>;
   if (user === undefined) return <div className="auth-wrap"><Skeleton rows={3} /></div>;
-  if (!user) return <Navigate to="/panel/login" replace state={{ from: loc.pathname + loc.search }} />;
+  if (!user) return <Navigate to="/login" replace state={{ from: loc.pathname + loc.search }} />;
   return children;
 }
 

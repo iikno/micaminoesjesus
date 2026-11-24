@@ -32,7 +32,7 @@ export default function Avisos() {
   else if (e.ios && !e.standalone) body = (
     <Note title="En iPhone, primero instala el panel.">
       <p>Los avisos solo llegan si el panel está en tu pantalla de inicio (iOS 16.4 o más nuevo).</p>
-      <PLink className="p-btn p-btn-primary" to="/panel/instalar">Ver cómo instalarlo</PLink>
+      <PLink className="p-btn p-btn-primary" to="/instalar">Ver cómo instalarlo</PLink>
     </Note>
   );
   else if (!pushSupported()) body = <Note title="Este teléfono o navegador no puede recibir avisos.">{e.ios ? <p>Necesitas iOS 16.4 o más nuevo.</p> : <p>Prueba con Chrome, o instala el panel desde «Instalar en mi teléfono».</p>}</Note>;

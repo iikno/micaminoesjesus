@@ -63,6 +63,8 @@ export function injectHead(html, { lang, tags }) {
     .replace('</head>', `    ${tags}\n  </head>`);
 }
 
+export const PANEL_ROBOTS = 'User-agent: *\nDisallow: /\n';
+
 export function robotsTxt(base) {
   return `User-agent: *\nAllow: /\nDisallow: /panel\nDisallow: /inscripcion/\nDisallow: /en/inscripcion/\nDisallow: /api/\n\nSitemap: ${base}/sitemap.xml\n`;
 }

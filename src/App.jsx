@@ -37,12 +37,15 @@ const publicRoutes = (
   </>
 );
 
+// The panel lives on its own subdomain (panel.<domain>) at clean URLs; the public site never ships its routes there or vice versa.
+const onPanelHost = location.hostname.startsWith('panel.');
+
 export default function App() {
+  if (onPanelHost) return <Routes><Route path="/*" element={<Suspense fallback={<p style={{ padding: 24 }}>Cargando…</p>}><PanelApp /></Suspense>} /></Routes>;
   return (
     <Routes>
       <Route path="/" element={<Layout />}>{publicRoutes}</Route>
       <Route path="/en" element={<Layout />}>{publicRoutes}</Route>
-      <Route path="/panel/*" element={<Suspense fallback={<p style={{ padding: 24 }}>Cargando…</p>}><PanelApp /></Suspense>} />
     </Routes>
   );
 }

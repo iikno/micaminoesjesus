@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { after, before, test } from 'node:test';
 import { createServer } from 'vite';
-import { layout, locate, minimalOk, slugify, withSuffix } from '../../src/panel/wizard.js';
+import { layout, locate, minimalOk, slugify, withSuffix } from '../../src/panel/wizardLogic.js';
 
 let vite, RES;
 before(async () => {

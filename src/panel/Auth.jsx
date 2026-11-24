@@ -3,11 +3,12 @@ import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react
 import logo from '../assets/logos/logotipo.png';
 import { ApiError, errText, get, post } from './api';
 import { useAuth } from './session';
-import { Field, PageHead, useToast } from './ui';
+import { Field, PHOTO, PageHead, useToast } from './ui';
 
-function Card({ title, children, foot }) {
+function Card({ title, children, foot, deco }) {
   return (
-    <main className="auth-wrap">
+    <main className={`auth-wrap${deco ? ' has-deco' : ''}`}>
+      {deco && <div className="auth-deco" aria-hidden="true"><img src={PHOTO} alt="" width="640" height="480" /><span className="polaroid"><img src={PHOTO} alt="" width="96" height="72" /><i className="tape" /></span></div>}
       <div className="auth-card">
         <span className="logo-chip"><img src={logo} alt="Mi Camino es Jesús" /></span>
         <h1>{title}</h1>
@@ -34,7 +35,7 @@ const Err = ({ children }) => (children ? <p className="form-error" role="alert"
 export function Login() {
   const { user, setUser } = useAuth();
   const nav = useNavigate();
-  const from = useLocation().state?.from ?? '/panel';
+  const from = useLocation().state?.from ?? '/';
   const f = useSubmit(async (d) => {
     await post('/api/auth/login', { email: d.get('email'), password: d.get('password') });
     setUser(await get('/api/auth/me')); // perms come from /me; also proves the cookie stuck
@@ -42,7 +43,7 @@ export function Login() {
   });
   if (user) return <Navigate to={from} replace />;
   return (
-    <Card title="Panel de administración" foot={<Link to="/panel/olvide">¿Olvidaste tu contraseña?</Link>}>
+    <Card deco title="Panel de administración" foot={<Link to="/olvide">¿Olvidaste tu contraseña?</Link>}>
       <form onSubmit={f.run} noValidate>
         <Field label="Correo" required>{(p) => <input {...p} name="email" type="email" autoComplete="username" autoFocus />}</Field>
         <Field label="Contraseña" required>{(p) => <input {...p} name="password" type="password" autoComplete="current-password" />}</Field>
@@ -70,7 +71,7 @@ function SetPassword({ title, endpoint, done }) {
     setOk(true);
   });
   if (!token) return <Card title={title}><p className="form-error">Falta el enlace. Abre el enlace completo que recibiste por correo.</p></Card>;
-  if (ok) return <Card title="Listo"><p>{done}</p><Link className="p-btn p-btn-primary p-btn-block" to="/panel/login">Ir a iniciar sesión</Link></Card>;
+  if (ok) return <Card title="Listo"><p>{done}</p><Link className="p-btn p-btn-primary p-btn-block" to="/login">Ir a iniciar sesión</Link></Card>;
   return (
     <Card title={title}>
       <form onSubmit={f.run} noValidate>
@@ -88,9 +89,9 @@ export const Reset = () => <SetPassword title="Restablecer contraseña" endpoint
 export function Forgot() {
   const [sent, setSent] = useState(false);
   const f = useSubmit(async (d) => { await post('/api/auth/forgot', { email: d.get('email') }); setSent(true); });
-  if (sent) return <Card title="Revisa tu correo" foot={<Link to="/panel/login">Volver</Link>}><p>Si el correo tiene una cuenta activa, enviamos un enlace válido por 1 hora.</p></Card>;
+  if (sent) return <Card title="Revisa tu correo" foot={<Link to="/login">Volver</Link>}><p>Si el correo tiene una cuenta activa, enviamos un enlace válido por 1 hora.</p></Card>;
   return (
-    <Card title="Restablecer contraseña" foot={<Link to="/panel/login">Volver a iniciar sesión</Link>}>
+    <Card title="Restablecer contraseña" foot={<Link to="/login">Volver a iniciar sesión</Link>}>
       <form onSubmit={f.run} noValidate>
         <Field label="Correo" required>{(p) => <input {...p} name="email" type="email" autoComplete="username" autoFocus />}</Field>
         <Err>{f.err}</Err>

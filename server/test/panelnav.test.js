@@ -25,12 +25,12 @@ test('Más lists the rest, without repeating the bar', () => {
 
 test('the active destination follows the URL', () => {
   const { main } = nav('admin');
-  assert.equal(activeTo(main, '/panel'), '/panel');
-  assert.equal(activeTo(main, '/panel/retiros/12'), '/panel/retiros');
-  assert.equal(activeTo(main, '/panel/fechas'), '/panel/retiros');
-  assert.equal(activeTo(main, '/panel/inscripciones/session/3'), '/panel/inscripciones');
-  assert.equal(activeTo(main, '/panel/revision'), '/panel/pendientes');
-  assert.equal(activeTo(main, '/panel/contacto'), '/panel/pendientes');
-  assert.equal(activeTo(main, '/panel/versiculos/4'), '/panel/mas');
-  assert.equal(activeTo(main, '/panel/contrasena'), '/panel/mas');
+  assert.equal(activeTo(main, '/'), '/');
+  assert.equal(activeTo(main, '/retiros/12'), '/retiros');
+  assert.equal(activeTo(main, '/fechas'), '/retiros');
+  assert.equal(activeTo(main, '/inscripciones/session/3'), '/inscripciones');
+  assert.equal(activeTo(main, '/revision'), '/pendientes');
+  assert.equal(activeTo(main, '/contacto'), '/pendientes');
+  assert.equal(activeTo(main, '/versiculos/4'), '/mas');
+  assert.equal(activeTo(main, '/contrasena'), '/mas');
 });

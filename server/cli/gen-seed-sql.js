@@ -74,7 +74,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (process.argv.includes('--check')) {
     let cur = '';
     try { cur = readFileSync(OUT, 'utf8'); } catch { /* missing */ }
-    if (cur !== sql) { console.error('007_seed_catalogo.sql is out of date: run npm run seed:sql'); process.exit(1); }
+    // autocrlf checkouts on Windows make the file CRLF; the committed blob is LF.
+    if (cur.replace(/\r\n/g, '\n') !== sql) { console.error('007_seed_catalogo.sql is out of date: run npm run seed:sql'); process.exit(1); }
   } else {
     writeFileSync(OUT, sql);
     console.log(`wrote ${OUT} (${(sql.length / 1024).toFixed(0)} KB)`);

@@ -14,7 +14,7 @@ export async function issueToken(c, userId, kind) {
 }
 
 export const linkFor = (kind, token) =>
-  `${config.PUBLIC_URL}/panel/${kind === 'reset' ? 'restablecer' : 'invitacion'}?token=${token}`;
+  `${config.panelUrl}/${kind === 'reset' ? 'restablecer' : 'invitacion'}?token=${token}`;
 
 // Creates (or re-invites a still-invited) user and mails the set-password link.
 // Returns the link so the CLI can print it when mail is disabled or failed.

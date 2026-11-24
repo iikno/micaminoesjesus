@@ -21,6 +21,8 @@ import { RESOURCES } from './resources';
 import { AuthProvider, RequireAuth, useAuth } from './session';
 import { ICONS, Icon, PLink, ROLE, ToastProvider } from './ui';
 
+const SITE = location.origin.replace('//panel.', '//'); // the public site is the apex
+
 function Shell() {
   const { user, can, logout } = useAuth();
   const pend = usePendingLoad();
@@ -31,21 +33,21 @@ function Shell() {
   const item = (i) => (
     <PLink key={i.to} to={i.to} aria-current={on === i.to ? 'page' : undefined}>
       <Icon d={ICONS[i.ico]} /><span>{i.label}</span>
-      {i.to === '/panel/pendientes' && count > 0 && <span className="badge p-num">{count}<span className="sr-only"> pendientes</span></span>}
+      {i.to === '/pendientes' && count > 0 && <span className="badge p-num">{count}<span className="sr-only"> pendientes</span></span>}
     </PLink>
   );
   return (
     <PendingProvider value={pend}>
       <div className="shell">
         <a className="p-skip" href="#main">Saltar al contenido</a>
-        <header className="topbar"><span className="topbar-title">Panel MCJ</span></header>
+        <header className="topbar"><img src={logo} alt="" /><span className="topbar-title">Panel MCJ</span></header>
         <aside className="sidebar">
-          <Link to="/panel" className="logo-chip" aria-label="Panel Mi Camino es Jesús, inicio"><img src={logo} alt="" /></Link>
+          <Link to="/" className="logo-chip" aria-label="Panel Mi Camino es Jesús, inicio"><img src={logo} alt="" /></Link>
           <p className="side-title">Panel</p>
           <nav aria-label="Secciones"><ul>{main.map((i) => <li key={i.to}>{item(i)}</li>)}</ul></nav>
           <div className="side-foot">
             <p className="p-who"><strong>{user.name}</strong><br /><span>{ROLE[user.role]}</span></p>
-            <a href="/" className="side-link">Ver el sitio</a>
+            <a href={SITE} className="side-link">Ver el sitio</a>
             <button className="p-btn p-btn-ghost" onClick={logout}>Cerrar sesión</button>
           </div>
         </aside>
@@ -58,7 +60,7 @@ function Shell() {
 
 // 403-style screen for sections the role does not have, even when typing the URL by hand.
 function Allowed({ ok, children }) {
-  return ok ? children : <div className="state"><p className="state-title">No tienes acceso a esta sección.</p><Link to="/panel">Volver al inicio</Link></div>;
+  return ok ? children : <div className="state"><p className="state-title">No tienes acceso a esta sección.</p><Link to="/">Volver al inicio</Link></div>;
 }
 
 function Guarded() {
@@ -84,7 +86,7 @@ function Guarded() {
       <Route path="glosario" element={<Allowed ok={can('glossary', 'read')}><Glossary /></Allowed>} />
       <Route path="usuarios" element={<Allowed ok={can('users', 'read')}><Users /></Allowed>} />
       <Route path="historial" element={<Allowed ok={can('audit', 'read')}><Audit /></Allowed>} />
-      <Route path="*" element={<div className="state"><p className="state-title">Esta página no existe.</p><Link to="/panel">Volver al inicio</Link></div>} />
+      <Route path="*" element={<div className="state"><p className="state-title">Esta página no existe.</p><Link to="/">Volver al inicio</Link></div>} />
     </Routes>
   );
 }

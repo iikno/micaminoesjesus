@@ -132,20 +132,20 @@ test('only the panel gets the manifest and iOS tags; public pages are untouched'
   assert.doesNotMatch(readFileSync(new URL('index.html', root), 'utf8'), /manifest|apple-touch|apple-mobile/); // the source page stays plain
 });
 
-test('manifest: everything lives under /panel and the icon files exist', () => {
+test('manifest: the app is the whole panel host (scope /), assets stay under /panel and the icon files exist', () => {
   const m = JSON.parse(readFileSync(new URL('public/panel/manifest.webmanifest', root), 'utf8'));
   assert.equal(m.name, 'MCJ Panel'); assert.equal(m.short_name, 'MCJ Panel'); assert.equal(m.lang, 'es-MX'); assert.equal(m.display, 'standalone');
-  for (const u of [m.id, m.start_url, m.scope]) assert.match(u, /^\/panel\/?$/);
+  for (const u of [m.id, m.start_url, m.scope]) assert.equal(u, '/');
   assert.ok(m.icons.some((i) => i.sizes === '192x192') && m.icons.some((i) => i.sizes === '512x512' && i.purpose === 'any') && m.icons.some((i) => i.purpose === 'maskable'));
   for (const i of m.icons) assert.ok(existsSync(new URL(`public${i.src}`, root)), i.src);
   assert.ok(existsSync(new URL('public/panel/icons/apple-touch-icon.png', root)));
 });
 
 // Runs the real sw.js with a stub `self` and returns the listeners it registered.
-function loadSW() {
+function loadSW(host = 'mcj.test', windows = []) {
   const on = {}, opened = [], shown = [];
   const self = {
-    location: { origin: 'https://mcj.test' }, skipWaiting() {}, clients: { claim: async () => {}, matchAll: async () => [], openWindow: async (u) => opened.push(u) },
+    location: { origin: `https://${host}`, hostname: host }, skipWaiting() {}, clients: { claim: async () => {}, matchAll: async () => windows, openWindow: async (u) => opened.push(u) },
     registration: { showNotification: async (t, o) => shown.push([t, o]) }, addEventListener: (n, f) => { on[n] = f; },
   };
   vm.runInNewContext(readFileSync(new URL('public/panel/sw.js', root), 'utf8'), { self, URL, Response, fetch: async () => { throw new Error('offline'); } });
@@ -186,6 +186,42 @@ test('service worker: push shows a notification; tapping opens only /panel URLs'
     await click;
     assert.equal(opened.at(-1), want, url);
   }
+});
+
+// Pushes the click handler with a payload url; returns what happened to the open windows and the new ones.
+async function tap(sw, url) {
+  sw.on.push({ data: { json: () => ({ title: 't', url }) }, waitUntil: () => {} });
+  let click;
+  sw.on.notificationclick({ notification: { close() {}, data: sw.shown.at(-1)[1].data }, waitUntil: (x) => { click = x; } });
+  await click;
+}
+const win = (url, log, navigate = async () => {}) => ({ url, focus: async () => { log.push('focus ' + url); }, navigate: async (u) => { log.push('nav ' + u); return navigate(u); } });
+
+test('service worker on the panel host: payload /panel/... opens the clean URL, in any open window', async () => {
+  const log = [];
+  const sw = loadSW('panel.mcj.test', [win('https://panel.mcj.test/mas', log)]);
+  sw.on.push({ data: { json: () => ({ title: 't', url: '/panel/revision?a=1' }) }, waitUntil: () => {} });
+  assert.equal(sw.shown[0][1].data.url, '/panel/revision?a=1'); // stored clamped, so the click handler can re-validate it
+  for (const [url, want] of [['/panel/revision?a=1', '/revision?a=1'], ['/panel', '/'], ['/panel/inscripciones/session/4', '/inscripciones/session/4'], ['https://evil.com/panel/x', '/'], ['/api/x', '/']]) {
+    log.length = 0;
+    await tap(sw, url);
+    assert.deepEqual(log, ['focus https://panel.mcj.test/mas', 'nav ' + want], url);
+  }
+  assert.equal(sw.opened.length, 0);
+  const none = loadSW('panel.mcj.test');
+  await tap(none, '/panel/contacto');
+  assert.deepEqual(none.opened, ['/contacto']);
+});
+
+test('service worker on the old apex: only /panel windows are reused, and a navigate that fails after the cross-origin redirect opens no second window', async () => {
+  const log = [];
+  const sw = loadSW('mcj.test', [win('https://mcj.test/proyectos', log), win('https://mcj.test/panel/mas', log, async () => { throw new TypeError('cross-origin'); })]);
+  await tap(sw, '/panel/revision');
+  assert.deepEqual(log, ['focus https://mcj.test/panel/mas', 'nav /panel/revision']);
+  assert.equal(sw.opened.length, 0);
+  const pub = loadSW('mcj.test', [win('https://mcj.test/proyectos', [])]);
+  await tap(pub, '/panel/revision');
+  assert.deepEqual(pub.opened, ['/panel/revision']);
 });
 
 test('device detection: iPhone Safari vs in-app browsers vs Android', () => {

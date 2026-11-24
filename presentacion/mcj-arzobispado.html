@@ -4,20 +4,23 @@
 <meta charset="utf-8">
 <title>MCJ · Presentación Arzobispado de Puebla</title>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<!-- Un solo contenido, dos formatos: build-arzobispado.mjs agrega class="phone" (9:16) o class="carta" (Carta, impresión) al body y el @page de cada uno. -->
 <style>
   :root{
     --bg:#FAF6EF; --bg-alt:#F1ECE0; --ink:#14293A; --ink-2:#0E1F2C; --red:#8B1E2B;
     --gold:#C79A2B; --cream:#F3E4BB; --gray:#6B6B6B; --white:#fff;
     --W:540px; --H:960px; --pad:44px;
   }
-  @page{ size:540px 960px; margin:0 }
   *{ box-sizing:border-box; margin:0; padding:0 }
   html,body{ background:#888 }
   body{ font-family:'Manrope',sans-serif; color:var(--ink); -webkit-print-color-adjust:exact; print-color-adjust:exact }
   .s{ width:var(--W); height:var(--H); position:relative; overflow:hidden; background:var(--bg);
       padding:var(--pad); display:flex; flex-direction:column; page-break-after:always; break-after:page }
+  .s > *{ flex-shrink:0 }
+  .s:last-child{ page-break-after:auto; break-after:auto }
   .s.dark{ background:var(--ink); color:var(--bg) }
   .s.cream{ background:var(--bg-alt) }
+  .v-c{ display:none }
 
   /* chrome */
   .top{ display:flex; align-items:center; justify-content:space-between; margin-bottom:34px }
@@ -73,14 +76,16 @@
   .p4{ background:var(--gold); color:var(--ink-2) } .p4 .n{ color:var(--bg) }
 
   /* derej */
-  .derej{ display:flex; flex-direction:column; gap:9px }
+  .derej{ display:flex; flex-direction:column; gap:7px }
   .dj{ display:grid; grid-template-columns:54px 1fr; align-items:center; gap:14px; background:rgba(250,246,239,.06);
-       border:1px solid rgba(250,246,239,.12); border-radius:14px; padding:12px 14px }
+       border:1px solid rgba(250,246,239,.12); border-radius:14px; padding:10px 14px }
   .dj .ic{ width:54px; height:54px; border-radius:12px; display:grid; place-items:center; font:700 13px 'Space Grotesk'; letter-spacing:.05em }
   .dj .ic.g{ background:var(--gold); color:var(--ink) } .dj .ic.r{ background:var(--red); color:var(--bg) }
   .dj b{ display:block; font:700 15.5px 'Space Grotesk'; text-transform:uppercase; letter-spacing:.02em }
   .dj span{ font-size:12.5px; color:rgba(250,246,239,.72) }
   .dj em{ font-style:normal; color:var(--gold); font-weight:700 }
+  .dj.plus{ background:transparent; border:1.5px dashed var(--gold); margin-top:4px }
+  .dj.plus .ic{ background:transparent; border:1.5px solid var(--gold); color:var(--gold); font-size:18px }
 
   .stats{ display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:6px 0 20px }
   .stat{ background:var(--white); border-radius:16px; padding:20px 18px }
@@ -92,29 +97,83 @@
   .list li{ display:flex; gap:12px; font-size:14.5px; line-height:1.45 }
   .list li::before{ content:''; flex:none; width:8px; height:8px; border-radius:2px; background:var(--gold); margin-top:7px; transform:rotate(45deg) }
 
+  /* xp lev */
+  .xp-top{ display:grid; grid-template-columns:126px 1fr; gap:18px; align-items:center; margin-bottom:14px }
+  .xp-top img{ width:126px; height:126px; display:block; border-radius:24px }
+  .xp-top p{ font-size:14px; line-height:1.5 }
+  .xp-name{ display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px }
+  .xp-name div{ background:var(--white); border-radius:14px; padding:12px 14px; border-top:4px solid var(--gold) }
+  .xp-name div + div{ border-top-color:var(--red) }
+  .xp-name b{ display:block; font:700 12px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); margin-bottom:4px }
+  .xp-name span{ font-size:12px; line-height:1.4 }
+  .xp-steps{ display:grid; grid-template-columns:repeat(5,1fr); gap:6px; margin-bottom:8px }
+  .xp-steps div{ background:var(--ink); color:var(--bg); border-radius:10px; padding:8px 4px; text-align:center; font:600 10.5px 'Manrope'; line-height:1.2 }
+  .xp-steps b{ display:block; font:700 15px 'Space Grotesk'; color:var(--gold) }
+  .xp-fmt{ display:grid; grid-template-columns:repeat(3,1fr); gap:6px; margin-bottom:14px }
+  .xp-fmt div{ border-top:2px solid var(--gold); padding-top:5px; font-size:12px; line-height:1.35 }
+  .xp-fmt b{ display:block; font:700 12px 'Space Grotesk'; text-transform:uppercase }
+  .xp-sch{ list-style:none; display:flex; flex-direction:column; gap:7px; margin-bottom:14px }
+  .xp-sch li{ font-size:12.5px; line-height:1.4; display:flex; gap:10px }
+  .xp-sch li::before{ content:''; flex:none; width:8px; height:8px; border-radius:2px; background:var(--gold); margin-top:6px; transform:rotate(45deg) }
+  .xp-pipe{ display:flex; align-items:center; gap:6px; font:600 11px 'Manrope'; flex-wrap:wrap }
+  .xp-pipe span{ background:var(--white); border-radius:99px; padding:5px 10px }
+  .xp-pipe i{ color:var(--gold); font-style:normal; font-weight:700 }
+
+  /* peregrinos */
+  .pg-top{ display:grid; grid-template-columns:128px 1fr; gap:18px; align-items:center; margin-bottom:14px }
+  .pg-top img{ width:128px; height:128px; display:block; border-radius:26px }
+  .pg-top p{ font-size:14.5px; line-height:1.5 }
+  .pg-facts{ display:flex; flex-direction:column; gap:7px; margin-bottom:14px }
+  .pg-facts div{ background:var(--white); border-radius:14px; padding:9px 16px; display:grid; grid-template-columns:104px 1fr; gap:12px; align-items:baseline }
+  .pg-facts b{ font:700 10.5px 'Space Grotesk'; letter-spacing:.16em; text-transform:uppercase; color:var(--red) }
+  .pg-facts span{ font-size:13px; line-height:1.4 }
+  .sub{ font:700 11px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; color:var(--ink); margin:2px 0 8px }
+  .logo-m{ display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; margin-bottom:14px }
+  .logo-m div{ border-top:2px solid var(--gold); padding-top:6px }
+  .logo-m b{ display:block; font:700 12px 'Space Grotesk'; text-transform:uppercase; letter-spacing:.04em }
+  .logo-m span{ font-size:12px; line-height:1.4; color:var(--gray) }
+  .resp{ display:grid; grid-template-columns:78px 1fr; gap:14px; align-items:center; background:var(--ink); color:var(--bg); border-radius:16px; padding:14px 16px; margin-top:auto; margin-bottom:40px }
+  .resp img{ width:78px; height:78px; border-radius:12px; object-fit:cover; object-position:center 22%; display:block }
+  .resp small{ font:700 10px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; color:var(--gold) }
+  .resp b{ display:block; font:700 16px 'Space Grotesk'; margin:2px 0 3px }
+  .resp span{ font-size:12px; line-height:1.4; color:rgba(250,246,239,.8) }
+
   /* milestone */
-  .event{ border-radius:18px; overflow:hidden; background:var(--white); margin-bottom:16px; box-shadow:0 10px 26px -18px rgba(20,41,58,.4) }
-  .event .img{ height:170px; background:url(assets/images/retiro-levantate-hombre.webp) center/cover }
-  .event .tx{ padding:18px 20px }
-  .chip{ display:inline-block; font:700 10px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; padding:5px 10px; border-radius:99px; background:var(--cream); color:var(--red); margin-bottom:10px }
-  .event h3{ font:700 22px 'Space Grotesk'; text-transform:uppercase; margin-bottom:6px }
-  .event p{ font-size:14px }
-  .timeline{ display:flex; flex-direction:column; gap:0; margin-top:4px }
-  .tl{ display:grid; grid-template-columns:22px 1fr; gap:12px; padding-bottom:14px; position:relative }
-  .tl::before{ content:''; position:absolute; left:6px; top:16px; bottom:0; width:2px; background:rgba(20,41,58,.15) }
-  .tl:last-child::before{ display:none }
-  .tl i{ width:14px; height:14px; border-radius:50%; background:var(--gold); margin-top:3px; border:3px solid var(--bg-alt); box-shadow:0 0 0 2px var(--gold) }
+  .event{ border-radius:18px; overflow:hidden; background:var(--white); margin-bottom:14px; box-shadow:0 10px 26px -18px rgba(20,41,58,.4) }
+  .event .img{ aspect-ratio:1800/951; background:url(fotos/retiro-grupo.jpg) center bottom/cover }
+  .event .tx{ padding:12px 20px 14px }
+  .chip{ display:inline-block; font:700 10px 'Space Grotesk'; letter-spacing:.18em; text-transform:uppercase; padding:5px 10px; border-radius:99px; background:var(--cream); color:var(--red); margin-bottom:8px }
+  .event h3{ font:700 22px 'Space Grotesk'; text-transform:uppercase; margin-bottom:5px }
+  .event p{ font-size:13px; line-height:1.45 }
+  .event p + p{ margin-top:7px }
+  .temas{ display:flex; flex-wrap:wrap; gap:6px; margin:10px 0 0 }
+  .temas span{ font:600 11px 'Manrope'; background:var(--bg-alt); border-radius:99px; padding:4px 10px }
+  .cap{ font:600 10px 'Manrope'; color:var(--gray); margin-top:6px }
+  .timeline{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:6px }
+  .tl{ display:block; position:relative; border-top:2px solid rgba(20,41,58,.15); padding-top:12px }
+  .tl i{ position:absolute; left:0; top:-8px; width:14px; height:14px; border-radius:50%; background:var(--gold); border:3px solid var(--bg); box-shadow:0 0 0 2px var(--gold) }
   .tl i.r{ background:var(--red); box-shadow:0 0 0 2px var(--red) }
   .tl i.o{ background:transparent; box-shadow:0 0 0 2px var(--ink) }
   .tl b{ display:block; font:700 14px 'Space Grotesk'; text-transform:uppercase; letter-spacing:.03em }
-  .tl span{ font-size:13.5px; color:var(--gray) }
+  .tl span{ font-size:12px; line-height:1.35; color:var(--gray); display:block }
+
+  /* plan 2027 */
+  .plan{ display:flex; flex-direction:column; gap:8px; margin-top:4px }
+  .pl{ display:grid; grid-template-columns:106px 1fr; gap:14px; background:var(--white); border-radius:14px; padding:11px 14px; align-items:center; border-left:5px solid var(--gold) }
+  .pl.hl{ border-left-color:var(--red) }
+  .pl time{ font:700 11px 'Space Grotesk'; letter-spacing:.06em; text-transform:uppercase; color:var(--red); line-height:1.25 }
+  .pl b{ display:block; font:700 14px 'Manrope'; line-height:1.25 }
+  .pl span{ font-size:12px; color:var(--gray) }
+  .note{ margin-top:14px; border-top:1px solid rgba(20,41,58,.15); padding-top:12px; font-size:13px; line-height:1.5 }
 
   /* team */
-  .team{ display:grid; grid-template-columns:1fr 1fr; gap:14px }
-  .tm{ background:var(--white); border-radius:16px; padding:14px; text-align:center }
-  .tm img{ width:100%; aspect-ratio:1; object-fit:cover; object-position:center 22%; border-radius:12px; margin-bottom:10px; display:block }
+  .team{ display:grid; grid-template-columns:1fr 1fr; gap:12px }
+  .tm{ background:var(--white); border-radius:16px; padding:12px; text-align:center }
+  .tm img{ width:74%; margin-left:auto; margin-right:auto; aspect-ratio:1; object-fit:cover; object-position:center; border-radius:12px; margin-bottom:8px; display:block }
   .tm b{ display:block; font:700 13.5px 'Manrope'; line-height:1.25 }
   .tm span{ display:block; font:700 10px 'Space Grotesk'; letter-spacing:.14em; text-transform:uppercase; color:var(--red); margin-top:5px }
+  .tm.wide{ grid-column:1 / -1; display:grid; grid-template-columns:120px 1fr; gap:16px; align-items:center; text-align:left }
+  .tm.wide img{ aspect-ratio:1; margin:0; width:100% }
 
   /* projects */
   .proj{ display:grid; grid-template-columns:96px 1fr; gap:16px; align-items:center; background:var(--white); border-radius:16px; padding:16px }
@@ -123,29 +182,161 @@
   .proj b{ display:block; font:700 19px 'Space Grotesk'; text-transform:uppercase; margin-bottom:4px }
   .proj p{ font-size:13px; line-height:1.45 }
 
+  /* sitio web */
+  .web{ display:grid; grid-template-columns:1fr 170px; gap:18px; align-items:center; background:var(--white); border-radius:18px; padding:20px; margin-bottom:18px }
+  .web .url{ font:700 21px 'Space Grotesk'; color:var(--red); letter-spacing:-.01em; margin-bottom:6px; word-break:break-all }
+  .web p{ font-size:13px; line-height:1.45 }
+  .web .qr{ width:170px; height:170px; display:block }
+  .web .qr svg{ width:100%; height:100%; display:block }
+  .feat{ display:flex; flex-direction:column; gap:10px }
+  .feat > div{ display:grid; grid-template-columns:40px 1fr; gap:14px; align-items:start; border-top:1px solid rgba(20,41,58,.14); padding-top:10px }
+  .feat i{ font:700 24px 'Space Grotesk'; font-style:normal; color:var(--gold); line-height:1 }
+  .feat b{ display:block; font:700 15.5px 'Space Grotesk'; text-transform:uppercase; letter-spacing:.02em; margin-bottom:2px }
+  .feat span{ font-size:13px; line-height:1.45; color:var(--gray) }
+
   /* asks */
   .ask{ display:grid; grid-template-columns:44px 1fr; gap:14px; padding:16px 0; border-top:1px solid rgba(250,246,239,.14) }
   .ask:last-child{ border-bottom:1px solid rgba(250,246,239,.14) }
   .ask .k{ font:700 30px 'Space Grotesk'; color:var(--gold); line-height:1 }
-  .ask b{ display:block; font:700 17px 'Space Grotesk'; text-transform:uppercase; letter-spacing:.02em; margin-bottom:4px }
-  .ask span{ font-size:13.5px; line-height:1.45; color:rgba(250,246,239,.78) }
+  .ask p{ font-size:16.5px; line-height:1.5 }
 
   /* close */
   .close{ background:var(--ink); color:var(--bg); align-items:center; text-align:center; justify-content:center }
-  .close .logo{ width:300px; margin-bottom:30px; background:var(--bg); border-radius:22px; padding:22px 26px }
-  .verse{ font:700 34px 'Space Grotesk'; text-transform:uppercase; line-height:1.05; margin-bottom:8px }
+  .close .logo{ width:260px; margin-bottom:24px; background:var(--bg); border-radius:22px; padding:20px 24px }
+  .verse{ font:700 34px 'Space Grotesk'; text-transform:uppercase; line-height:1.05; margin-bottom:12px }
   .verse span{ color:var(--gold) }
-  .ref{ font:600 12px 'Manrope'; letter-spacing:.24em; text-transform:uppercase; color:var(--cream); margin-bottom:40px }
-  .contact{ width:100%; display:flex; flex-direction:column; gap:10px }
-  .contact div{ border:1px solid rgba(250,246,239,.18); border-radius:14px; padding:14px 18px; display:flex; justify-content:space-between; align-items:center; font-size:14.5px }
+  .vtext{ font-size:15px; line-height:1.55; max-width:400px; color:rgba(250,246,239,.9) }
+  .ref{ font:600 12px 'Manrope'; letter-spacing:.24em; text-transform:uppercase; color:var(--cream); margin:10px 0 28px }
+  .contact{ width:100%; display:flex; flex-direction:column; gap:8px }
+  .contact div{ border:1px solid rgba(250,246,239,.18); border-radius:14px; padding:12px 18px; display:flex; justify-content:space-between; align-items:center; font-size:14.5px }
   .contact small{ font:700 10px 'Space Grotesk'; letter-spacing:.2em; text-transform:uppercase; color:var(--gold) }
-  .thanks{ margin-top:34px; font-size:14px; line-height:1.55; color:rgba(250,246,239,.75); max-width:400px }
-  .hash{ margin-top:16px; font:700 12px 'Space Grotesk'; letter-spacing:.1em; color:var(--gold) }
+  .thanks{ margin-top:26px; font-size:14px; line-height:1.55; color:rgba(250,246,239,.75); max-width:400px }
+  .hash{ margin-top:14px; font:700 12px 'Space Grotesk'; letter-spacing:.1em; color:var(--gold) }
 
-  .glow{ position:absolute; border-radius:50%; filter:blur(2px); pointer-events:none }
   .quote{ font:500 19px/1.45 'Manrope'; border-left:3px solid var(--red); padding-left:18px; margin:6px 0 20px }
   .photo-band{ height:250px; border-radius:18px; background:url(assets/images/hero.webp) center/cover; margin-top:auto; margin-bottom:34px; position:relative; overflow:hidden }
   .photo-band::after{ content:'NUEVA EVANGELIZACIÓN · PUEBLA'; position:absolute; left:16px; bottom:14px; font:700 10.5px 'Space Grotesk'; letter-spacing:.22em; color:#fff; background:rgba(139,30,43,.9); padding:6px 10px; border-radius:6px }
+
+  /* ===================== CARTA (impresión, encuadernado a la izquierda) =====================
+     Hoja 816x1056px = 8.5x11in. Zona útil: 0.92in izq., 0.5in der., 0.52in arriba, >=1in abajo (pie dentro del margen).
+     Fondos blancos: sin sangrado ni páginas llenas de tinta. Texto de lectura >= 11pt (14.7px). */
+  body.carta{ background:#888 }
+  body.carta .s, body.carta .s.dark, body.carta .s.cream, body.carta .cover, body.carta .close{
+    --W:816px; --H:1056px; width:816px; height:1056px; padding:50px 48px 100px 88px; background:#fff; color:var(--ink) }
+  body.carta .v-p{ display:none } body.carta .v-c{ display:block }
+  body.carta .foot{ left:88px; right:48px; bottom:50px; font-size:10.5px; color:var(--gray) }
+  body.carta .dark .foot{ color:var(--gray) }
+  body.carta .top{ margin-bottom:24px } body.carta .top img{ height:54px }
+  body.carta .eyebrow, body.carta .dark .eyebrow{ color:var(--red); font-size:12.5px }
+  body.carta h2{ font-size:38px; margin-bottom:20px }
+  body.carta .dark h2 em{ color:var(--red) }
+  body.carta p, body.carta .card p{ font-size:15px; line-height:1.5 }
+  body.carta .lead{ font-size:17.5px }
+  body.carta .muted, body.carta .dark .muted{ color:var(--gray); font-size:15px !important }
+  body.carta .card{ box-shadow:none; border:1px solid rgba(20,41,58,.14); background:#fff }
+  body.carta .list li{ font-size:15px }
+  body.carta .s.cream .stat, body.carta .stat{ background:var(--bg); border:1px solid rgba(20,41,58,.12) }
+  body.carta .stat.dk{ background:#fff; border:2px solid var(--ink) } body.carta .stat.dk b{ color:var(--red) } body.carta .stat.dk span{ color:var(--ink) }
+  body.carta .stat span{ font-size:14.7px }
+  body.carta .stat b{ font-size:50px }
+
+  /* portada */
+  body.carta .cover{ padding:50px 48px 100px 88px }
+  body.carta .cover .photo{ width:680px; height:372px; flex:none; background:none; margin-bottom:26px }
+  body.carta .cover .photo::before{ content:''; position:absolute; left:0; top:0; width:495px; height:372px; border-radius:18px; background:url(assets/images/nosotros.webp) center 30%/cover }
+  /* shortcut: la foto original mide 1036px; a 5.16in rinde ~200dpi, por eso no ocupa todo el ancho */
+  body.carta .cover .photo::after{ inset:auto; left:513px; top:0; bottom:0; width:167px; background:none; border-left:3px solid var(--gold);
+     content:'NUEVA EVANGELIZACIÓN · PUEBLA'; writing-mode:vertical-rl; transform:rotate(180deg); display:flex; align-items:center; justify-content:center;
+     font:700 11.5px 'Space Grotesk'; letter-spacing:.3em; color:var(--red); white-space:nowrap }
+  body.carta .cover .body{ padding:0; margin:0; flex:1 }
+  body.carta .cover .iso{ width:104px; margin:0 0 18px; filter:none }
+  body.carta .cover h1{ font-size:62px; color:var(--ink) } body.carta .cover h1 span{ color:var(--red) }
+  body.carta .cover .tag{ color:var(--ink); font-size:13px }
+  body.carta .cover .to{ margin-bottom:0; margin-top:34px }
+  body.carta .cover .to small{ color:var(--red); font-size:12px }
+  body.carta .cover .to b{ font-size:21px; color:var(--ink) }
+  body.carta .cover .to i{ font-size:16px; color:var(--gray) }
+  body.carta .photo-band{ height:340px; margin-bottom:0 }
+  body.carta .pillars{ gap:16px }
+  body.carta .pill{ min-height:230px; background:#fff !important; color:var(--ink) !important; border:1px solid rgba(20,41,58,.14); border-top-width:6px; padding:22px 20px }
+  body.carta .p1{ border-top-color:var(--gold) } body.carta .p2{ border-top-color:var(--red) } body.carta .p3{ border-top-color:var(--ink) } body.carta .p4{ border-top-color:var(--gold) }
+  body.carta .pill .n{ color:var(--red) !important } body.carta .pill p{ font-size:15px }
+  body.carta .pill h3{ font-size:21px }
+  /* dérej */
+  body.carta .dj{ background:var(--bg); border:1px solid rgba(20,41,58,.12); padding:13px 16px }
+  body.carta .dj span{ color:var(--gray); font-size:14.7px }
+  body.carta .dj b{ font-size:17px }
+  body.carta .dj em{ color:var(--red) }
+  body.carta .muted b{ color:var(--red) !important }
+  body.carta .dj.plus{ background:#fff; border:1.5px dashed var(--gold) }
+  body.carta .dj.plus .ic{ color:var(--red); border-color:var(--red) }
+  body.carta .derej{ gap:10px }
+  /* xp lev */
+  body.carta .xp-top{ grid-template-columns:150px 1fr; gap:22px } body.carta .xp-top img{ width:150px; height:150px }
+  body.carta .xp-top p{ font-size:15px }
+  body.carta .xp-name div{ background:var(--bg); padding:14px 16px } body.carta .xp-name span{ font-size:14.7px } body.carta .xp-name b{ font-size:13px }
+  body.carta .xp-steps div{ font-size:13px; padding:10px 6px; background:var(--bg); color:var(--ink); border:1px solid rgba(20,41,58,.12); border-top:4px solid var(--gold) }
+  body.carta .xp-steps b{ color:var(--red) }
+  body.carta .xp-fmt div{ font-size:14.7px } body.carta .xp-fmt b{ font-size:13px }
+  body.carta .xp-sch li{ font-size:14.7px }
+  body.carta .xp-pipe{ font-size:14px } body.carta .xp-pipe span{ background:var(--bg) }
+  /* peregrinos */
+  body.carta .pg-top{ grid-template-columns:136px 1fr; gap:22px; margin-bottom:14px }
+  body.carta .pg-top img{ width:136px; height:136px }
+  body.carta .pg-top p{ font-size:15px }
+  body.carta .pg-facts div{ background:var(--bg); grid-template-columns:128px 1fr; padding:12px 16px }
+  body.carta .pg-facts b{ font-size:12px }
+  body.carta .pg-facts span{ font-size:14.7px }
+  body.carta .sub{ font-size:12.5px }
+  body.carta .logo-m b{ font-size:14px } body.carta .logo-m span{ font-size:14.7px }
+  body.carta .resp{ background:var(--bg); color:var(--ink); border:1px solid rgba(20,41,58,.12); margin-bottom:0; grid-template-columns:96px 1fr }
+  body.carta .resp img{ width:96px; height:96px }
+  body.carta .resp small{ color:var(--red); font-size:11.5px } body.carta .resp b{ font-size:19px }
+  body.carta .resp span{ color:var(--ink); font-size:14.7px }
+  /* camino recorrido */
+  body.carta .event{ box-shadow:none; border:1px solid rgba(20,41,58,.14) }
+  body.carta .event .img{ height:auto }
+  body.carta .event .tx{ padding:16px 22px 18px }
+  body.carta .event h3{ font-size:25px }
+  body.carta .event p{ font-size:14.7px; line-height:1.5 }
+  body.carta .chip{ font-size:11.5px }
+  body.carta .temas span{ font-size:13px }
+  body.carta .cap{ font-size:11px }
+  body.carta .tl i{ border-color:#fff }
+  body.carta .tl b{ font-size:15px } body.carta .tl span{ font-size:14.7px; line-height:1.4 }
+  /* plan */
+  body.carta .pl{ grid-template-columns:132px 1fr; background:var(--bg); padding:12px 16px }
+  body.carta .pl time{ font-size:12.5px }
+  body.carta .pl b{ font-size:16px } body.carta .pl span{ font-size:14.7px }
+  body.carta .note{ font-size:14.7px }
+  /* equipo */
+  body.carta .team{ gap:14px; grid-template-columns:repeat(3,1fr) }
+  body.carta .tm.wide{ grid-column:auto; display:block; text-align:center } body.carta .tm.wide img{ margin-bottom:8px; width:100% }
+  body.carta .tm{ background:var(--bg); padding:14px }
+  body.carta .tm img{ aspect-ratio:1; width:100% }
+  body.carta .tm b{ font-size:15px } body.carta .tm span{ font-size:11.5px }
+    /* proyectos */
+  body.carta .proj{ background:var(--bg); grid-template-columns:110px 1fr; padding:18px }
+  body.carta .proj img{ width:110px; height:110px; background:#fff }
+  body.carta .proj p{ font-size:14.7px } body.carta .proj small{ font-size:11px } body.carta .proj b{ font-size:20px }
+  /* sitio */
+  body.carta .web{ background:var(--bg); grid-template-columns:1fr 200px; padding:22px }
+  body.carta .web .url{ font-size:25px } body.carta .web p{ font-size:14.7px }
+  body.carta .web .qr{ width:200px; height:200px }
+  body.carta .feat b{ font-size:17px } body.carta .feat span{ font-size:14.7px; color:var(--ink) }
+  /* petición */
+  body.carta .ask{ border-top:1px solid rgba(20,41,58,.18); padding:20px 0 } body.carta .ask:last-child{ border-bottom:1px solid rgba(20,41,58,.18) }
+  body.carta .ask .k{ color:var(--red); font-size:34px }
+  body.carta .ask p{ font-size:17px; line-height:1.5 }
+  /* cierre */
+  body.carta .close{ align-items:center; justify-content:center }
+  body.carta .close .logo{ background:none; padding:0; width:300px; border-radius:0 }
+  body.carta .verse{ font-size:40px; color:var(--ink) } body.carta .verse span{ color:var(--red) }
+  body.carta .vtext{ color:var(--ink); font-size:17px; max-width:480px }
+  body.carta .ref{ color:var(--red) }
+  body.carta .contact div{ border-color:rgba(20,41,58,.2); font-size:15px } body.carta .contact small{ color:var(--red); font-size:11.5px }
+  body.carta .thanks{ color:var(--ink); font-size:15px; max-width:480px }
+  body.carta .hash{ color:var(--red) }
 </style>
 </head>
 <body>
@@ -154,7 +345,8 @@
 <section class="s cover">
   <div class="photo"></div>
   <div class="body">
-    <img class="iso" src="assets/logos/isotipo-bn.png" alt="MCJ">
+    <img class="iso v-p" src="assets/logos/isotipo-bn.png" alt="MCJ">
+    <img class="iso v-c" src="assets/logos/isotipo.png" alt="MCJ">
     <h1>MI CAMINO<br>ES <span>JESÚS</span></h1>
     <div class="tag">Escuela de Nueva Evangelización</div>
     <div class="to">
@@ -168,10 +360,10 @@
 
 <!-- 02 QUIÉNES SOMOS -->
 <section class="s">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">01 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">01 / 14</span></div>
   <div class="eyebrow">Quiénes somos</div>
   <h2>UN PUNTO DE <em>QUIEBRE</em> PARA EL MUNDO ACTUAL</h2>
-  <p class="lead">Mi Camino es Jesús (MCJ) es una escuela católica de Nueva Evangelización que acompaña a jóvenes y adultos en un encuentro personal y transformador con Cristo, dentro de la vida de la Iglesia.</p>
+  <p class="lead">Mi Camino es Jesús (MCJ) es una escuela de Nueva Evangelización, en comunión con la Iglesia, que acompaña a jóvenes y adultos en un encuentro personal y transformador con Cristo.</p>
   <p class="muted" style="margin-top:14px">Nace con raíz joven y un lenguaje directo y cercano: una fe que se vive con alegría, sin dejar de ser exigente y real, para quien empieza, para quien sirve y para quien busca un camino de regreso.</p>
   <div class="photo-band"></div>
   <div class="foot"><span>Mi Camino es Jesús</span><span>Escuela de Nueva Evangelización</span></div>
@@ -179,7 +371,7 @@
 
 <!-- 03 MISIÓN / VISIÓN -->
 <section class="s cream">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">02 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">02 / 14</span></div>
   <div class="eyebrow">Identidad</div>
   <h2>MISIÓN, VISIÓN<br>Y <em>OBJETIVOS</em></h2>
   <div class="stack">
@@ -199,7 +391,7 @@
 
 <!-- 04 PILARES -->
 <section class="s">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">03 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">03 / 14</span></div>
   <div class="eyebrow">Nuestro camino</div>
   <h2>CUATRO <em>PILARES</em>,<br>UN SOLO CAMINO</h2>
   <p class="muted" style="margin-bottom:20px">Cada experiencia de MCJ recorre el mismo itinerario del discípulo: del encuentro a la misión.</p>
@@ -212,12 +404,43 @@
   <div class="foot"><span>Mi Camino es Jesús</span><span>Escuela de Nueva Evangelización</span></div>
 </section>
 
-<!-- 05 XP LEV / 6 DÉREJ -->
+<!-- 05 XP LEV -->
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">04 / 14</span></div>
+  <div class="eyebrow">Nuestro método</div>
+  <h2>XP LEV: <em>CRISTO</em> EN EL CORAZÓN</h2>
+  <div class="xp-top">
+    <img src="assets/images/xp-lev.png" alt="Logo de XP Lev">
+    <p>XP Lev es el método formativo de MCJ: retiros, talleres y adoraciones diseñados para las etapas de vida y vocación de cada persona. Cada experiencia es un paso consciente en el camino de discipulado.</p>
+  </div>
+  <div class="sub">Qué significa el nombre</div>
+  <div class="xp-name">
+    <div><b>XP · Ji-Rho</b><span>Las dos primeras letras de “Cristo” en griego (Χριστός), uno de los monogramas cristianos más antiguos.</span></div>
+    <div><b>Lev · corazón</b><span>En hebreo, “corazón”: en la Biblia, el centro de la persona, donde se decide, se ama y se cree.</span></div>
+  </div>
+  <div class="sub">Cómo funciona</div>
+  <div class="xp-steps"><div><b>1</b>Evocación bíblica</div><div><b>2</b>Actividad introductoria</div><div><b>3</b>Contenido</div><div><b>4</b>Símbolos</div><div><b>5</b>Reflexión</div></div>
+  <p class="muted" style="font-size:12px;margin-bottom:8px">Cada tema de cada experiencia sigue estos cinco pasos. Cada formato tiene su ficha:</p>
+  <div class="xp-fmt">
+    <div><b>Retiro</b>2 a 3 días<br>25 a 80 personas</div>
+    <div><b>Taller</b>4 a 6 horas<br>15 a 40 personas</div>
+    <div><b>Hora Santa</b>1 a 3 horas<br>30 a 120 personas</div>
+  </div>
+  <div class="sub">Cómo se organiza</div>
+  <ul class="xp-sch">
+    <li>Seis caminos (Dérej), uno por público. Cada uno tiene su esquema: secuencial, con progresión sugerida, por estaciones o de catálogo abierto.</li>
+    <li>Modular: cada parroquia puede tomar las experiencias según su ciclo pastoral.</li>
+  </ul>
+  <div class="xp-pipe"><span>Redactar</span><i>→</i><span>Revisión espiritual</span><i>→</i><span>Piloto en parroquia</span><i>→</i><span>Lista</span></div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev</span></div>
+</section>
+
+<!-- 06 SEIS DÉREJ + 1 -->
 <section class="s dark">
-  <div class="top"><img src="assets/logos/isotipo-bn.png" alt=""><span class="num">04 / 10</span></div>
+  <div class="top"><img class="v-p" src="assets/logos/isotipo-bn.png" alt=""><img class="v-c" src="assets/logos/isotipo.png" alt=""><span class="num">05 / 14</span></div>
   <div class="eyebrow">Método XP Lev</div>
   <h2>SEIS <em>CAMINOS</em>,<br>UN PÚBLICO CADA UNO</h2>
-  <p class="muted" style="margin-bottom:18px;font-size:14.5px">Cada <b style="color:var(--cream)">Dérej</b> (camino, en hebreo) es una ruta formativa pensada para una etapa y realidad concreta de la vida.</p>
+  <p class="muted" style="margin-bottom:16px;font-size:14.5px">Cada <b style="color:var(--cream)">Dérej</b> (camino, en hebreo) es una ruta formativa pensada para una etapa y realidad concreta de la vida.</p>
   <div class="derej">
     <div class="dj"><div class="ic r">GBR</div><div><b>Dérej Guibor</b><span>Camino del Guerrero · Hombres · <em>6 pasos</em></span></div></div>
     <div class="dj"><div class="ic g">KVD</div><div><b>Dérej Kavod</b><span>Camino de Dignidad · Mujeres · <em>6 pasos</em></span></div></div>
@@ -225,22 +448,25 @@
     <div class="dj"><div class="ic g">SMJ</div><div><b>Dérej Simjá</b><span>Camino de la Alegría · Niños hasta 12 · <em>Estaciones</em></span></div></div>
     <div class="dj"><div class="ic r">MSH</div><div><b>Dérej Mesharét</b><span>Camino del Servidor · Ministerios parroquiales</span></div></div>
     <div class="dj"><div class="ic g">JM</div><div><b>Dérej Jaím</b><span>Camino de Vida · Comunidad general</span></div></div>
+    <div class="dj plus"><div class="ic">+1</div><div><b>Peregrinos MCJ</b><span>Una dimensión aparte, no un séptimo Dérej · <em>ver página 07</em></span></div></div>
   </div>
   <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev</span></div>
 </section>
 
 <!-- 06 CATÁLOGO -->
 <section class="s cream">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">05 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">06 / 14</span></div>
   <div class="eyebrow">Lo que ofrecemos</div>
-  <h2>UN CATÁLOGO <em>LISTO</em> PARA LAS PARROQUIAS</h2>
+  <h2>UN CATÁLOGO <em>DISEÑADO</em> PARA LAS PARROQUIAS</h2>
   <div class="stats">
     <div class="stat dk"><b>48</b><span>Experiencias formativas diseñadas</span></div>
     <div class="stat"><b>6</b><span>Rutas por público (Dérej)</span></div>
-    <div class="stat"><b>21</b><span>Retiros</span></div>
-    <div class="stat"><b>11</b><span>Talleres y adoraciones</span></div>
+    <div class="stat"><b>22</b><span>Retiros</span></div>
+    <div class="stat"><b>21</b><span>Talleres y Horas Santas</span></div>
   </div>
   <ul class="list">
+    <li>Se suman 5 circuitos de estaciones para niños (Dérej Simjá).</li>
+    <li>Hoy 7 de las 48 están listas para vivirse; las demás están en preparación.</li>
     <li>Ficha pastoral de cada experiencia: duración, capacidad, espacio y logística.</li>
     <li>Organizadas por tiempo litúrgico: Adviento, Cuaresma, Pascua, Pentecostés y Ordinario.</li>
     <li>Formación para servidores: predicadores, catequistas, intercesores, monaguillos y hospitalidad.</li>
@@ -249,9 +475,37 @@
   <div class="foot"><span>Mi Camino es Jesús</span><span>XP Lev</span></div>
 </section>
 
-<!-- 07 CAMINO RECORRIDO -->
-<section class="s cream" style="background:var(--bg)">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">06 / 10</span></div>
+<!-- 07 PEREGRINOS -->
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">07 / 14</span></div>
+  <div class="eyebrow">El “+1” del camino</div>
+  <h2>PEREGRINOS <em>MCJ</em></h2>
+  <div class="pg-top">
+    <img src="logos/peregrinos.png" alt="Logo de Peregrinos">
+    <p>Los seis Dérej forman a las personas por etapa de vida. Peregrinos MCJ es el “+1”: una dimensión aparte, no un séptimo Dérej, dedicada a caminar hacia Cristo en los lugares de la fe.</p>
+  </div>
+  <div class="pg-facts">
+    <div><b>Qué es</b><span>Peregrinaciones a lo largo de México y del mundo: los lugares donde la fe se vivió, se defendió y se sigue viviendo.</span></div>
+    <div><b>Para quién</b><span>Para fieles y para quienes aún no conocen a Cristo: el camino también evangeliza.</span></div>
+    <div><b>Cómo se integra</b><span>Cada peregrinación es un retiro en movimiento: encuentro, formación, comunidad y misión.</span></div>
+  </div>
+  <div class="sub">El logo</div>
+  <div class="logo-m">
+    <div><b>Cruz de Jerusalén</b><span>Una cruz grande y cuatro pequeñas: Cristo y los cuatro evangelistas. Es la cruz tradicional de Tierra Santa.</span></div>
+    <div><b>PER</b><span>Del latín “a través de”. Peregrino viene de per ager: el que va a través de los campos.</span></div>
+    <div><b>El arco</b><span>El arco del camino recorrido.</span></div>
+    <div><b>La franja</b><span>La misma franja diagonal de XP Lev: una sola familia MCJ.</span></div>
+  </div>
+  <div class="resp">
+    <img src="fotos/silvia.jpg" alt="">
+    <div><small>A cargo</small><b>Silvia “Silber” Ponce</b><span>Responsable de Peregrinos. Agente de viajes certificada y ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila. Aún no hay fechas ni destinos publicados.</span></div>
+  </div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Peregrinos MCJ</span></div>
+</section>
+
+<!-- 08 CAMINO RECORRIDO -->
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">08 / 14</span></div>
   <div class="eyebrow">Camino recorrido</div>
   <h2>DE LA PARROQUIA <em>A LA ARQUIDIÓCESIS</em></h2>
   <div class="event">
@@ -259,7 +513,9 @@
     <div class="tx">
       <span class="chip">Agosto 2026 · Primera actividad independiente</span>
       <h3>Levántate y Sé Hombre</h3>
-      <p class="muted">El rescate de la masculinidad en un mundo que la tiene confundida: el modelo de Cristo, responsabilidad, liderazgo servicial y una fe que no se acobarda.</p>
+      <p><b>Dérej Guibor, paso 1.</b> El rescate de la masculinidad en un mundo que la tiene confundida: el modelo de Cristo, responsabilidad, liderazgo servicial y una fe que no se acobarda.</p>
+      <div class="temas"><span>Identidad</span><span>Familia</span><span>Hermandad</span><span>Trabajo</span><span>Guerrero espiritual</span></div>
+      <p style="margin-top:10px">Asistieron 40 hombres a la casa de retiros El Calvario, Casa de la Pastoral Juvenil de Puebla. Varios llegaron sin interés, por invitación de su esposa o como requisito de catequesis. Al terminar, coincidieron en que no había sido un retiro más: fue distinto, dinámico y mucho más de lo que esperaban.</p>
     </div>
   </div>
   <div class="timeline">
@@ -270,23 +526,43 @@
   <div class="foot"><span>Mi Camino es Jesús</span><span>Escuela de Nueva Evangelización</span></div>
 </section>
 
-<!-- 08 EQUIPO -->
+<!-- 09 PLAN 2027 -->
+<section class="s cream">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">09 / 14</span></div>
+  <div class="eyebrow">Lo que viene</div>
+  <h2>PLAN <em>2026–2027</em></h2>
+  <p class="muted" style="margin-bottom:14px">Estas fechas están confirmadas por ahora. Seguimos planeando más actividades y las iremos dando a conocer.</p>
+  <div class="plan">
+    <div class="pl"><time>Desde el 29 nov 2026</time><div><b>Adviento: Emmanuel y Camino a Belén</b><span>Ya listas para vivirse</span></div></div>
+    <div class="pl"><time>Dic 2026</time><div><b>El Arca de Noé</b><span>Dérej Simjá</span></div></div>
+    <div class="pl"><time>Fin de ene 2027</time><div><b>Esclava del Señor y retiro Belén</b><span>Dérej Mesharét y Jaím</span></div></div>
+    <div class="pl"><time>Feb 2027</time><div><b>Levántate y Sé Hombre, 2ª edición</b><span>Dérej Guibor, paso 1</span></div></div>
+    <div class="pl"><time>Mar 2027</time><div><b>Fuiste Hecha Mujer, retiro abierto</b><span>Dérej Kavod</span></div></div>
+    <div class="pl hl"><time>21 a 27 mar 2027</time><div><b>Semana Santa: Barrabás, retiro para la comunidad</b><span>Dérej Jaím</span></div></div>
+    <div class="pl"><time>Abr a may 2027</time><div><b>Sansón</b><span>Dérej Guibor, paso 2</span></div></div>
+  </div>
+  <p class="note">Calendario siempre al día en micaminoesjesus.org/calendario.</p>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>Plan 2026–2027</span></div>
+</section>
+
+<!-- 10 EQUIPO -->
 <section class="s">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">07 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">10 / 14</span></div>
   <div class="eyebrow">Nuestro equipo</div>
   <h2>QUIÉNES LO HACEN <em>POSIBLE</em></h2>
   <div class="team">
-    <div class="tm"><img src="assets/images/p-cristopher.jpeg" alt=""><b>Pbro. Lic. Theol. Cristopher Cortés Pliego</b><span>Fundador · Asesor espiritual</span></div>
-    <div class="tm"><img src="assets/images/jehosua.jpg" alt=""><b>Jehosua A. Castañeda Ortiz</b><span>Fundador · Eq. pastoral</span></div>
-    <div class="tm"><img src="assets/images/maribel.jpeg" alt=""><b>Maribel Pinto Corona</b><span>Equipo pastoral</span></div>
-    <div class="tm"><img src="assets/images/angy.jpeg" alt=""><b>Angélica M. Romero Hernández</b><span>Equipo pastoral</span></div>
+    <div class="tm"><img src="fotos/cristopher.jpg" alt=""><b>Pbro. Lic. Theol. Cristopher Cortés Pliego</b><span>Fundador · Asesor espiritual</span></div>
+    <div class="tm"><img src="fotos/jehosua.jpg" alt=""><b>Jehosua A. Castañeda Ortiz</b><span>Fundador · Equipo pastoral</span></div>
+    <div class="tm"><img src="fotos/maribel.jpg" alt=""><b>Maribel Pinto Corona</b><span>Equipo pastoral</span></div>
+    <div class="tm"><img src="fotos/angelica.jpg" alt=""><b>Angélica M. Romero Hernández</b><span>Equipo pastoral</span></div>
+    <div class="tm wide"><img src="fotos/silvia.jpg" alt=""><div><b>Silvia “Silber” Ponce</b><span>Responsable de Peregrinos</span></div></div>
   </div>
   <div class="foot"><span>Mi Camino es Jesús</span><span>Escuela de Nueva Evangelización</span></div>
 </section>
 
-<!-- 09 PROYECTOS -->
+<!-- 11 PROYECTOS -->
 <section class="s cream">
-  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">08 / 10</span></div>
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">11 / 14</span></div>
   <div class="eyebrow">Con quién caminamos</div>
   <h2>EVANGELIZAR EN <em>TODOS</em> LOS LENGUAJES</h2>
   <p class="muted" style="margin-bottom:18px">Proyectos aliados que llevan a Jesús a la moda, a las redes y al mundo profesional.</p>
@@ -298,34 +574,54 @@
   <div class="foot"><span>Mi Camino es Jesús</span><span>Proyectos aliados</span></div>
 </section>
 
-<!-- 10 PETICIÓN -->
+<!-- 12 SITIO WEB -->
+<section class="s">
+  <div class="top"><img src="assets/logos/isotipo.png" alt=""><span class="num">12 / 14</span></div>
+  <div class="eyebrow">Sitio web</div>
+  <h2>TODO EL <em>CAMINO</em> EN UN SOLO LUGAR</h2>
+  <div class="web">
+    <div><div class="url">micaminoesjesus.org</div><p>Escanee el código con la cámara del teléfono para abrir el sitio.</p></div>
+    <div class="qr" role="img" aria-label="Código QR de micaminoesjesus.org"><svg role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 31 31" shape-rendering="crispEdges"><path fill="#FFFFFF" d="M0 0h31v31H0z"/><path stroke="#14293A" d="M1 1.5h7m1 0h1m3 0h4m1 0h1m4 0h7M1 2.5h1m5 0h1m2 0h2m1 0h1m2 0h1m1 0h1m2 0h1m1 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m3 0h2m3 0h1m1 0h1m2 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m2 0h1m2 0h1m2 0h3m2 0h1m1 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m2 0h3m3 0h2m1 0h1m3 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h7m1 0h3m1 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M10 8.5h1m3 0h1m5 0h1M1 9.5h1m1 0h1m3 0h2m1 0h1m2 0h2m1 0h2m2 0h1m3 0h1m2 0h1m1 0h1M3 10.5h1m1 0h1m4 0h1m1 0h1m4 0h2m1 0h2m1 0h2m3 0h2M3 11.5h1m3 0h1m1 0h1m4 0h2m1 0h1m2 0h1m4 0h3m1 0h1M2 12.5h2m1 0h2m1 0h1m1 0h1m1 0h1m2 0h3m1 0h1m1 0h2m3 0h1M3 13.5h2m1 0h2m3 0h5m4 0h2m1 0h2m4 0h1M1 14.5h1m1 0h2m3 0h1m1 0h1m2 0h3m3 0h3m1 0h2m3 0h2M1 15.5h4m1 0h2m2 0h1m5 0h1m2 0h4m6 0h1M1 16.5h2m1 0h3m1 0h2m2 0h3m5 0h1m1 0h1M1 17.5h2m3 0h5m1 0h1m1 0h1m1 0h2m3 0h1m1 0h2m4 0h1M6 18.5h1m1 0h1m1 0h4m3 0h1m2 0h2m1 0h2m2 0h3M1 19.5h2m2 0h4m3 0h1m1 0h2m1 0h1m2 0h1m4 0h2m2 0h1M3 20.5h4m4 0h1m1 0h1m1 0h3m1 0h2m2 0h1m1 0h1M1 21.5h3m2 0h3m5 0h2m2 0h9m1 0h1M9 22.5h7m2 0h1m1 0h2m3 0h3m1 0h1M1 23.5h7m1 0h1m1 0h3m2 0h1m4 0h1m1 0h1m1 0h1m3 0h1M1 24.5h1m5 0h1m2 0h2m2 0h1m3 0h1m1 0h2m3 0h1m2 0h2M1 25.5h1m1 0h3m1 0h1m3 0h1m1 0h2m1 0h3m1 0h7m1 0h1M1 26.5h1m1 0h3m1 0h1m2 0h1m2 0h1m3 0h1m2 0h1m1 0h1m2 0h4M1 27.5h1m1 0h3m1 0h1m1 0h4m2 0h1m1 0h3m1 0h2m2 0h1m2 0h2M1 28.5h1m5 0h1m5 0h1m2 0h2m1 0h1m1 0h4m1 0h1M1 29.5h7m1 0h3m6 0h2m1 0h1m4 0h1m2 0h1"/></svg></div>
+  </div>
+  <div class="feat">
+    <div><i>01</i><div><b>Calendario</b><span>Las próximas actividades, con el detalle de cada una.</span></div></div>
+    <div><i>02</i><div><b>Inscripción en línea</b><span>Formulario para las actividades con inscripción abierta, con confirmación por correo.</span></div></div>
+    <div><i>03</i><div><b>Versión en inglés</b><span>El sitio completo está disponible en español y en inglés.</span></div></div>
+    <div><i>04</i><div><b>Aviso de privacidad</b><span>Publicado en el sitio, en versión provisional y en revisión legal.</span></div></div>
+  </div>
+  <div class="foot"><span>Mi Camino es Jesús</span><span>micaminoesjesus.org</span></div>
+</section>
+
+<!-- 13 PETICIÓN -->
 <section class="s dark">
-  <div class="top"><img src="assets/logos/isotipo-bn.png" alt=""><span class="num">09 / 10</span></div>
+  <div class="top"><img class="v-p" src="assets/logos/isotipo-bn.png" alt=""><img class="v-c" src="assets/logos/isotipo.png" alt=""><span class="num">13 / 14</span></div>
   <div class="eyebrow">Nuestra petición</div>
   <h2>CAMINAR <em>CON</em> NUESTRA ARQUIDIÓCESIS</h2>
-  <p class="muted" style="margin-bottom:10px;font-size:14.5px">Con humildad pedimos a Su Excelencia su respaldo para que MCJ crezca en comunión con la Iglesia de Puebla:</p>
+  <p class="muted" style="margin-bottom:10px;font-size:15px">Con humildad, pedimos a Su Excelencia:</p>
   <div>
-    <div class="ask"><div class="k">01</div><div><b>Reconocimiento formal</b><span>Su aval como escuela de Nueva Evangelización dentro de la Arquidiócesis.</span></div></div>
-    <div class="ask"><div class="k">02</div><div><b>Difusión en parroquias</b><span>Una recomendación a párrocos y decanatos para dar a conocer nuestras experiencias.</span></div></div>
-    <div class="ask"><div class="k">03</div><div><b>Vinculación pastoral</b><span>Colaborar con la Pastoral Juvenil, Familiar y de Catequesis arquidiocesana.</span></div></div>
-    <div class="ask"><div class="k">04</div><div><b>Espacios y sedes</b><span>Acceso a casas de retiro y templos para realizar las actividades.</span></div></div>
+    <div class="ask"><div class="k">01</div><p>Su bendición y una carta de respaldo para presentarnos a los párrocos de la Arquidiócesis.</p></div>
+    <div class="ask"><div class="k">02</div><p>Su orientación para presentar a su revisión nuestros estatutos e iniciar, si lo juzga conveniente, el camino hacia el reconocimiento como asociación privada de fieles.</p></div>
+    <div class="ask"><div class="k">03</div><p>La confirmación del Pbro. Cristopher Cortés Pliego como asesor espiritual y la designación de un enlace arquidiocesano que nos vincule con las pastorales afines a nuestro servicio, entre ellas Juvenil, Familiar, Catequesis y Laicos.</p></div>
+    <div class="ask"><div class="k">04</div><p>La apertura de espacios y sedes para retiros y encuentros, según disponibilidad.</p></div>
   </div>
   <div class="foot"><span>Mi Camino es Jesús</span><span>Arquidiócesis de Puebla</span></div>
 </section>
 
-<!-- 11 CIERRE -->
+<!-- 14 CIERRE -->
 <section class="s close">
   <img class="logo" src="assets/logos/logotipo.png" alt="Mi Camino es Jesús">
   <div class="verse">“SÉ FUERTE<br>Y <span>VALIENTE</span>”</div>
-  <div class="ref">Josué 1:6</div>
+  <p class="vtext">No tengas miedo ni te acobardes, porque el Señor tu Dios estará contigo dondequiera que vayas.</p>
+  <div class="ref">Josué 1:9</div>
   <div class="contact">
     <div><small>WhatsApp</small><span>222 609 3097</span></div>
     <div><small>Redes</small><span>@micaminoesjesus</span></div>
+    <div><small>Sitio</small><span>micaminoesjesus.org</span></div>
     <div><small>Sede</small><span>Puebla, Puebla, México</span></div>
   </div>
   <p class="thanks">Gracias, Excelencia, por su tiempo, su bendición y su acompañamiento como Pastor de nuestra Iglesia.</p>
   <div class="hash">#micaminoesjesus #nuevaevangelizacion</div>
-  <div class="foot"><span>10 / 10</span><span>© 2026 Mi Camino es Jesús</span></div>
+  <div class="foot"><span>14 / 14</span><span>© 2026 Mi Camino es Jesús</span></div>
 </section>
 
 </body>

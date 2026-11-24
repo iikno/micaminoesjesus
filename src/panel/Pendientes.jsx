@@ -43,7 +43,7 @@ export function PendingGroups({ limit = Infinity }) {
                 <h2 id="g-rev">Esperan tu decisión <span className="count p-num">{pending.length}</span></h2>
                 <ul className="tasks">
                   {pending.slice(0, limit).map((p) => (
-                    <Task key={p.review_id} to="/panel/revision" ico="review" title={p.label}>
+                    <Task key={p.review_id} to="/revision" ico="review" title={p.label}>
                       <span className="help">{RESOURCES[p.entity].one} · {p.own ? 'enviado por ti' : `de ${p.submitted_by_name ?? 'alguien del equipo'}`} · hace {p.hours} h</span>
                     </Task>
                   ))}
@@ -54,7 +54,7 @@ export function PendingGroups({ limit = Infinity }) {
               <section aria-labelledby="g-msg">
                 <h2 id="g-msg">Mensajes sin atender <span className="count p-num">{inbox.nuevos}</span></h2>
                 <ul className="tasks">
-                  <Task to="/panel/contacto" ico="bell" title={`${inbox.nuevos} mensaje(s) nuevo(s)`}>
+                  <Task to="/contacto" ico="bell" title={`${inbox.nuevos} mensaje(s) nuevo(s)`}>
                     <span className="help">{inbox.arco_abiertos} solicitud(es) ARCO abiertas{inbox.arco_vencidos ? ` · ${inbox.arco_vencidos} vencida(s)` : ''}</span>
                   </Task>
                 </ul>
@@ -65,7 +65,7 @@ export function PendingGroups({ limit = Infinity }) {
                 <h2 id="g-mine">Te devolvieron con comentarios <span className="count p-num">{mine.length}</span></h2>
                 <ul className="tasks">
                   {mine.slice(0, limit).map((m) => (
-                    <Task key={`${m.entity}${m.id}`} to={`/panel/${RESOURCES[m.entity].path}/${m.id}`} ico="alert" title={m.label}>
+                    <Task key={`${m.entity}${m.id}`} to={`/${RESOURCES[m.entity].path}/${m.id}`} ico="alert" title={m.label}>
                       <span><StatusPill status="rechazado" /></span>
                       {m.comment && <span className="help">{m.comment}</span>}
                     </Task>

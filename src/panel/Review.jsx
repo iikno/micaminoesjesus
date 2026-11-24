@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { errText, get, post } from './api';
 import { RESOURCES } from './resources';
-import { Async, Confirm, Empty, Field, PLink, PageHead, Pill, StatusPill, fmtDateTime, fromLocalInput, toLocalInput, useLoad, useToast } from './ui';
+import { Async, Confirm, Empty, Field, ICONS, Icon, PLink, PageHead, Pill, StatusPill, fmtDateTime, fromLocalInput, toLocalInput, useLoad, useToast } from './ui';
 import { Thumb } from './Wizard';
 
 const INTERNAL = ['notes', 'publish_at', 'source_note'];
@@ -105,7 +105,7 @@ function CardBody({ p, res, item, en, done }) {
       <div className="rv-head">
         <Thumb value={item.cover ?? item.photo} size={88} />
         <div>
-          <h2 className="inline"><PLink to={`/panel/${res.path}/${p.id}`}>{p.label}</PLink></h2>
+          <h2 className="inline"><PLink to={`/${res.path}/${p.id}`}>{p.label}</PLink></h2>
           <p className="help">{res.one} · {p.own ? 'lo enviaste tú' : `lo envió ${p.submitted_by_name ?? 'alguien del equipo'}`} · hace {p.hours} h</p>
           <p className="rv-said">{said(d)}</p>
         </div>
@@ -134,7 +134,7 @@ function CardBody({ p, res, item, en, done }) {
           {err && <p className="form-error" role="alert">{err}</p>}
           <div className="p-row wrap">
             <button className="p-btn p-btn-primary p-btn-big" disabled={busy} onClick={() => check('approve', 'now') && setAsk('now')}>Aprobar y publicar</button>
-            <button className="p-btn p-btn-big p-btn-warn" disabled={busy} onClick={() => check('reject') && decide('reject')}>Pedir cambios</button>
+            <button className="p-btn p-btn-big p-btn-warn" disabled={busy} onClick={() => check('reject') && decide('reject')}><Icon d={ICONS.alert} />Pedir cambios</button>
           </div>
           <details className="fold">
             <summary>Programar para otra fecha</summary>

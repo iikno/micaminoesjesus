@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { errText, post } from './api';
-import { Confirm, fmtDateTime } from './ui';
+import { Confirm, ICONS, Icon, fmtDateTime } from './ui';
 
 const SKIP = new Set(['id']);
 const show = (v) => {
@@ -45,7 +45,7 @@ export default function PendingChange({ res, item, canAct, toast, reload }) {
           </tbody>
         </table>
       </div>
-      {canAct && <div className="actions"><button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirm(true)}>Cancelar el cambio programado</button></div>}
+      {canAct && <div className="actions"><button type="button" className="p-btn p-btn-danger-ghost" onClick={() => setConfirm(true)}><Icon d={ICONS.trash} />Cancelar el cambio programado</button></div>}
       {confirm && (
         <Confirm title="Cancelar el cambio programado" danger confirmLabel="Cancelar el cambio" onConfirm={cancel} onCancel={() => setConfirm(false)} busy={busy}>
           <p>La versión programada no se publicará y volverá a ser un borrador. Lo publicado no cambia.</p>

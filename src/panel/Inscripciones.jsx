@@ -4,7 +4,7 @@ import { errText, get, post } from './api';
 import { photoUrl } from './Media';
 import { REG_STATUS, capacity, mailtoLink, telLink, waLink } from './regs';
 import { Async, Confirm, Empty, ICONS, Icon, PLink, Pill, PageHead, fmtDate, fmtDateTime, useLoad, useToast } from './ui';
-import { norm } from './wizard';
+import { norm } from './wizardLogic';
 
 const PILL = { confirmado: 'publicado', lista_espera: 'en_revision', oferta: 'programado', pendiente_verificacion: 'borrador', cancelado: 'rechazado', expirado: 'rechazado' };
 const KIND = { session: 'Fecha de retiro', pilgrimage: 'Peregrinación' };
@@ -32,7 +32,7 @@ function EventCard({ e }) {
   const open = e.counts.pendiente_verificacion ?? 0;
   return (
     <li>
-      <PLink className="date-card" to={`/panel/inscripciones/${e.kind}/${e.id}`}>
+      <PLink className="date-card" to={`/inscripciones/${e.kind}/${e.id}`}>
         {src ? <img src={src} alt="" loading="lazy" /> : <span className="date-block" aria-hidden="true"><span className="p-num">{d.getDate()}</span>{d.toLocaleDateString('es-MX', { month: 'short' })}</span>}
         <span className="date-text">
           <strong>{e.title}</strong>
@@ -139,7 +139,7 @@ function Person({ r, ev, manage, busy, onAsk }) {
       {manage && (
         <div className="p-row wrap">
           {Object.entries(ACTIONS).filter(([, x]) => x.from.includes(r.status)).map(([a, x]) => (
-            <button key={a} className={`p-btn p-btn-big${x.primary ? ' p-btn-primary' : x.danger ? ' p-btn-warn' : ''}`} disabled={busy} onClick={() => onAsk({ r, a })}>{x.label}</button>
+            <button key={a} className={`p-btn p-btn-big${x.primary ? ' p-btn-primary' : x.danger ? ' p-btn-warn' : ''}`} disabled={busy} onClick={() => onAsk({ r, a })}>{x.danger && <Icon d={ICONS.alert} />}{x.label}</button>
           ))}
         </div>
       )}
@@ -172,7 +172,7 @@ export function RegistrationList() {
 
   return (
     <>
-      <nav aria-label="Ruta" className="crumbs"><PLink to="/panel/inscripciones">Inscritos</PLink> <span aria-hidden="true">/</span> <span>{ev?.title ?? 'Detalle'}</span></nav>
+      <nav aria-label="Ruta" className="crumbs"><PLink to="/inscripciones">Inscritos</PLink> <span aria-hidden="true">/</span> <span>{ev?.title ?? 'Detalle'}</span></nav>
       <Async load={load}>
         {({ manage, rows }) => {
           const n = (s) => rows.filter((r) => r.status === s).length;

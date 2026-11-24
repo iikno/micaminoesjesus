@@ -10,32 +10,32 @@ const Share = ({ size = 28 }) => <svg width={size} height={size} viewBox="0 0 24
 const Draw = ({ children }) => <svg className="ios-draw" viewBox="0 0 280 84" aria-hidden="true" focusable="false">{children}</svg>;
 const SHARE_BAR = (
   <Draw>
-    <rect x="6" y="14" width="268" height="56" rx="14" fill="#fff" stroke="#E3DCCB" />
-    <g stroke="#5E6770" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M40 33l-10 9 10 9" /><path d="M78 33l10 9-10 9" /><rect x="196" y="36" width="20" height="14" rx="3" /><path d="M200 36v-4h12v4M244 34h16M244 42h16M244 50h16" /></g>
-    <circle cx="140" cy="42" r="26" fill="none" stroke="#8B1E2B" strokeWidth="3" />
-    <g stroke="#14293A" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M140 48V30M134 36l6-6 6 6M132 40h-3v14h22V40h-3" /></g>
+    <rect x="6" y="14" width="268" height="56" rx="14" fill="var(--color-surface)" stroke="var(--p-line)" />
+    <g stroke="var(--p-muted)" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M40 33l-10 9 10 9" /><path d="M78 33l10 9-10 9" /><rect x="196" y="36" width="20" height="14" rx="3" /><path d="M200 36v-4h12v4M244 34h16M244 42h16M244 50h16" /></g>
+    <circle cx="140" cy="42" r="26" fill="none" stroke="var(--color-red)" strokeWidth="3" />
+    <g stroke="currentColor" strokeWidth="2.6" fill="none" strokeLinecap="round" strokeLinejoin="round"><path d="M140 48V30M134 36l6-6 6 6M132 40h-3v14h22V40h-3" /></g>
   </Draw>
 );
 const ADD_ROW = (
   <Draw>
-    <rect x="6" y="14" width="268" height="56" rx="14" fill="#fff" stroke="#8B1E2B" strokeWidth="3" />
-    <text x="26" y="49" fontFamily="system-ui, sans-serif" fontSize="19" fontWeight="700" fill="#14293A">Agregar a inicio</text>
-    <g stroke="#14293A" strokeWidth="2.4" fill="none" strokeLinecap="round"><rect x="234" y="28" width="28" height="28" rx="6" /><path d="M248 35v14M241 42h14" /></g>
+    <rect x="6" y="14" width="268" height="56" rx="14" fill="var(--color-surface)" stroke="var(--color-red)" strokeWidth="3" />
+    <text x="26" y="49" fontFamily="system-ui, sans-serif" fontSize="19" fontWeight="700" fill="currentColor">Agregar a inicio</text>
+    <g stroke="currentColor" strokeWidth="2.4" fill="none" strokeLinecap="round"><rect x="234" y="28" width="28" height="28" rx="6" /><path d="M248 35v14M241 42h14" /></g>
   </Draw>
 );
 const ADD_BTN = (
   <Draw>
-    <rect x="6" y="14" width="268" height="56" rx="14" fill="#F1ECE0" />
-    <text x="24" y="49" fontFamily="system-ui, sans-serif" fontSize="17" fill="#5E6770">Cancelar</text>
-    <rect x="178" y="22" width="92" height="40" rx="20" fill="#fff" stroke="#8B1E2B" strokeWidth="3" />
-    <text x="196" y="48" fontFamily="system-ui, sans-serif" fontSize="18" fontWeight="700" fill="#14293A">Agregar</text>
+    <rect x="6" y="14" width="268" height="56" rx="14" fill="var(--color-bg-alt)" />
+    <text x="24" y="49" fontFamily="system-ui, sans-serif" fontSize="17" fill="var(--p-muted)">Cancelar</text>
+    <rect x="178" y="22" width="92" height="40" rx="20" fill="var(--color-surface)" stroke="var(--color-red)" strokeWidth="3" />
+    <text x="196" y="48" fontFamily="system-ui, sans-serif" fontSize="18" fontWeight="700" fill="currentColor">Agregar</text>
   </Draw>
 );
 
 function IosGuide({ inApp }) {
   const toast = useToast();
   const copy = async () => {
-    try { await navigator.clipboard.writeText(`${location.origin}/panel`); toast('Enlace copiado. Pégalo en Safari.'); } catch { toast('No se pudo copiar. Escribe esta dirección en Safari: ' + location.origin + '/panel', 'error'); }
+    try { await navigator.clipboard.writeText(location.origin); toast('Enlace copiado. Pégalo en Safari.'); } catch { toast('No se pudo copiar. Escribe esta dirección en Safari: ' + location.origin, 'error'); }
   };
   const steps = [
     ['Toca el botón Compartir', 'Es el cuadro con una flecha hacia arriba, en la barra de abajo de Safari (en iPad, arriba a la derecha).', SHARE_BAR],
@@ -65,7 +65,7 @@ function IosGuide({ inApp }) {
 export default function Instalar() {
   const e = env();
   const { can, prompt } = useInstallPrompt();
-  if (e.standalone) return <><PageHead title="Instalar en mi teléfono" /><div className="state"><p className="state-title">Ya está instalada.</p><p>Estás usando el panel como app.</p><PLink className="p-btn" to="/panel/avisos">Ir a Avisos</PLink></div></>;
+  if (e.standalone) return <><PageHead title="Instalar en mi teléfono" /><div className="state"><p className="state-title">Ya está instalada.</p><p>Estás usando el panel como app.</p><PLink className="p-btn" to="/avisos">Ir a Avisos</PLink></div></>;
   return (
     <>
       <PageHead title="Instalar en mi teléfono" sub="El panel queda en tu pantalla de inicio, como cualquier app, y se abre más rápido." />
@@ -94,7 +94,7 @@ export function InstallCard() {
       <h2 id="h-inst">Ten el panel en tu teléfono</h2>
       <p className="help">Instálalo en tu pantalla de inicio para abrirlo con un toque{e.ios ? '' : ' y recibir avisos'}.</p>
       <div className="p-row install-actions">
-        {can ? <button type="button" className="p-btn p-btn-primary" onClick={prompt}><Icon d={ICONS.down} />Instalar</button> : <PLink className="p-btn p-btn-primary" to="/panel/instalar"><Icon d={ICONS.down} />Ver cómo</PLink>}
+        {can ? <button type="button" className="p-btn p-btn-primary" onClick={prompt}><Icon d={ICONS.down} />Instalar</button> : <PLink className="p-btn p-btn-primary" to="/instalar"><Icon d={ICONS.down} />Ver cómo</PLink>}
         <button type="button" className="p-btn" onClick={close}>Ahora no</button>
       </div>
     </section>
