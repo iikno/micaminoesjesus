@@ -7,8 +7,13 @@
   --color-gold: #C79A2B;
   --color-cream: #F3E4BB;
   --color-gray: #6B6B6B;
-  --color-gray-dark: #3d3d3d;
-  --font-display: 'Anton', 'Impact', 'Arial Narrow', sans-serif;
+  --color-gray-dark: #3E3A36;
+  --color-muted: #5A5650;
+  --color-sand: #EBDDBF;
+  --color-clay: #B5533C;
+  --color-blush: #F2DCD3;
+  --color-peach: #F7E7D3;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
   --font-body: 'Manrope', system-ui, sans-serif;
 
   /* Colores litúrgicos, usados para clasificar retiros/talleres/adoraciones por tiempo */

@@ -1,30 +1,30 @@
 # Graph Report - micaminoesjesus  (2026-11-23)
 
 ## Corpus Check
-- 139 files · ~779,222 words
+- 148 files · ~874,445 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 12 file(s) not represented in the graph (top: (none) 6, .css 4, .example 1)
 
 ## Summary
-- 896 nodes · 2214 edges · 57 communities (47 shown, 9 thin omitted)
-- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 24 edges (avg confidence: 0.85)
+- 933 nodes · 2301 edges · 62 communities (49 shown, 11 thin omitted)
+- Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `350ac062`
+- Built from commit: `60fc8cce`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - retreats.js
-- hourly.js
+- admin.js
 - package.json
 - build-equipo.mjs
 - CONSTITUCIÓN DE ARQUITECTURA — MI CAMINO ES JESÚS (MCJ)
 - What You Must Do When Invoked
-- useMeta
+- react-router-dom
 - build-pptx.cjs
-- app.js
+- q
 - graphify reference: extra exports and benchmark
 - graphify reference: query, path, explain
 - .oxlintrc.json
@@ -37,7 +37,7 @@
 - CLAUDE.md
 - .claude/CLAUDE.md
 - extraction-spec.md
-- translations.js
+- lib/seo.js
 - Content.jsx
 - schemas.js
 - Plan técnico v3: backend, panel y gestión de contenido (MCJ)
@@ -45,11 +45,11 @@
 - 001_init.sql
 - dependencies
 - ui.jsx
-- images.js
+- routes/media.js
 - Despliegue en Coolify (producción)
 - regsvc.js
 - devDependencies
-- q
+- regpublic.js
 - regrules.js
 - 004_translation.sql
 - 003_media.sql
@@ -61,25 +61,29 @@
 - Home.jsx
 - useLang
 - react
-- react-router-dom
-- useData
+- Contacto.jsx
+- Peregrinos.jsx
 - routes/auth.js
-- routes/media.js
+- gen-seed-sql.js
 - Inscripciones.jsx
 - 005_registrations.sql
 - 006_contact.sql
-- trySend
+- mailer.js
 - db.js
 - index.jsx
-- admin.js
+- entities.js
+- rows.js
+- body.test.js
+- verifyCaptcha
+- seedsql.test.js
 
 ## God Nodes (most connected - your core abstractions)
-1. `useLang()` - 60 edges
+1. `useLang()` - 67 edges
 2. `q()` - 38 edges
 3. `adminRoutes()` - 33 edges
 4. `get()` - 33 edges
 5. `errText()` - 30 edges
-6. `react-router-dom` - 28 edges
+6. `react-router-dom` - 29 edges
 7. `useMeta()` - 27 edges
 8. `post()` - 27 edges
 9. `useLoad()` - 27 edges
@@ -92,27 +96,27 @@
   server/app.js → server/routes/admin.js
 - `buildApp()` --indirect_call--> `authRoutes()`  [INFERRED]
   server/app.js → server/routes/auth.js
+- `buildApp()` --indirect_call--> `publicRoutes()`  [INFERRED]
+  server/app.js → server/routes/public.js
 - `buildApp()` --indirect_call--> `regPublicRoutes()`  [INFERRED]
   server/app.js → server/routes/regpublic.js
-- `availability()` --calls--> `q()`  [EXTRACTED]
-  server/lib/regsvc.js → server/db.js
 
 ## Import Cycles
 - None detected.
 
-## Communities (57 total, 9 thin omitted)
+## Communities (62 total, 11 thin omitted)
 
 ### Community 0 - "retreats.js"
-Cohesion: 0.06
-Nodes (30): CAL_DATES, insertPublished(), EQUIPO, adoraciones, buildFichaTecnica(), CORTES_SIMJA, DEEP_CONTENT_DEFAULTS, DEREJ (+22 more)
+Cohesion: 0.07
+Nodes (24): adoraciones, buildFichaTecnica(), CORTES_SIMJA, DEEP_CONTENT_DEFAULTS, derejGuibor, derejJaim, derejKavod, derejMesharet (+16 more)
 
-### Community 1 - "hourly.js"
-Cohesion: 0.15
-Nodes (17): runHourly(), ALL, approverRoles, can(), PERMS, R, REVIEWER, RW (+9 more)
+### Community 1 - "admin.js"
+Cohesion: 0.08
+Nodes (54): runHourly(), toColumns(), trySend(), approvers(), labelOf(), notifyDecision(), notifyReminders(), notifySubmitted() (+46 more)
 
 ### Community 2 - "package.json"
-Cohesion: 0.14
-Nodes (13): name, private, type, version, argon2, @fastify/multipart, mysql2, oxlint (+5 more)
+Cohesion: 0.11
+Nodes (20): name, private, type, version, argon2, fastify, @fastify/cookie, @fastify/helmet (+12 more)
 
 ### Community 3 - "build-equipo.mjs"
 Cohesion: 0.13
@@ -126,17 +130,17 @@ Nodes (18): 0. PROPÓSITO DE ESTE DOCUMENTO, 10. RESUMEN DE PENDIENTES (BACKLOG 
 Cohesion: 0.07
 Nodes (26): For /graphify add and --watch, For /graphify query, For the commit hook and native CLAUDE.md integration, For --update and --cluster-only, /graphify, Honesty Rules, Interpreter guard for subcommands, Part A - Structural extraction for code files (+18 more)
 
-### Community 6 - "useMeta"
-Cohesion: 0.22
-Nodes (15): Inscripcion, Peregrinos, Polaroid(), Async(), Failed(), Loading(), useMeta(), pageTitle() (+7 more)
+### Community 6 - "react-router-dom"
+Cohesion: 0.20
+Nodes (18): react-router-dom, PilgrimNext(), Async(), Failed(), useMeta(), pageTitle(), load(), useData() (+10 more)
 
 ### Community 7 - "build-pptx.cjs"
 Cohesion: 0.15
 Nodes (9): ASSETS, fs, HEX, JSZip, OUT, path, PLAN, PptxGenJS (+1 more)
 
-### Community 8 - "app.js"
-Cohesion: 0.10
-Nodes (36): fastify, @fastify/cookie, @fastify/helmet, @fastify/rate-limit, @fastify/static, buildApp(), buildCalendar(), formatRange() (+28 more)
+### Community 8 - "q"
+Cohesion: 0.17
+Nodes (20): q(), buildCalendar(), formatRange(), FREE, MES, parts(), TO, published() (+12 more)
 
 ### Community 9 - "graphify reference: extra exports and benchmark"
 Cohesion: 0.22
@@ -166,25 +170,25 @@ Nodes (3): For --cluster-only, For --update (incremental re-extraction), graphif
 Cohesion: 0.50
 Nodes (3): Expanding the Oxlint configuration, React Compiler, React + Vite
 
-### Community 21 - "translations.js"
-Cohesion: 0.19
-Nodes (18): batches(), buildSystemPrompt(), claudeBatch(), escapeRe(), hasTerm(), keepWarnings(), leaves(), PROVIDERS (+10 more)
+### Community 21 - "lib/seo.js"
+Cohesion: 0.35
+Nodes (12): buildSitemap(), esc(), headTags(), injectHead(), parsePath(), robotsTxt(), routeOf(), trim() (+4 more)
 
 ### Community 22 - "Content.jsx"
 Cohesion: 0.11
 Nodes (31): put(), bodyErrors(), bodyToForm(), clean(), cleanList(), drop(), formToBody(), ICONS (+23 more)
 
 ### Community 23 - "schemas.js"
-Cohesion: 0.07
-Nodes (29): changePassword, date, decision, enText, forgot, glossaryTerm, invite, login (+21 more)
+Cohesion: 0.08
+Nodes (23): changePassword, date, decision, enText, forgot, glossaryTerm, invite, login (+15 more)
 
 ### Community 24 - "Plan técnico v3: backend, panel y gestión de contenido (MCJ)"
 Cohesion: 0.10
 Nodes (20): 0. Estado actual, 10. Retención de datos (aceptada), 11. Despliegue: Docker + Coolify, 12. Aviso de privacidad (LFPDPPP) y bloqueadores de lanzamiento, 13. `.env.example` (nombres; en producción van en la UI de Coolify), 14. Migración de datos (seed), 15. Fases y estimación (developer a medio tiempo), 16. Preguntas abiertas (+12 more)
 
 ### Community 25 - "scripts"
-Cohesion: 0.14
-Nodes (14): scripts, build, create-admin, db:down, db:up, dev, dev:api, job:hourly (+6 more)
+Cohesion: 0.13
+Nodes (15): scripts, build, create-admin, db:down, db:up, dev, dev:api, job:hourly (+7 more)
 
 ### Community 26 - "001_init.sql"
 Cohesion: 0.21
@@ -198,25 +202,25 @@ Nodes (15): dependencies, argon2, fastify, @fastify/cookie, @fastify/helmet, @fa
 Cohesion: 0.13
 Nodes (23): ORDER, BY_PATH, MODE, PUBLISH, RESOURCES, TIPOS, Detail(), diffOf() (+15 more)
 
-### Community 30 - "images.js"
-Cohesion: 0.33
-Nodes (6): sharp, ImageError, MAX_SIDE, processImage(), sniff(), THUMB_SIDE
+### Community 30 - "routes/media.js"
+Cohesion: 0.22
+Nodes (12): sharp, ImageError, MAX_SIDE, processImage(), sniff(), THUMB_SIDE, MEDIA_REF, dirs() (+4 more)
 
 ### Community 31 - "Despliegue en Coolify (producción)"
 Cohesion: 0.17
 Nodes (11): 1. Preparación, 2. Base de datos MySQL (AWS RDS, externa), 3. Aplicación, 3b. Inscripciones, contacto y reCAPTCHA (F4), 4. Tarea programada (recordatorios, publicación programada, inscripciones, retención y limpieza), 5. Primer despliegue (checklist), 6. DNS, 7. Rollback (+3 more)
 
 ### Community 32 - "regsvc.js"
-Cohesion: 0.12
-Nodes (31): GOOGLE_VERIFY, verifyCaptcha(), decrypt(), encrypt(), parseKey(), acceptOffer(), act(), availability() (+23 more)
+Cohesion: 0.23
+Nodes (21): acceptOffer(), act(), bad(), cancel(), flush(), idOf(), KEY, link() (+13 more)
 
 ### Community 33 - "devDependencies"
 Cohesion: 0.33
 Nodes (6): devDependencies, oxlint, @types/react, @types/react-dom, vite, @vitejs/plugin-react
 
-### Community 34 - "q"
-Cohesion: 0.15
-Nodes (21): zod, one(), q(), authenticate(), csrf(), arcoDue(), contactSchema, SUBJECTS (+13 more)
+### Community 34 - "regpublic.js"
+Cohesion: 0.13
+Nodes (23): zod, one(), csrf(), arcoDue(), contactSchema, SUBJECTS, decrypt(), encrypt() (+15 more)
 
 ### Community 35 - "regrules.js"
 Cohesion: 0.08
@@ -227,8 +231,8 @@ Cohesion: 0.12
 Nodes (32): InviteForm(), api(), ApiError, del(), errText(), fieldErrors(), issueText(), MSG (+24 more)
 
 ### Community 39 - "RegistrationForm.jsx"
-Cohesion: 0.38
-Nodes (9): EMPTY, Field(), RegistrationForm(), submit(), captchaToken(), issueMap(), pubPost(), Contacto() (+1 more)
+Cohesion: 0.27
+Nodes (12): Inscripcion, EMPTY, Field(), RegistrationForm(), submit(), captchaToken(), issueMap(), pubPost() (+4 more)
 
 ### Community 40 - "PanelApp.jsx"
 Cohesion: 0.16
@@ -239,76 +243,84 @@ Cohesion: 0.21
 Nodes (18): ACTIONS, Audit(), ENTITY_NAME, Users(), userState(), get(), Bandeja(), ContentList() (+10 more)
 
 ### Community 42 - "App.jsx"
-Cohesion: 0.13
-Nodes (14): App(), AvisoPrivacidad, Calendario, Home, Nosotros, PanelApp, PeregrinacionDetalle, Proyectos (+6 more)
+Cohesion: 0.18
+Nodes (10): App(), AvisoPrivacidad, Home, Nosotros, PanelApp, PeregrinacionDetalle, ProyectoDetalle, SesionDetalle (+2 more)
 
 ### Community 43 - "Home.jsx"
-Cohesion: 0.31
-Nodes (8): Calendario(), Verso(), CALENDARIO, ESTADO_LABEL, VERSO, useApi(), CalendarioPage(), Tile()
+Cohesion: 0.14
+Nodes (19): Calendario, Proyectos, Calendario(), isPer(), Marquee(), nextOf(), OWN, ProjectPanels() (+11 more)
 
 ### Community 44 - "useLang"
-Cohesion: 0.19
-Nodes (15): useLang(), CardFoot(), CARDS, Catalog(), ChipList(), DEREJ_ORDER, groupByCorte(), groupByTipo() (+7 more)
+Cohesion: 0.12
+Nodes (23): Footer(), Header(), LangSwitch(), NAME, OTROS_HINT, SubLink(), Layout(), Loading() (+15 more)
 
 ### Community 45 - "react"
 Cohesion: 0.47
 Nodes (5): react, PendingChange(), same(), show(), SKIP
 
-### Community 46 - "react-router-dom"
-Cohesion: 0.19
-Nodes (13): react-router-dom, Contacto, Footer(), DICT_NAME, Header(), Layout(), INSTAGRAM_URL, NAV (+5 more)
+### Community 46 - "Contacto.jsx"
+Cohesion: 0.23
+Nodes (10): Contacto, LINKS, CONTACTO, INSTAGRAM_URL, NAV, WHATSAPP_DISPLAY, WHATSAPP_NUMBER, WHATSAPP_URL (+2 more)
 
-### Community 47 - "useData"
-Cohesion: 0.17
-Nodes (17): ProyectoDetalle, cache, load(), useData(), adaptRetreat(), TIPO_ABBR, useCatalog(), bundled (+9 more)
+### Community 47 - "Peregrinos.jsx"
+Cohesion: 0.18
+Nodes (12): Peregrinos, PerPillars(), Polaroid(), adaptRetreat(), TIPO_ABBR, useCatalog(), bundled, imgUrl() (+4 more)
 
 ### Community 48 - "routes/auth.js"
 Cohesion: 0.17
-Nodes (21): { values }, COOKIE, cookieOptions(), createSession(), destroySession(), hash(), hashPassword(), newToken() (+13 more)
+Nodes (22): audit(), authenticate(), COOKIE, cookieOptions(), createSession(), destroySession(), hash(), hashPassword() (+14 more)
 
-### Community 49 - "routes/media.js"
-Cohesion: 0.27
-Nodes (9): audit(), IMAGE_FIELDS, MEDIA_REF, dirs(), mediaRoutes(), referencedIds(), REFS, where() (+1 more)
+### Community 49 - "gen-seed-sql.js"
+Cohesion: 0.35
+Nodes (11): buildSql(), cols(), esc(), fixIds(), insertIfMissing(), OUT, PUB, pubVals() (+3 more)
 
 ### Community 50 - "Inscripciones.jsx"
 Cohesion: 0.19
 Nodes (12): Due(), PILL, ST, SUBJECT, today(), ACTIONS, KIND, PILL (+4 more)
 
-### Community 53 - "trySend"
-Cohesion: 0.42
-Nodes (8): nodemailer, sendMail(), trySend(), approvers(), labelOf(), notifyDecision(), notifyReminders(), notifySubmitted()
-
 ### Community 54 - "db.js"
 Cohesion: 0.17
-Nodes (14): bool, config, opt, parseConfig(), prodChecks(), schema, pool, tx() (+6 more)
+Nodes (15): { values }, bool, config, opt, parseConfig(), prodChecks(), schema, pool (+7 more)
 
 ### Community 55 - "index.jsx"
 Cohesion: 0.31
 Nodes (5): DICT, langOf(), strip(), PAGE_META, SITE_NAME
 
-### Community 56 - "admin.js"
+### Community 56 - "entities.js"
+Cohesion: 0.70
+Nodes (3): ENTITIES, bad(), ok()
+
+### Community 57 - "rows.js"
 Cohesion: 0.24
-Nodes (16): ENTITIES, snapshotOf(), toColumns(), srcHash(), getTranslation(), putTranslation(), sourceFields(), adminRoutes() (+8 more)
+Nodes (8): CAL_DATES, json(), seedRows(), EQUIPO, DEREJ, retreats, SEASONS, VERSO
+
+### Community 58 - "body.test.js"
+Cohesion: 0.31
+Nodes (6): retreat, retreatBody, translationFields, bad(), ok(), strip()
+
+### Community 59 - "verifyCaptcha"
+Cohesion: 0.43
+Nodes (5): GOOGLE_VERIFY, verifyCaptcha(), checkCaptcha(), mock(), run()
 
 ## Knowledge Gaps
-- **298 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `name` (+293 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 355 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **306 isolated node(s):** `$schema`, `plugins`, `react/rules-of-hooks`, `react/only-export-components`, `name` (+301 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 366 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **11 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `zod` connect `q` to `package.json`, `regrules.js`, `app.js`, `db.js`, `schemas.js`, `admin.js`?**
-  _High betweenness centrality (0.146) - this node is a cross-community bridge._
-- **Why does `react` connect `react` to `package.json`, `useMeta`, `RegistrationForm.jsx`, `PanelApp.jsx`, `get`, `App.jsx`, `Home.jsx`, `Media.jsx`, `react-router-dom`, `useData`, `Inscripciones.jsx`, `Content.jsx`, `index.jsx`, `ui.jsx`?**
-  _High betweenness centrality (0.129) - this node is a cross-community bridge._
-- **Why does `react-router-dom` connect `react-router-dom` to `package.json`, `useMeta`, `RegistrationForm.jsx`, `PanelApp.jsx`, `App.jsx`, `Home.jsx`, `useLang`, `useData`, `Inscripciones.jsx`, `Content.jsx`, `index.jsx`, `ui.jsx`?**
-  _High betweenness centrality (0.116) - this node is a cross-community bridge._
+- **Why does `zod` connect `regpublic.js` to `admin.js`, `package.json`, `regrules.js`, `db.js`, `schemas.js`?**
+  _High betweenness centrality (0.166) - this node is a cross-community bridge._
+- **Why does `react-router-dom` connect `react-router-dom` to `package.json`, `RegistrationForm.jsx`, `PanelApp.jsx`, `App.jsx`, `Home.jsx`, `useLang`, `Contacto.jsx`, `Inscripciones.jsx`, `Content.jsx`, `index.jsx`, `ui.jsx`?**
+  _High betweenness centrality (0.149) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `package.json`, `Media.jsx`, `RegistrationForm.jsx`, `PanelApp.jsx`, `get`, `App.jsx`, `Home.jsx`, `useLang`, `Contacto.jsx`, `Peregrinos.jsx`, `Inscripciones.jsx`, `Content.jsx`, `index.jsx`, `ui.jsx`?**
+  _High betweenness centrality (0.134) - this node is a cross-community bridge._
 - **Are the 6 inferred relationships involving `adminRoutes()` (e.g. with `buildApp()` and `authenticate()`) actually correct?**
   _`adminRoutes()` has 6 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `$schema`, `plugins`, `react/rules-of-hooks` to the rest of the system?**
-  _298 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _306 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `retreats.js` be split into smaller, more focused modules?**
-  _Cohesion score 0.06156156156156156 - nodes in this community are weakly interconnected._
-- **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07407407407407407 - nodes in this community are weakly interconnected._
+- **Should `admin.js` be split into smaller, more focused modules?**
+  _Cohesion score 0.07638279192273925 - nodes in this community are weakly interconnected._

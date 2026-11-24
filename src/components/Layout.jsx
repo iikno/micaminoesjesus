@@ -13,10 +13,17 @@ export default function Layout() {
     document.documentElement.lang = lang;
   }, [lang]);
 
+  // Pages are lazy chunks, so a #hash target may not exist yet when the route changes: wait for it (max 3s).
   useEffect(() => {
-    const target = hash && document.getElementById(hash.slice(1));
-    if (target) target.scrollIntoView();
-    else window.scrollTo(0, 0);
+    const find = () => hash && document.getElementById(decodeURIComponent(hash.slice(1)));
+    const first = find();
+    if (first) { first.scrollIntoView(); return undefined; }
+    if (!hash) { window.scrollTo(0, 0); return undefined; }
+    const done = () => { mo.disconnect(); clearTimeout(timer); };
+    const mo = new MutationObserver(() => { const el = find(); if (el) { el.scrollIntoView(); done(); } });
+    const timer = setTimeout(done, 3000);
+    mo.observe(document.getElementById('contenido'), { childList: true, subtree: true });
+    return done;
   }, [pathname, hash]);
 
   return (

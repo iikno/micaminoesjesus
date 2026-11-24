@@ -12,9 +12,9 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1795462398.2351959,
-    "seen": 1795462490.534091,
-    "ast_hash": "6b75f9fc1c5b266469ced299d70002f4",
+    "mtime": 1795488477.9747932,
+    "seen": 1795493760.0825155,
+    "ast_hash": "03a30b643c0da644efdbb47b98575610",
     "semantic_hash": ""
   },
   "presentacion/build-equipo.mjs": {
@@ -36,21 +36,21 @@
     "semantic_hash": ""
   },
   "src/components/Footer.jsx": {
-    "mtime": 1795462398.2744784,
-    "seen": 1795462490.5341947,
-    "ast_hash": "3750730fde20f0a7d4918b1603cbd5d7",
+    "mtime": 1795493098.4449923,
+    "seen": 1795493760.082643,
+    "ast_hash": "326ab9c83ae5f439e1127aaba2e48764",
     "semantic_hash": ""
   },
   "src/components/Header.jsx": {
-    "mtime": 1795462398.275479,
-    "seen": 1795462490.5341961,
-    "ast_hash": "68e76afbe7f423d30eaae6b4e3b81e74",
+    "mtime": 1795493098.445984,
+    "seen": 1795493760.0826442,
+    "ast_hash": "5b3f22960c744e7cf54ff51036472de5",
     "semantic_hash": ""
   },
   "src/components/Layout.jsx": {
-    "mtime": 1795462398.2764792,
-    "seen": 1795462490.5341976,
-    "ast_hash": "42317a8d7975ba243a16b5935405a2a6",
+    "mtime": 1795493098.446985,
+    "seen": 1795493760.0826457,
+    "ast_hash": "090720ed01eb905210e22b2fd8a6bf0e",
     "semantic_hash": ""
   },
   "src/data/retreats.js": {
@@ -72,15 +72,15 @@
     "semantic_hash": ""
   },
   "src/pages/Home.jsx": {
-    "mtime": 1795462398.2944906,
-    "seen": 1795462490.5342307,
-    "ast_hash": "a67236103e3ad471a90f09d8c347db0a",
+    "mtime": 1795493972.9993637,
+    "seen": 1795494404.6209552,
+    "ast_hash": "82d6042228a74a53934eff3fbb4806d3",
     "semantic_hash": ""
   },
   "src/pages/Nosotros.jsx": {
-    "mtime": 1795462398.29649,
-    "seen": 1795462490.5342333,
-    "ast_hash": "2071dda4b86340ddedfbea5d0de98369",
+    "mtime": 1795493098.4540522,
+    "seen": 1795493760.0826929,
+    "ast_hash": "fffdcac7178d376c990d993218ab0978",
     "semantic_hash": ""
   },
   "src/pages/ProyectoDetalle.jsx": {
@@ -90,9 +90,9 @@
     "semantic_hash": ""
   },
   "src/pages/Proyectos.jsx": {
-    "mtime": 1795462398.2996328,
-    "seen": 1795462490.534239,
-    "ast_hash": "8025837b9569022cfa713c2635f11a7a",
+    "mtime": 1795493098.45605,
+    "seen": 1795493760.082699,
+    "ast_hash": "59f9a41fbe431b191bb0ff1ddb7f0f53",
     "semantic_hash": ""
   },
   "src/pages/XpLev.jsx": {
@@ -186,9 +186,9 @@
     "semantic_hash": ""
   },
   "index.html": {
-    "mtime": 1795457870.719952,
-    "seen": 1795458281.1951282,
-    "ast_hash": "c74177859b6e8ddc6467188a7e5f8eda",
+    "mtime": 1795493098.4399762,
+    "seen": 1795493760.0827613,
+    "ast_hash": "1ad1f02bad746c9bfeafbf9341ff8d84",
     "semantic_hash": ""
   },
   "presentacion/mcj-arzobispado.html": {
@@ -564,15 +564,15 @@
     "semantic_hash": ""
   },
   "src/components/Calendario.jsx": {
-    "mtime": 1795462398.2734776,
-    "seen": 1795462490.5341935,
-    "ast_hash": "18c58fb46e68374950013aa0ec4ea45a",
+    "mtime": 1795493098.4439895,
+    "seen": 1795493760.0826416,
+    "ast_hash": "4d9c706a6353c767d004812f9a0d92a1",
     "semantic_hash": ""
   },
   "src/components/Polaroid.jsx": {
-    "mtime": 1795462398.2764792,
-    "seen": 1795462490.5341988,
-    "ast_hash": "60153b06fa98c874b1a60d36e1e1c663",
+    "mtime": 1795493098.4479833,
+    "seen": 1795493760.0826514,
+    "ast_hash": "3fbf05cd3e7f1bd2e8788a1cd47d8680",
     "semantic_hash": ""
   },
   "src/components/Verso.jsx": {
@@ -594,15 +594,15 @@
     "semantic_hash": ""
   },
   "src/data/proyectos.js": {
-    "mtime": 1795462398.2804775,
-    "seen": 1795462490.534208,
-    "ast_hash": "5244d735179bae6485637d0052fa6a4a",
+    "mtime": 1795493098.449043,
+    "seen": 1795493760.0826619,
+    "ast_hash": "fc5a6ab9591a2e781a23e7c4971e88b0",
     "semantic_hash": ""
   },
   "src/data/site.js": {
-    "mtime": 1795462398.2824953,
-    "seen": 1795462490.5342112,
-    "ast_hash": "912fddaa2fbc96367b1c857308746ddc",
+    "mtime": 1795493098.4500506,
+    "seen": 1795493760.082665,
+    "ast_hash": "f818d5f29d3740b3030fe464863d7dc9",
     "semantic_hash": ""
   },
   "src/pages/AvisoPrivacidad.jsx": {
@@ -618,9 +618,9 @@
     "semantic_hash": ""
   },
   "src/pages/Peregrinos.jsx": {
-    "mtime": 1795462398.2974906,
-    "seen": 1795462490.5342362,
-    "ast_hash": "a521dc9bc032ff97f7402329f7b241a1",
+    "mtime": 1795493098.4550579,
+    "seen": 1795493760.082696,
+    "ast_hash": "7ff70a20098e2ce5ea4decd5663c8de1",
     "semantic_hash": ""
   },
   "presentacion/fotos/angelica.jpg": {
@@ -948,9 +948,9 @@
     "semantic_hash": ""
   },
   "server/seed.js": {
-    "mtime": 1795462398.266477,
-    "seen": 1795462490.5341697,
-    "ast_hash": "193b0903419bd4b4470b20300afeda70",
+    "mtime": 1795488477.977929,
+    "seen": 1795493760.0826101,
+    "ast_hash": "dd0d17460b9d978038fa74152948711c",
     "semantic_hash": ""
   },
   "server/test/calendar.test.js": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "docs/deploy-coolify.md": {
-    "mtime": 1795463643.490786,
-    "seen": 1795463654.4241486,
-    "ast_hash": "53a9ab2fa9c9e1858830307cb26b9df6",
+    "mtime": 1795488477.9717977,
+    "seen": 1795493760.0827584,
+    "ast_hash": "23228637cb2fcc9a77d03b5f1688726d",
     "semantic_hash": ""
   },
   "server/migrations/003_media.sql": {
@@ -1194,15 +1194,15 @@
     "semantic_hash": ""
   },
   "src/i18n/en.js": {
-    "mtime": 1795462398.2844949,
-    "seen": 1795462490.5342126,
-    "ast_hash": "208f534ef6dfeff411e7f08799f4288e",
+    "mtime": 1795493973.0013647,
+    "seen": 1795494404.6209319,
+    "ast_hash": "e7f9bd5175d2b5b4fab08670791e340f",
     "semantic_hash": ""
   },
   "src/i18n/es.js": {
-    "mtime": 1795462398.2854948,
-    "seen": 1795462490.5342138,
-    "ast_hash": "b17e55dbbb3d4e8b76df465baa8b4f1f",
+    "mtime": 1795493973.000363,
+    "seen": 1795494404.6209342,
+    "ast_hash": "2f37278c132f2296eb3b7985125fc5d2",
     "semantic_hash": ""
   },
   "src/i18n/index.jsx": {
@@ -1374,9 +1374,9 @@
     "semantic_hash": ""
   },
   "src/pages/Inscripcion.jsx": {
-    "mtime": 1795462398.2954905,
-    "seen": 1795462490.5342321,
-    "ast_hash": "67a3cc81fc9d8a260e77b53cf52a88e0",
+    "mtime": 1795494262.603081,
+    "seen": 1795494404.6209567,
+    "ast_hash": "db209e9119991440b0632067a6d621c4",
     "semantic_hash": ""
   },
   "src/pages/SesionDetalle.jsx": {
@@ -1413,6 +1413,156 @@
     "mtime": 1795462398.267477,
     "seen": 1795462490.534172,
     "ast_hash": "67a7f77787b6355cdd0f54616a84cca5",
+    "semantic_hash": ""
+  },
+  "server/cli/gen-seed-sql.js": {
+    "mtime": 1795488477.97593,
+    "seen": 1795493760.0825257,
+    "ast_hash": "1be70ed1f07f37ddea409b24443a4511",
+    "semantic_hash": ""
+  },
+  "server/migrations/007_seed_catalogo.sql": {
+    "mtime": 1795488477.976929,
+    "seen": 1795493760.0825942,
+    "ast_hash": "288102129423999990f602abe1533196",
+    "semantic_hash": ""
+  },
+  "server/seed/rows.js": {
+    "mtime": 1795488477.9799335,
+    "seen": 1795493760.0826118,
+    "ast_hash": "67f83d9f66214e7bfe9282f3964b7148",
+    "semantic_hash": ""
+  },
+  "server/test/seedsql.test.js": {
+    "mtime": 1795488477.9809303,
+    "seen": 1795493760.0826347,
+    "ast_hash": "02d1dd209a23ecf42098456fafccb9d4",
+    "semantic_hash": ""
+  },
+  "src/components/Marquee.jsx": {
+    "mtime": 1795492308.5553446,
+    "seen": 1795493760.0826468,
+    "ast_hash": "478a72c60ed70f64c205f524a7cd23ab",
+    "semantic_hash": ""
+  },
+  "src/components/PerPillars.jsx": {
+    "mtime": 1795492349.2100744,
+    "seen": 1795493760.0826483,
+    "ast_hash": "63f8b7505a95e8210df138478fb40536",
+    "semantic_hash": ""
+  },
+  "src/components/PilgrimNext.jsx": {
+    "mtime": 1795492404.6453207,
+    "seen": 1795493760.08265,
+    "ast_hash": "71639b7934a71091c0365ebf61ade72b",
+    "semantic_hash": ""
+  },
+  "src/components/ProjectPanels.jsx": {
+    "mtime": 1795492319.7304618,
+    "seen": 1795493760.0826523,
+    "ast_hash": "5fca7b858cccf7d744cdef3bd673e209",
+    "semantic_hash": ""
+  },
+  "src/lib/perPhotos.js": {
+    "mtime": 1795492349.0978985,
+    "seen": 1795493760.082679,
+    "ast_hash": "4437988a259b44c01d9651532b8e9690",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/hero-patio.webp": {
+    "mtime": 1795492107.483,
+    "seen": 1795493760.0827827,
+    "ast_hash": "9527a41fc010b0f045332c7f751c0b35",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/hero-velas.webp": {
+    "mtime": 1795492107.331,
+    "seen": 1795493760.082784,
+    "ast_hash": "76d7d1737491598bcc56b4456054dc12",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/nosotros-comunidad.webp": {
+    "mtime": 1795492108.365,
+    "seen": 1795493760.0827854,
+    "ast_hash": "97abc382adb0a9ee6e70c1332b2aded2",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/nosotros-escalinata.webp": {
+    "mtime": 1795492108.531,
+    "seen": 1795493760.0827863,
+    "ast_hash": "9655dad749643851f3e1ae631f2f6bc4",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-adoracion.webp": {
+    "mtime": 1795492107.74,
+    "seen": 1795493760.0827875,
+    "ast_hash": "852a01c13580b898d7f4fc1dd6e21d77",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-cruz.webp": {
+    "mtime": 1795492107.996,
+    "seen": 1795493760.082789,
+    "ast_hash": "4819d9545c4fbf8c340334a244aa833b",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-mesa.webp": {
+    "mtime": 1795492107.865,
+    "seen": 1795493760.08279,
+    "ast_hash": "d36ba92b57fab2bd00e1bdca65798852",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-predicador.webp": {
+    "mtime": 1795492108.133,
+    "seen": 1795493760.082791,
+    "ast_hash": "cd7dab3ca8fe47ed81660e02876ba5c6",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/1-encuentro.webp": {
+    "mtime": 1795492108.694,
+    "seen": 1795493760.0829191,
+    "ast_hash": "6845250a9dd5806f499bcbe7505d20d0",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/2-formacion.webp": {
+    "mtime": 1795492108.732,
+    "seen": 1795493760.0829206,
+    "ast_hash": "dfbb1459d7a7d95ff0a6b9bcc2b13701",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/3-comunidad.webp": {
+    "mtime": 1795492108.772,
+    "seen": 1795493760.0829215,
+    "ast_hash": "5acbc2122cc3ed2edc5b6957b13a737c",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/4-mision.webp": {
+    "mtime": 1795492108.808,
+    "seen": 1795493760.0829227,
+    "ast_hash": "8dc1e1bd4fef15481e5e7fd96073b4d2",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/cerro-del-cubilete-3-peregrinacion-nacional-juvenil-2023-a-cristo-.webp": {
+    "mtime": 1795491602.0735514,
+    "seen": 1795493760.0829241,
+    "ast_hash": "ee8d7dec35977e6685d08883bd3a62b0",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images-1.jpg": {
+    "mtime": 1795491720.9478753,
+    "seen": 1795493760.0829253,
+    "ast_hash": "ab708df1e7e31618110f66f3e4522423",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images.jpg": {
+    "mtime": 1795491745.2192967,
+    "seen": 1795493760.0829263,
+    "ast_hash": "31b811240b52ac6e018622006be40fe9",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images2.jpg": {
+    "mtime": 1795491839.957802,
+    "seen": 1795493760.0829277,
+    "ast_hash": "26f3a6ae288826afc134b2e30c997e24",
     "semantic_hash": ""
   }
 }

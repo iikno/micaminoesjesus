@@ -60,7 +60,7 @@ export default function Inscripcion() {
     <section className="band">
       <div className="wrap legal">
         <div className="kicker red">{t('ins.k')}</div>
-        <h1 className="d">{s.event?.title ?? t('ins.k')}</h1>
+        <h1 className="h2">{s.event?.title ?? t('ins.k')}</h1>
         {s.event && <p>{dateRange(lang, s.event.starts_on, s.event.ends_on)}</p>}
         <p className="big" role="status">{t(`ins.st.${s.status}`, { pos: s.position, date })}</p>
         {err && <p className="err" role="alert">{err}</p>}

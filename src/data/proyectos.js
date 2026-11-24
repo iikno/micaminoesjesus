@@ -6,7 +6,7 @@ import peregrinosLogo from '../assets/logos/peregrinos.png';
 
 // Structure only: names, links and logos. Taglines, descriptions, alt text and link labels live in the
 // dictionaries (keys proy.<id>.tag|desc|alt|l<index>) so they exist in both languages.
-// externo: proyecto con sitio propio (se lista en Home como "Más proyectos").
+// externo: proyecto con sitio propio (se lista como "Otros proyectos"); XP Lev y Peregrinos son los dos propios.
 export const PROYECTOS = [
   { id: 'xp-lev', nombre: 'XP Lev', logo: xpLogo, links: [{ to: '/proyectos/xp-lev' }] },
   { id: 'peregrinos', nombre: 'Peregrinos', logo: peregrinosLogo, links: [{ to: '/proyectos/peregrinos' }] },

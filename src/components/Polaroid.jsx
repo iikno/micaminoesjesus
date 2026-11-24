@@ -1,4 +1,4 @@
-// Foto de persona con marco inclinado y cinta dorada (lenguaje C).
+// Foto de persona en marco tipo polaroid con cinta crema.
 export default function Polaroid({ foto, nombre, rol, alt }) {
   return (
     <figure className="p">

@@ -1,16 +1,25 @@
-import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import heroImage from '../assets/images/hero.webp';
-import nosotrosImage from '../assets/images/nosotros.webp';
-import ozEmaus from '../assets/images/OZ-EMAUS.jpg';
-import simjaBuenPastor from '../assets/images/SIMJA-BUENPASTOR.jpg';
+import isotipo from '../assets/logos/isotipo.png';
 import xpLogo from '../assets/images/xp-lev.png';
 import peregrinosLogo from '../assets/logos/peregrinos.png';
+import heroVelas from '../assets/fotos-web/hero-velas.webp';
+import heroPatio from '../assets/fotos-web/hero-patio.webp';
+import heroSantisimo from '../assets/images/hero.webp';
+import tiraAdoracion from '../assets/fotos-web/tira-adoracion.webp';
+import tiraMesa from '../assets/fotos-web/tira-mesa.webp';
+import tiraCruz from '../assets/fotos-web/tira-cruz.webp';
+import tiraPredicador from '../assets/fotos-web/tira-predicador.webp';
+import nosComunidad from '../assets/fotos-web/nosotros-comunidad.webp';
+import nosEscalinata from '../assets/fotos-web/nosotros-escalinata.webp';
 import { PROYECTOS } from '../data/proyectos';
 import { CALENDARIO } from '../data/calendario';
 import { WHATSAPP_URL, WHATSAPP_DISPLAY } from '../data/site';
 import Calendario from '../components/Calendario';
+import Marquee from '../components/Marquee';
+import PerPillars from '../components/PerPillars';
+import PilgrimNext from '../components/PilgrimNext';
 import Polaroid from '../components/Polaroid';
+import ProjectPanels from '../components/ProjectPanels';
 import { Failed, Loading } from '../components/Status';
 import Verso from '../components/Verso';
 import { useLang, useMeta } from '../i18n';
@@ -18,189 +27,168 @@ import { useApi, useData } from '../lib/api';
 import { useCatalog } from '../lib/catalog';
 import { imgUrl } from '../lib/img';
 
-function Tile({ id, d, open, onToggle }) {
-  const { t, to } = useLang();
-  const [titulo, resto] = d.name.split(' ');
-  return (
-    <div className={`tile${open ? ' open' : ''}`} style={{ '--tc': d.color }}>
-      <button type="button" className="tile__btn" aria-expanded={open} aria-controls={`more-${id}`} onClick={onToggle}>
-        <span className="bg">{d.foto && <img src={d.foto} alt="" loading="lazy" />}</span>
-        <span className="t-in">
-          <span>
-            <span className="nm">{titulo}<br />{resto}</span>
-            <span className="st">{d.subtitle}</span>
-          </span>
-          <span className="who">{d.who}</span>
-        </span>
-      </button>
-      <div className="more" id={`more-${id}`}>
-        <b>{d.audience}</b>
-        {d.more}
-        <Link to={to(`/proyectos/xp-lev?camino=${id}`)}>{t('home.tile.cat')} &rarr;</Link>
-      </div>
-    </div>
-  );
-}
+const OTROS = PROYECTOS.filter((p) => p.externo);
+
+const Photo = ({ src, alt, className, eager }) => (
+  <figure className={`pol ${className}`}><img src={src} alt={alt} loading={eager ? 'eager' : 'lazy'} /></figure>
+);
 
 export default function Home() {
   useMeta('home');
   const { lang, t, r, to } = useLang();
-  const [abierto, setAbierto] = useState(null);
   const cat = useCatalog();
   const team = useData(`/api/public/team?lang=${lang}`);
+  const trips = useData(`/api/public/pilgrimages?lang=${lang}`);
   const calendar = useApi(`/api/public/calendar?lang=${lang}`, lang === 'es' ? CALENDARIO : []);
-  const masProyectos = PROYECTOS.filter((p) => p.externo);
   const c = cat.data;
-  const marquee = c ? [...Object.values(c.DEREJ).map((d) => d.name), '+ Peregrinos'] : [];
-  const listas = c ? c.retreats.filter((x) => x.estado !== 'proximamente').map((x) => x.title) : [];
+  const derejNames = c ? Object.values(c.DEREJ).map((d) => d.name) : [];
 
   return (
     <>
       <section className="hero">
-        <div className="wrap grid">
+        <div className="wrap hero-grid">
           <div>
-            <div className="kicker rv">{t('home.kicker')}</div>
-            <h1 className="d" aria-label={t('home.aria')}>
-              <span className="ln"><span>{t('home.l1')}</span></span>
-              <span className="ln"><span>{t('home.l2')}</span></span>
-              <span className="ln"><span className="jesus">{t('home.l3')}</span></span>
-            </h1>
-            <p className="tag rv">{t('site.tagline')}</p>
-            <p className="lead rv">{t('home.lead')}</p>
-            <div className="cta rv">
-              <a className="btn" href="#derej">{t('home.cta1')}</a>
-              <Link className="btn btn--ghost" to={to('/nosotros')}>{t('home.cta2')}</Link>
+            <div className="pill-k">{t('home.kicker')}</div>
+            <h1>{t('home.h1a')}<br /><mark>{t('home.h1b')}</mark></h1>
+            <p className="tag">{t('site.tagline')}</p>
+            <p className="lead">{t('home.lead')}</p>
+            <p className="verse-pill">{t('home.verse')}</p>
+            <div className="cta">
+              <a className="btn" href="#proyectos">{t('home.cta1')}</a>
+              <a className="link-arrow" href="#nosotros">{t('home.cta2')} <span aria-hidden="true">&rarr;</span></a>
             </div>
           </div>
-          <div className="collage" aria-hidden="true">
-            <div className="pol a"><div className="ph"><img src={ozEmaus} alt="" /></div></div>
-            <div className="pol b"><div className="ph"><img src={heroImage} alt="" /></div></div>
-            <div className="pol c"><div className="ph"><img src={simjaBuenPastor} alt="" /></div></div>
-            <div className="sticker"><div><b>Josué 1:9</b>{t('home.sticker')}</div></div>
+          <div className="collage">
+            <span className="sun" aria-hidden="true" />
+            <Photo className="a" src={heroSantisimo} alt={t('photo.santisimo')} eager />
+            <Photo className="b" src={heroVelas} alt={t('photo.velas')} />
+            <Photo className="c" src={heroPatio} alt={t('photo.patio')} />
+            <img className="mark-chip" src={isotipo} alt="" />
           </div>
         </div>
       </section>
 
-      {c && (
-        <div className="ticker-wrap">
-          <div className="ticker" role="img" aria-label={t('home.ticker', { list: marquee.join(', ') })}>
-            <div className="track" aria-hidden="true">
-              {[0, 1].map((n) => marquee.map((m) => (
-                <span key={`${n}-${m}`} className={`${m.startsWith('+') ? 'pg' : ''}${n ? ' dup' : ''}`}>{m}</span>
-              )))}
-            </div>
-          </div>
-        </div>
-      )}
-
-      <section className="band routes">
+      <section className="band values">
         <div className="wrap">
-          <div className="kicker red">{t('home.entry.k')}</div>
-          <h2 className="d sec-title">{t('home.entry.h')}</h2>
-          <div className="grid">
-            <a className="route r1" href="#derej">
-              <div><div className="d who">{t('home.r1.who')}</div><p>{t('home.r1.p')}</p></div>
-              <span className="go">{t('home.r1.go')} <i>&rarr;</i></span>
-            </a>
-            <Link className="route r2" to={to('/proyectos/xp-lev')}>
-              <div><div className="d who">{t('home.r2.who')}</div><p>{t('home.r2.p')}</p></div>
-              <span className="go">{t('home.r2.go')} <i>&rarr;</i></span>
-            </Link>
-            <Link className="route r3" to={to('/contacto')}>
-              <div><div className="d who">{t('home.r3.who')}</div><p>{t('home.r3.p')}</p></div>
-              <span className="go">{t('home.r3.go')} <i>&rarr;</i></span>
-            </Link>
-          </div>
+          <ol className="val-cards">
+            {[0, 1, 2].map((i) => (
+              <li key={i} className={`v${i}`}>
+                <span className="num">{`0${i + 1}`}</span>
+                <h2>{t(`home.val.${i}.h`)}</h2>
+                <p>{t(`home.val.${i}.p`)}</p>
+              </li>
+            ))}
+          </ol>
         </div>
       </section>
 
-      <section className="band nos" id="nosotros">
-        <div className="wrap grid">
-          <div className="pol"><img src={nosotrosImage} alt={t('home.nos.img')} /></div>
-          <div>
-            <div className="kicker red">{t('home.nos.k')}</div>
-            <h2 className="d sec-title">{t('home.nos.h')}</h2>
-            <p>{t('home.nos.p')}</p>
-            <div className="words">{[0, 1, 2, 3].map((i) => <span key={i}>{t(`pilar.${i}`)}</span>)}</div>
-            <div className="mv">
-              <div><h3 className="d">{t('home.mision')}</h3><p>{t('site.mision')}</p></div>
-              <div><h3 className="d">{t('home.vision')}</h3><p>{t('site.vision')}</p></div>
-            </div>
-          </div>
+      <section className="strip" aria-label={t('home.nos.k')}>
+        <div className="wrap strip-grid">
+          <Photo className="s1" src={tiraAdoracion} alt={t('photo.adoracion')} />
+          <Photo className="s2" src={tiraMesa} alt={t('photo.mesa')} />
+          <Photo className="s3" src={tiraCruz} alt={t('photo.cruz')} />
+          <Photo className="s4" src={tiraPredicador} alt={t('photo.predicador')} />
         </div>
       </section>
 
-      <section className="band derej" id="derej">
+      <section className="band" id="proyectos">
         <div className="wrap">
-          <div className="kicker gold">{t('home.derej.k')}</div>
-          <h2 className="d sec-title">{t('home.derej.h')}</h2>
-          <p className="sub">{t('home.derej.sub')}</p>
+          <div className="kicker">{t('home.proj.k')}</div>
+          <h2 className="h2">{t('home.proj.h')}</h2>
+          <ProjectPanels items={calendar} />
+        </div>
+      </section>
+
+      <section className="band sec-peach" id="catalogo">
+        <div className="wrap">
+          <div className="sec-head">
+            <div>
+              <div className="kicker">{t('home.xp.k')}</div>
+              <h2 className="h2">{t('home.xp.h')}</h2>
+              <p className="sub">{t('home.xp.p')}</p>
+            </div>
+            <aside className="mean-card">
+              <img src={xpLogo} alt="" />
+              <p>{r('home.xp.mean', (s) => <b>{s}</b>)}</p>
+            </aside>
+          </div>
           {cat.loading && <Loading />}
           {cat.error && <Failed onRetry={cat.retry} />}
           {c && (
-            <div className="tiles">
-              {Object.entries(c.DEREJ).map(([id, d]) => (
-                <Tile key={id} id={id} d={d} open={abierto === id} onToggle={() => setAbierto(abierto === id ? null : id)} />
-              ))}
-            </div>
+            <>
+              <Marquee label={t('home.xp.marquee', { list: derejNames.join(', ') })} items={Object.values(c.DEREJ).map((d) => ({ text: d.name, color: d.color }))} />
+              <ul className="derej-cards">
+                {Object.entries(c.DEREJ).map(([id, d]) => (
+                  <li key={id} style={{ '--dc': d.color }}>
+                    <Link className="dcard" to={to(`/proyectos/xp-lev?camino=${id}`)}>
+                      <div className="ph">{d.foto && <img src={d.foto} alt="" loading="lazy" />}</div>
+                      <h3>{d.name}</h3>
+                      <p className="who"><b>{d.who}</b><span>{d.subtitle}</span></p>
+                      <p className="more"><b>{d.audience}.</b> {d.more}</p>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </>
           )}
-        </div>
-      </section>
-
-      <section className="band pg-sec" id="peregrinos">
-        <div className="wrap grid">
-          <div>
-            <div className="kicker red">{t('home.pg.k')}</div>
-            <h2 className="d">Peregrinos</h2>
-            <p className="big">{t('home.pg.big')}</p>
-            <p>{t('home.pg.p')}</p>
-            <Link className="btn" to={to('/proyectos/peregrinos')}>{t('home.pg.cta')}</Link>
-          </div>
-          <div className="shot"><img src={peregrinosLogo} alt={t('home.pg.logo')} loading="lazy" /></div>
-        </div>
-      </section>
-
-      <section className="band xp" id="xp">
-        <div className="wrap grid">
-          <div>
-            <div className="kicker gold">{t('home.xp.k')}</div>
-            <h2 className="d">XP <em>Lev</em></h2>
-            <p>{t('home.xp.p')}</p>
-            <p className="mean">{r('home.xp.mean', (s) => <b>{s}</b>)}</p>
-            {c && (
-              <>
-                <div className="nums">
-                  <div><span className="d">{c.total}</span>{t('home.xp.n1')}</div>
-                  <div><span className="d">{c.ready}</span>{t('home.xp.n2')}</div>
-                  <div><span className="d">{c.total - c.ready}</span>{t('home.xp.n3')}</div>
-                </div>
-                {listas.length > 0 && <p className="ready"><b>{t('home.xp.ready')}</b> {listas.slice(0, 8).join(', ')}{listas.length > 8 ? '…' : '.'}</p>}
-              </>
-            )}
+          <div className="cta-card">
+            <div><h3>{t('xp.cta.h')}</h3><p>{t('xp.cta.p')}</p></div>
             <Link className="btn" to={to('/proyectos/xp-lev')}>{t('home.xp.cta')}</Link>
           </div>
-          <div className="shot"><img src={xpLogo} alt={t('home.xp.logo')} loading="lazy" /></div>
         </div>
       </section>
 
-      <section className="band proj" id="proyectos">
+      <section className="band sec-blush" id="peregrinaciones">
         <div className="wrap">
-          <div className="kicker red">{t('home.proj.k')}</div>
-          <h2 className="d sec-title">{t('home.proj.h')}</h2>
-          <div className="plist">
-            {masProyectos.map((p) => (
-              <Link key={p.id} className="prow" to={to(`/proyectos#${p.id}`)}>
-                <h3 className="d">{p.nombre}</h3><span className="k">{t(`proy.${p.id}.tag`)}</span><span className="ar" aria-hidden="true">&rarr;</span>
-              </Link>
-            ))}
+          <div className="sec-head">
+            <div>
+              <div className="kicker">{t('home.pg.k')}</div>
+              <h2 className="h2">{t('home.pg.h')}</h2>
+              <p className="sub">{t('home.pg.p')}</p>
+            </div>
+            <aside className="mean-card">
+              <img src={peregrinosLogo} alt="" />
+              <p>{t('home.pg.mean')}</p>
+            </aside>
+          </div>
+          <Marquee label={t('home.pg.marquee')} items={[0, 1, 2, 3].map((i) => ({ text: t(`pilar.${i}`), color: ['#C79A2B', '#B5533C', '#8B1E2B', '#14293A'][i] }))} />
+          <PerPillars />
+          <article className="resp-card">
+            <Polaroid foto={imgUrl('silvia.jpg')} nombre="Silvia “Silber” Ponce" rol={t('pg.resp.role')} />
+            <div>
+              <div className="kicker">{t('pg.resp.k')}</div>
+              <h3>Silvia “Silber” Ponce</h3>
+              <p className="role">{t('pg.resp.role')}</p>
+              <p>{t('pg.resp.bio')}</p>
+            </div>
+          </article>
+          <PilgrimNext list={trips} />
+        </div>
+      </section>
+
+      <section className="band" id="nosotros">
+        <div className="wrap nos-grid">
+          <div className="nos-photos">
+            <Photo className="n1" src={nosComunidad} alt={t('photo.comunidad')} />
+            <Photo className="n2" src={nosEscalinata} alt={t('photo.escalinata')} />
+          </div>
+          <div>
+            <div className="kicker red">{t('home.nos.k')}</div>
+            <h2 className="h2">{t('home.nos.h')}</h2>
+            <p className="body-l">{t('home.nos.p')}</p>
+            <ul className="chips">{[0, 1, 2, 3].map((i) => <li key={i}>{t(`pilar.${i}`)}</li>)}</ul>
+            <div className="mv">
+              <div><h3>{t('home.mision')}</h3><p>{t('site.mision')}</p></div>
+              <div><h3>{t('home.vision')}</h3><p>{t('site.vision')}</p></div>
+            </div>
           </div>
         </div>
       </section>
 
-      <section className="band team">
+      <section className="band sec-peach">
         <div className="wrap">
-          <div className="kicker red">{t('home.team.k')}</div>
-          <h2 className="d sec-title">{t('home.team.h')}</h2>
+          <div className="kicker">{t('home.team.k')}</div>
+          <h2 className="h2">{t('home.team.h')}</h2>
           {team.loading && <Loading />}
           {team.error && <Failed onRetry={team.retry} />}
           {team.data && (
@@ -211,23 +199,41 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="band next" id="calendario">
+      <section className="band sec-sand" id="calendario">
         <div className="wrap">
           <div className="kicker">{t('home.cal.k')}</div>
-          <h2 className="d sec-title">{t('home.cal.h')}</h2>
+          <h2 className="h2">{t('home.cal.h')}</h2>
           <Calendario items={calendar} />
           <Link className="btn btn--ghost" to={to('/calendario')}>{t('home.cal.cta')}</Link>
         </div>
       </section>
 
+      <section className="band">
+        <div className="wrap">
+          <div className="kicker">{t('otros.k')}</div>
+          <h2 className="h2">{t('otros.h')}</h2>
+          <ul className="otros-rows">
+            {OTROS.map((p) => (
+              <li key={p.id}>
+                <a href={p.links[0].href} target="_blank" rel="noreferrer">
+                  <h3>{p.nombre}</h3><span>{t(`proy.${p.id}.tag`)}</span><i aria-hidden="true">&rarr;</i>
+                </a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <Verso />
 
-      <section className="band contact" id="contacto">
-        <div className="wrap">
-          <div className="kicker">{t('home.contact.k')}</div>
-          <h2 className="d">{t('home.contact.h')}</h2>
-          <div className="row">
-            <span className="num d">{WHATSAPP_DISPLAY}</span>
+      <section className="band sec-peach" id="contacto">
+        <div className="wrap contact-row">
+          <div>
+            <div className="kicker">{t('home.contact.k')}</div>
+            <h2 className="h2">{t('home.contact.h')}</h2>
+          </div>
+          <div className="contact-act">
+            <span className="num">{WHATSAPP_DISPLAY}</span>
             <a className="btn" href={WHATSAPP_URL} target="_blank" rel="noreferrer">{t('home.contact.wa')}</a>
           </div>
         </div>

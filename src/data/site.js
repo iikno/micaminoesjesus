@@ -9,10 +9,18 @@ export const WHATSAPP_DISPLAY = '+52 222 609 3097';
 export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 export const INSTAGRAM_URL = 'https://instagram.com/micaminoesjesus';
 
+// Header (dropdown) and footer (flat) share this list. `sub` = items under the Proyectos menu; `hint` = i18n key of the small caption.
 export const NAV = [
   { to: '/', key: 'nav.home', end: true },
-  { to: '/nosotros', key: 'nav.nosotros' },
-  { to: '/proyectos', key: 'nav.proyectos' },
+  {
+    to: '/proyectos', key: 'nav.proyectos',
+    sub: [
+      { to: '/proyectos/xp-lev', key: 'nav.xplev', hint: 'proy.xp-lev.tag' },
+      { to: '/proyectos/peregrinos', key: 'nav.peregrinos', hint: 'proy.peregrinos.tag' },
+      { to: '/proyectos#otros', key: 'nav.otros', otros: true },
+    ],
+  },
   { to: '/calendario', key: 'nav.calendario' },
-  { to: '/contacto', key: 'nav.contacto' },
+  { to: '/nosotros', key: 'nav.nosotros' },
 ];
+export const CONTACTO = { to: '/contacto', key: 'nav.contacto' };
