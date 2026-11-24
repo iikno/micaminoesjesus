@@ -16,7 +16,7 @@ export const PAGE_META = {
     xplev: ['XP Lev, catálogo de retiros', 'El catálogo de retiros, talleres y adoraciones de Mi Camino es Jesús, organizado por Dérej y por tiempo litúrgico.'],
     peregrinos: ['Peregrinos', 'Peregrinaciones por México y el mundo para acercar a las personas a Cristo y a la historia de la fe.'],
     calendario: ['Calendario', 'Las próximas fechas de retiros, talleres y peregrinaciones de Mi Camino es Jesús.'],
-    contacto: ['Contacto', 'Escríbenos por WhatsApp o Instagram y da el primer paso con Mi Camino es Jesús.'],
+    contacto: ['Contacto', 'Escríbenos desde el formulario de contacto y da el primer paso con Mi Camino es Jesús.'],
     privacidad: ['Aviso de privacidad', 'Aviso de privacidad de Mi Camino es Jesús.'],
   },
   en: {
@@ -26,7 +26,7 @@ export const PAGE_META = {
     xplev: ['XP Lev, retreat catalog', 'The catalog of retreats, workshops and adoration hours of Mi Camino es Jesús, organized by Dérej and liturgical season.'],
     peregrinos: ['Peregrinos', 'Pilgrimages across Mexico and the world that bring people closer to Christ and the history of the faith.'],
     calendario: ['Calendar', 'Upcoming retreats, workshops and pilgrimages of Mi Camino es Jesús.'],
-    contacto: ['Contact', 'Write to us on WhatsApp or Instagram and take the first step with Mi Camino es Jesús.'],
+    contacto: ['Contact', 'Write to us through the contact form and take the first step with Mi Camino es Jesús.'],
     privacidad: ['Privacy notice', 'Privacy notice of Mi Camino es Jesús (Spanish only for now).'],
   },
 };

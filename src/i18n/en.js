@@ -69,7 +69,7 @@ export default {
   'home.team.k': 'The team', 'home.team.h': 'The people who make it possible',
   'home.cal.k': 'Public calendar', 'home.cal.h': 'What’s coming', 'home.cal.cta': 'See the full calendar',
   'cal.key': 'Project', 'cal.per.when': 'Coming soon', 'cal.per.t': 'Upcoming pilgrimages',
-  'home.contact.k': 'Contact', 'home.contact.h': 'Take the first step', 'home.contact.wa': 'Message us on WhatsApp',
+  'home.contact.k': 'Contact', 'home.contact.h': 'Take the first step', 'home.contact.form': 'Write to us',
 
   'nos.k': 'About us', 'nos.h': 'Who we *are*',
   'nos.p1': 'Mi Camino es Jesús was born with young roots, but its calling is bigger: to be a school of New Evangelization that accompanies people of every age in a personal and transforming encounter with Christ, within the life of the Catholic Church.',
@@ -133,7 +133,7 @@ export default {
   'pg.sig.0.t': 'Jerusalem cross', 'pg.sig.0.d': 'Present in the emblem.', 'pg.sig.1.t': 'PER', 'pg.sig.1.d': 'It means “through”.',
   'pg.sig.2.t': 'Arch', 'pg.sig.2.d': 'The arch of the path already walked.', 'pg.sig.3.t': 'Diagonal band', 'pg.sig.3.d': 'The same diagonal band as XP Lev.',
   'pg.resp.k': 'Coordinator', 'pg.resp.role': 'Peregrinos coordinator', 'pg.resp.bio': 'Certified travel agent and former agent of the Vocational Ministry of Piedras Negras, Coahuila.',
-  'pg.next.k': 'Upcoming pilgrimages', 'pg.next.h': 'Coming soon', 'pg.next.p': 'We have not published dates or destinations yet. Write to us and we will let you know as soon as they are ready.', 'pg.next.wa': 'Message us on WhatsApp',
+  'pg.next.k': 'Upcoming pilgrimages', 'pg.next.h': 'Coming soon', 'pg.next.p': 'We have not published dates or destinations yet. Write to us and we will let you know as soon as they are ready.', 'pg.next.contact': 'Write to us',
   'pg.list.h': 'Published departures', 'pg.open': 'See details', 'pg.state.abierta': 'Registration open', 'pg.state.llena': 'Full', 'pg.state.cerrada': 'Registration closed', 'pg.state.cancelada': 'Cancelled',
   'pgd.k': 'Peregrinos', 'pgd.where': 'Destination', 'pgd.when': 'Dates', 'pgd.cost': 'Cost', 'pgd.state': 'Status', 'pgd.itin': 'Itinerary', 'pgd.day': 'Day {n}', 'pgd.free': 'Free entry, no registration',
   'pgd.cta.h': 'Would you like more information about this pilgrimage?', 'pgd.back': 'All pilgrimages', 'pgd.cover': 'Photo of {title}',
@@ -170,7 +170,7 @@ export default {
   'con.name': 'Name', 'con.name.ph': 'Your name', 'con.email': 'Email', 'con.phone': 'Phone', 'con.subject': 'Subject', 'con.subject.ph': 'Choose a subject', 'con.msg': 'Message', 'con.msg.ph': 'Tell us how we can help',
   'con.subj.informacion': 'General information', 'con.subj.retiros': 'Retreats and workshops', 'con.subj.peregrinaciones': 'Pilgrimages', 'con.subj.voluntariado': 'Serve or volunteer', 'con.subj.arco': 'ARCO rights (data protection)', 'con.subj.otro': 'Other',
   'con.arco.note': 'To exercise your rights of access, rectification, cancellation or objection, describe your request and how we can identify you. We will reply within the term set by law.',
-  'con.consent': 'I have read and accept the *privacy notice*.', 'con.send': 'Send message', 'con.sending': 'Sending…', 'con.wa.alt': 'Or write to us directly on WhatsApp',
-  'con.err.summary': 'Please check the marked fields.', 'con.err.captcha': 'We could not verify that you are a person. Try again or write to us on WhatsApp.', 'con.err.rate': 'Too many attempts. Wait a few minutes.', 'con.err.generic': 'We could not send your message. Try again or write to us on WhatsApp.',
+  'con.consent': 'I have read and accept the *privacy notice*.', 'con.send': 'Send message', 'con.sending': 'Sending…',
+  'con.err.summary': 'Please check the marked fields.', 'con.err.captcha': 'We could not verify that you are a person. Try again later.', 'con.err.rate': 'Too many attempts. Wait a few minutes.', 'con.err.generic': 'We could not send your message. Try again later.',
   'legal.en': 'This notice is currently available in Spanish only. The Spanish text below is the valid version.',
 };

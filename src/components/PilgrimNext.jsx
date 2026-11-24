@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom';
-import { WHATSAPP_URL } from '../data/site';
 import { useLang } from '../i18n';
 import { dateRange } from '../lib/dates';
 import { Failed, Loading } from './Status';
@@ -15,7 +14,7 @@ export default function PilgrimNext({ list, level = 3 }) {
     return (
       <div className="soon-card">
         <div><H>{t('pg.next.h')}</H><p>{t('pg.next.p')}</p></div>
-        <a className="btn" href={WHATSAPP_URL} target="_blank" rel="noreferrer">{t('pg.next.wa')}</a>
+        <Link className="btn" to={to('/contacto')}>{t('pg.next.contact')}</Link>
       </div>
     );
   }

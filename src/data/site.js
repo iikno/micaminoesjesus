@@ -4,9 +4,6 @@ export const VERSO = {
   cita: 'Josué 1:9',
 };
 
-export const WHATSAPP_NUMBER = '522226093097';
-export const WHATSAPP_DISPLAY = '+52 222 609 3097';
-export const WHATSAPP_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
 export const INSTAGRAM_URL = 'https://instagram.com/micaminoesjesus';
 
 // Header (dropdown) and footer (flat) share this list. `sub` = items under the Proyectos menu; `hint` = i18n key of the small caption.

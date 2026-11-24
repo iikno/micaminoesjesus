@@ -1,0 +1,1706 @@
+{
+  ".claude/settings.json": {
+    "mtime": 1795496504.4050896,
+    "seen": 1795496740.6230397,
+    "ast_hash": "dbe039a15c5c2eb60e34dccc1af0cbb5",
+    "semantic_hash": ""
+  },
+  ".oxlintrc.json": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.6230621,
+    "ast_hash": "5e6e3cea3e89137071c142dd7835b0ef",
+    "semantic_hash": ""
+  },
+  "package.json": {
+    "mtime": 1795500394.0625694,
+    "seen": 1795500754.7140417,
+    "ast_hash": "347a365163de485e1b2ccbc7db60abc9",
+    "semantic_hash": ""
+  },
+  "presentacion/build-equipo.mjs": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6230814,
+    "ast_hash": "1c5a560d58b05babf7c540ad43f1799c",
+    "semantic_hash": ""
+  },
+  "presentacion/build-pptx.cjs": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6230848,
+    "ast_hash": "3ffcfc17261654c3bbc9a71d76108684",
+    "semantic_hash": ""
+  },
+  "src/App.jsx": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232893,
+    "ast_hash": "176675125b89611d0faad866a45cd935",
+    "semantic_hash": ""
+  },
+  "src/components/Footer.jsx": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6232965,
+    "ast_hash": "2bbf3fcd860839190b29d31fa394eb05",
+    "semantic_hash": ""
+  },
+  "src/components/Header.jsx": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6232994,
+    "ast_hash": "17a932fc7e1fad2a8e98d08aca16a096",
+    "semantic_hash": ""
+  },
+  "src/components/Layout.jsx": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6233027,
+    "ast_hash": "6a653af8760f33e478840025a94f77c5",
+    "semantic_hash": ""
+  },
+  "src/data/retreats.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233401,
+    "ast_hash": "3ade22505ddef7468663d665e4b1c92b",
+    "semantic_hash": ""
+  },
+  "src/main.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233776,
+    "ast_hash": "c246d612fde91f04b857e4cae1287b20",
+    "semantic_hash": ""
+  },
+  "src/pages/Contacto.jsx": {
+    "mtime": 1795496749.8867514,
+    "seen": 1795497999.7730525,
+    "ast_hash": "970ffab4b5eb52f6ad203c846759a40b",
+    "semantic_hash": ""
+  },
+  "src/pages/Home.jsx": {
+    "mtime": 1795496749.8867514,
+    "seen": 1795497999.7730577,
+    "ast_hash": "85b30763e707dca138456f6f187e25a3",
+    "semantic_hash": ""
+  },
+  "src/pages/Nosotros.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.623396,
+    "ast_hash": "dba688c776f672b853e6b5987cd59c69",
+    "semantic_hash": ""
+  },
+  "src/pages/ProyectoDetalle.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6234047,
+    "ast_hash": "7b68af59683bb573fd86cf6732776187",
+    "semantic_hash": ""
+  },
+  "src/pages/Proyectos.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6234078,
+    "ast_hash": "dadaca239c8b78c6e4c935d51c3cacc8",
+    "semantic_hash": ""
+  },
+  "src/pages/XpLev.jsx": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.6234136,
+    "ast_hash": "1a387458a48bb74e1b13a5d917be80f7",
+    "semantic_hash": ""
+  },
+  "vite.config.js": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.6234705,
+    "ast_hash": "99d78ac6a41a04885e8ec8a17867be8c",
+    "semantic_hash": ""
+  },
+  ".claude/CLAUDE.md": {
+    "mtime": 1795496504.4050896,
+    "seen": 1795496740.623474,
+    "ast_hash": "9b31786b637be3c13978bec4c2330752",
+    "semantic_hash": ""
+  },
+  "CLAUDE.md": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.6234772,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": ""
+  },
+  "MCJ_Arquitectura_Maestra.md": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.62348,
+    "ast_hash": "df3afbda507da1e18013cc693aeeb9dd",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.6234832,
+    "ast_hash": "75eb386f17caf77fd6fe3ce1d90968ee",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1795496504.4450889,
+    "seen": 1795496740.623492,
+    "ast_hash": "6e3fdbcdc27392eff411c54e240fc963",
+    "semantic_hash": ""
+  },
+  "presentacion/mcj-arzobispado.html": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6234949,
+    "ast_hash": "e13672764714ff471a382c04cddeefd4",
+    "semantic_hash": ""
+  },
+  "presentacion/mcj-equipo.html": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6234977,
+    "ast_hash": "612a496c58daf0797111595b51323a93",
+    "semantic_hash": ""
+  },
+  "presentacion/MCJ-Presentacion-Arzobispado.pdf": {
+    "mtime": 1795496504.481088,
+    "seen": 1795496740.623501,
+    "ast_hash": "59b4ac95c4e96af08908e65a10f19837",
+    "semantic_hash": ""
+  },
+  "presentacion/MCJ-Presentacion-Equipo.pdf": {
+    "mtime": 1795496504.4890878,
+    "seen": 1795496740.6235046,
+    "ast_hash": "b97937e0e13f2749f971a9772a487314",
+    "semantic_hash": ""
+  },
+  "public/favicon.png": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6235297,
+    "ast_hash": "92b49ad1957259d963b87ba6ccb8fc23",
+    "semantic_hash": ""
+  },
+  "src/assets/images/JAIM-ALABASTROROTO.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236136,
+    "ast_hash": "288aa043eba122f7eb733ce6e0234096",
+    "semantic_hash": ""
+  },
+  "src/assets/images/JAIM-BELENRETIRO.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236167,
+    "ast_hash": "2f52a5975a36ba3e4ccc5c6af3c3a9be",
+    "semantic_hash": ""
+  },
+  "src/assets/images/JAIM-JESUCRISTONUESTRAESPERANZA.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.62362,
+    "ast_hash": "020ccc51661373b7bcbc4b584ad242bd",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-BETSALEL.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236231,
+    "ast_hash": "95b0dd8b7e9728cb6e2c2b0b0f90ffc8",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-CATEQUISTAS.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.623626,
+    "ast_hash": "524f281d1eb0ce191e94ab9ef97b36c3",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-HOSPITALIDAD.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.623629,
+    "ast_hash": "0033c1e463bb07fdf48f88320269ad5c",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-INTERCESION.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.623632,
+    "ast_hash": "16a7ea612dc4f5a932b9447fad426bce",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-MONAGUILLOS.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236353,
+    "ast_hash": "fb81ee94fe8fda0d98715ca570d03e52",
+    "semantic_hash": ""
+  },
+  "src/assets/images/MESHARET-PREDICADORES.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236377,
+    "ast_hash": "c83c4a6945deb739e04630310490d237",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-BARTIMEO.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236408,
+    "ast_hash": "20639eaaf82debcdc2d4e00a0d3e32c1",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-CAMINODAMASCO.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.623644,
+    "ast_hash": "ce6f0ff86fb8b28f646d24969862cc0e",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-EMAUS.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236475,
+    "ast_hash": "a71b351ee8f49cb64a3da793fb3697c9",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-GETSEMANI.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236506,
+    "ast_hash": "3e8395c66f1a2237c3cc067eb1ab9266",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-JOVENRICO.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236534,
+    "ast_hash": "af307a42fbbcf9a6722313694c646365",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-JUAN.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236563,
+    "ast_hash": "d6325146356974b6d3a7b7b4c45c0546",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-PEDRO.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236594,
+    "ast_hash": "479fc680d76246fc5622fd4b78ac595a",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-PENTECOSTES.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.623662,
+    "ast_hash": "f7faeaa04dd283297abd44f22dd0870f",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-TOMAS.jpg": {
+    "mtime": 1795496504.5970855,
+    "seen": 1795496740.6236649,
+    "ast_hash": "9fbe20a2768e1d03e2fd7ec477a4271a",
+    "semantic_hash": ""
+  },
+  "src/assets/images/OZ-ZAQUEO.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.623668,
+    "ast_hash": "44311f623b71f1fb9c37e59ab9a5ac1a",
+    "semantic_hash": ""
+  },
+  "src/assets/images/SIMJA-ARCADENOE.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.6236708,
+    "ast_hash": "17959500044214021025793cb28b848c",
+    "semantic_hash": ""
+  },
+  "src/assets/images/SIMJA-BARCADEPEDRO.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.6236737,
+    "ast_hash": "304119e62fb8d92ad0b1d57591b9848f",
+    "semantic_hash": ""
+  },
+  "src/assets/images/SIMJA-BUENPASTOR.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.6236763,
+    "ast_hash": "a5c1aeeda5f85b99de09ddda442552ad",
+    "semantic_hash": ""
+  },
+  "src/assets/images/SIMJA-CINCOPANES.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.623679,
+    "ast_hash": "52b46fbfb7f1d83d870c07ccecb193bb",
+    "semantic_hash": ""
+  },
+  "src/assets/images/SIMJA-ZAQUEO.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.623682,
+    "ast_hash": "27558e2f3086d7079c698f3e7b3a7996",
+    "semantic_hash": ""
+  },
+  "src/assets/images/adoracion-camino-belen.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.623685,
+    "ast_hash": "6114e3a5ba22148af828d9c954482a9a",
+    "semantic_hash": ""
+  },
+  "src/assets/images/adoracion-cenaculo.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.6236877,
+    "ast_hash": "acabad5de38774293cbff94ee5b61d19",
+    "semantic_hash": ""
+  },
+  "src/assets/images/hero.webp": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237051,
+    "ast_hash": "644cc9bdbf556db0eec27df37e8e041c",
+    "semantic_hash": ""
+  },
+  "src/assets/images/karposhub.png": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237085,
+    "ast_hash": "c8e36c7666ef6cf49c38ffa11419cef5",
+    "semantic_hash": ""
+  },
+  "src/assets/images/nosotros.webp": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237116,
+    "ast_hash": "22d0979260a3dc541368ca26298bcea4",
+    "semantic_hash": ""
+  },
+  "src/assets/images/proyecto-ignis-et-logos.webp": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237142,
+    "ast_hash": "9e0dc71b939975d86c2aee87460ddee2",
+    "semantic_hash": ""
+  },
+  "src/assets/images/proyecto-ignis.webp": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.623717,
+    "ast_hash": "79e72966f20500bafaffc30f31e069fc",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-barrabas.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.62372,
+    "ast_hash": "db36a288f1fe0346cfbf43b9385b5628",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-betania.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237226,
+    "ast_hash": "0db60bb11b1dae85c19ec872d2490a84",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-dos-hermanos.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237254,
+    "ast_hash": "5ecbf014327c5f27c6a9acb5b7591637",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-emmanuel.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6237283,
+    "ast_hash": "6f4721a71695006855e3ab5cb1f4915e",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-esclava-senor.webp": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.623731,
+    "ast_hash": "bf697fca3eef9481d55981cf88321581",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-eva.jpg": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237338,
+    "ast_hash": "83a10f2910f2e893f76aeb424ffe62d0",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-fuiste-mujer.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.623737,
+    "ast_hash": "4eadc703a42704bf4699a408f70bc706",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-golgota.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237402,
+    "ast_hash": "28522c8b5252c2f05d825a898280f7df",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-jonatan.jpg": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237433,
+    "ast_hash": "0bf1b66234f900ea717b661000685e28",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-jose-nazaret.jpg": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237457,
+    "ast_hash": "ee0c62daa6d49af7ca6a75f2bf5ae2dc",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-josue.jpg": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237485,
+    "ast_hash": "90b01029891174f6d849342a778fe654",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-judit.jpg": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237514,
+    "ast_hash": "0bd0e5d7d3b9ec46b0ba3706ca51fc2e",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-levantate-hombre.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237545,
+    "ast_hash": "60471dc22ca873bcf9ba9f414d44e650",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-ruth.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237574,
+    "ast_hash": "ca6783e53f40d46e358e12bd536bc197",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-sabios-oriente.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.6237602,
+    "ast_hash": "87c9b44971802461c9fbd17f3676741a",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-samuel.webp": {
+    "mtime": 1795496504.6090853,
+    "seen": 1795496740.623763,
+    "ast_hash": "44a5b7a06858c39701db89893fda10fb",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-sanson.jpg": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.623766,
+    "ast_hash": "019a02a554d4f1b39c0d3a3a61e2147c",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-shema.webp": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237693,
+    "ast_hash": "9d57c3def3c6e73beda79060f815b1d3",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-sicar.jpg": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237724,
+    "ast_hash": "55ca241ad970d87b437950645ceb0b7d",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-tengo-sed.webp": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237755,
+    "ast_hash": "eaf20d0f06179c979f6f489fd9e97742",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-tobias.jpg": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237786,
+    "ast_hash": "4f2b51df74fa5b6503806cd100f1b499",
+    "semantic_hash": ""
+  },
+  "src/assets/images/retiro-ultimo-rey.webp": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237812,
+    "ast_hash": "ce328037aa8d990e7408b38de6224f66",
+    "semantic_hash": ""
+  },
+  "src/assets/images/xp-lev.png": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237843,
+    "ast_hash": "99227e15132bc0c900dffde3ab6b792d",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/isotipo-bn.png": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237867,
+    "ast_hash": "d6158a2ef85ce16b18e4c65369e0a9c9",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/isotipo.png": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237895,
+    "ast_hash": "69ddcdff443e5b6af066ae08456358da",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/logotipo.png": {
+    "mtime": 1795496504.613085,
+    "seen": 1795496740.6237924,
+    "ast_hash": "92b49ad1957259d963b87ba6ccb8fc23",
+    "semantic_hash": ""
+  },
+  "src/components/Calendario.jsx": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.623293,
+    "ast_hash": "42994851d3d5c6518ec629896f388e82",
+    "semantic_hash": ""
+  },
+  "src/components/Polaroid.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233156,
+    "ast_hash": "64f79c206b8c35dad5b9075fd9e3f480",
+    "semantic_hash": ""
+  },
+  "src/components/Verso.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233275,
+    "ast_hash": "1b822089ecf7088b5481da453ab5e041",
+    "semantic_hash": ""
+  },
+  "src/data/calendario.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233308,
+    "ast_hash": "5e9ad2023bee2114bce298680162a33c",
+    "semantic_hash": ""
+  },
+  "src/data/equipo.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233342,
+    "ast_hash": "a10532444a4800b8dc8183a351d65ede",
+    "semantic_hash": ""
+  },
+  "src/data/proyectos.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233373,
+    "ast_hash": "d63ecf40911f398a4ecad3a927eb9f87",
+    "semantic_hash": ""
+  },
+  "src/data/site.js": {
+    "mtime": 1795496749.8827527,
+    "seen": 1795497999.7723243,
+    "ast_hash": "5923e3530a5093b96e4c4619ee3858f2",
+    "semantic_hash": ""
+  },
+  "src/pages/AvisoPrivacidad.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233804,
+    "ast_hash": "a3a03d2850c45407ab223d7b81c2b2e9",
+    "semantic_hash": ""
+  },
+  "src/pages/Calendario.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233838,
+    "ast_hash": "be90c4e5a4fbcf16446bc93d3cd52cab",
+    "semantic_hash": ""
+  },
+  "src/pages/Peregrinos.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6234016,
+    "ast_hash": "ee7e2f48ea617103efaa30f9c90207b0",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/angelica.jpg": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.623508,
+    "ast_hash": "d21713a04cb1e0e92a29c36429cb20d7",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/cristopher.jpg": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6235108,
+    "ast_hash": "959c569515aea6dd31bdcb14749176c7",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/jehosua.jpg": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6235144,
+    "ast_hash": "8dd2744abdbc1ec5cba5b9c8c2506289",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/maribel.jpg": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6235175,
+    "ast_hash": "e18bb653e473a6f2e5b8c4898847c4df",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/silvia-original.webp": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6235209,
+    "ast_hash": "789ed25c917bd1d7b581f609745862ea",
+    "semantic_hash": ""
+  },
+  "presentacion/fotos/silvia.jpg": {
+    "mtime": 1795496504.4970877,
+    "seen": 1795496740.6235235,
+    "ast_hash": "6550f5d0f33e6cc4da28ccc3562f141e",
+    "semantic_hash": ""
+  },
+  "presentacion/logos/peregrinos.png": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6235266,
+    "ast_hash": "c6f3ae87d6c92194f9c576cbb637aaf2",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260828-WA0037.jpg": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235573,
+    "ast_hash": "57cca3bc96b75b5fa21e67d60ebf0f75",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260828-WA0042.jpg": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235607,
+    "ast_hash": "a444e2a11b00f0d457685fd96f48e037",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260829-WA0024.jpg": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235642,
+    "ast_hash": "2e86d1ef15528b71e57311ab54242231",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260829-WA0037.jpg": {
+    "mtime": 1795496504.5130873,
+    "seen": 1795496740.6235673,
+    "ast_hash": "d6a021260fe254dfa2d4dd313cc2f2eb",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0042.jpg": {
+    "mtime": 1795496504.5170872,
+    "seen": 1795496740.6235704,
+    "ast_hash": "95e1f749bf935f59395714324aac9e96",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0047.jpg": {
+    "mtime": 1795496504.5210872,
+    "seen": 1795496740.6235735,
+    "ast_hash": "030c6bed355844926764c2cc06c5678d",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0056.jpg": {
+    "mtime": 1795496504.529087,
+    "seen": 1795496740.6235764,
+    "ast_hash": "d59cb9338e3af0fc702adf9c08a9c9fd",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0060.jpg": {
+    "mtime": 1795496504.5370867,
+    "seen": 1795496740.6235788,
+    "ast_hash": "87bfe7a26620904018e6cafe4a37b34a",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0064.jpg": {
+    "mtime": 1795496504.5450866,
+    "seen": 1795496740.6235826,
+    "ast_hash": "71f5bb7f800c2d9733b4db3c687ccc42",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0068.jpg": {
+    "mtime": 1795496504.5490866,
+    "seen": 1795496740.6235857,
+    "ast_hash": "85388ebf26fdc4f130289ad54de33d49",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0072.jpg": {
+    "mtime": 1795496504.5570862,
+    "seen": 1795496740.6235888,
+    "ast_hash": "2ec113cb228351aed87cd4658efee52f",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0171.jpg": {
+    "mtime": 1795496504.5610862,
+    "seen": 1795496740.623592,
+    "ast_hash": "80c1108ecf0ee8ca9357aabe11a059c6",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0237.jpg": {
+    "mtime": 1795496504.5650861,
+    "seen": 1795496740.623595,
+    "ast_hash": "b36d5c956b584b0baf2ead816a9f939f",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0239.jpg": {
+    "mtime": 1795496504.573086,
+    "seen": 1795496740.6235979,
+    "ast_hash": "2d02c553442d5a9b23ad9852f8f954d3",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0251.jpg": {
+    "mtime": 1795496504.577086,
+    "seen": 1795496740.6236012,
+    "ast_hash": "8caf5a841f40481740a1d01386af045e",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0291.jpg": {
+    "mtime": 1795496504.581086,
+    "seen": 1795496740.6236043,
+    "ast_hash": "4b61588bdfc8b82870928c88562b0ff4",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0304.jpg": {
+    "mtime": 1795496504.5850856,
+    "seen": 1795496740.6236074,
+    "ast_hash": "03db731e55814ef9b1a6f04b561560e2",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos/IMG-20260830-WA0308.jpg": {
+    "mtime": 1795496504.5930855,
+    "seen": 1795496740.6236103,
+    "ast_hash": "d6ff5b362bc6ea2002af59eafb90a7c2",
+    "semantic_hash": ""
+  },
+  "src/assets/images/equipo/angelica.jpg": {
+    "mtime": 1795496504.6010854,
+    "seen": 1795496740.6236906,
+    "ast_hash": "d21713a04cb1e0e92a29c36429cb20d7",
+    "semantic_hash": ""
+  },
+  "src/assets/images/equipo/cristopher.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.6236932,
+    "ast_hash": "959c569515aea6dd31bdcb14749176c7",
+    "semantic_hash": ""
+  },
+  "src/assets/images/equipo/jehosua.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.623696,
+    "ast_hash": "8dd2744abdbc1ec5cba5b9c8c2506289",
+    "semantic_hash": ""
+  },
+  "src/assets/images/equipo/maribel.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.623699,
+    "ast_hash": "e18bb653e473a6f2e5b8c4898847c4df",
+    "semantic_hash": ""
+  },
+  "src/assets/images/equipo/silvia.jpg": {
+    "mtime": 1795496504.6050854,
+    "seen": 1795496740.623702,
+    "ast_hash": "6550f5d0f33e6cc4da28ccc3562f141e",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/peregrinos.png": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6237953,
+    "ast_hash": "c6f3ae87d6c92194f9c576cbb637aaf2",
+    "semantic_hash": ""
+  },
+  "server/app.js": {
+    "mtime": 1795500511.6049004,
+    "seen": 1795500754.7142086,
+    "ast_hash": "b55884d3bd044054dd81a47bee47f782",
+    "semantic_hash": ""
+  },
+  "server/cli/create-admin.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6230927,
+    "ast_hash": "e7a7adb23d5f177a5b4818b11fac63b7",
+    "semantic_hash": ""
+  },
+  "server/config.js": {
+    "mtime": 1795500740.3374367,
+    "seen": 1795500754.7143924,
+    "ast_hash": "1046e745ec5adac6c849a0ece086663c",
+    "semantic_hash": ""
+  },
+  "server/db.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231048,
+    "ast_hash": "2e58fc2894a8c3f17a169e79492fca36",
+    "semantic_hash": ""
+  },
+  "server/index.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623108,
+    "ast_hash": "2477205d9c3c25a9116e238f07516e86",
+    "semantic_hash": ""
+  },
+  "server/jobs/hourly.js": {
+    "mtime": 1795500477.0122144,
+    "seen": 1795500754.714545,
+    "ast_hash": "1f58dd8e3d1a1c3477adea27d0d878c0",
+    "semantic_hash": ""
+  },
+  "server/lib/audit.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231146,
+    "ast_hash": "406160030e9f9bf81328d28445ded078",
+    "semantic_hash": ""
+  },
+  "server/lib/auth.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231172,
+    "ast_hash": "86a1c728cf0c9d9902bb406cb6ec3594",
+    "semantic_hash": ""
+  },
+  "server/lib/calendar.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623129,
+    "ast_hash": "a7a507fc8ef5d374deaccd07eb05162d",
+    "semantic_hash": ""
+  },
+  "server/lib/entities.js": {
+    "mtime": 1795498524.1272054,
+    "seen": 1795498951.7436464,
+    "ast_hash": "165815f3f56c99b2d73d71be1b2ec9a5",
+    "semantic_hash": ""
+  },
+  "server/lib/lockout.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231604,
+    "ast_hash": "943e61d5550484a878279b507c28662f",
+    "semantic_hash": ""
+  },
+  "server/lib/mailer.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231637,
+    "ast_hash": "0f00478594a1d4fbed65ab0456f2d76d",
+    "semantic_hash": ""
+  },
+  "server/lib/notify.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.62317,
+    "ast_hash": "1288155f5dbc60c9ac2c4b71b7710a3d",
+    "semantic_hash": ""
+  },
+  "server/lib/perm.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231728,
+    "ast_hash": "af67b423a8895fe3f26b2575ec2d279a",
+    "semantic_hash": ""
+  },
+  "server/lib/review.js": {
+    "mtime": 1795499610.8710377,
+    "seen": 1795499892.4307103,
+    "ast_hash": "dc5b5bdd91cadeba15503f7e7ed7510f",
+    "semantic_hash": ""
+  },
+  "server/lib/schemas.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231859,
+    "ast_hash": "76879901e7d2917230c5d61be335172c",
+    "semantic_hash": ""
+  },
+  "server/lib/users.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231992,
+    "ast_hash": "b7d9b8b85a4d8e17b68f086454db4a4b",
+    "semantic_hash": ""
+  },
+  "server/migrate.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6232028,
+    "ast_hash": "fb1c540d7b5fe70ebb67a2a24d90e8e3",
+    "semantic_hash": ""
+  },
+  "server/migrations/001_init.sql": {
+    "mtime": 1795457870.7716298,
+    "seen": 1795458281.195033,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "server/routes/admin.js": {
+    "mtime": 1795500511.6049004,
+    "seen": 1795500754.7166317,
+    "ast_hash": "4099940954c0f536d6fbfca191f27276",
+    "semantic_hash": ""
+  },
+  "server/routes/auth.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232102,
+    "ast_hash": "745a478b96bbc20d40d17b55e5128dae",
+    "semantic_hash": ""
+  },
+  "server/routes/public.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623216,
+    "ast_hash": "53bdd91ebe7bbfe4dce3fbfc8bfecd8a",
+    "semantic_hash": ""
+  },
+  "server/seed-loader.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232312,
+    "ast_hash": "da51983bec1156b904339d83ea912326",
+    "semantic_hash": ""
+  },
+  "server/seed.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232345,
+    "ast_hash": "602c57dbc3782ab7541faaf9cc9b8ccc",
+    "semantic_hash": ""
+  },
+  "server/test/calendar.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623247,
+    "ast_hash": "a5a26713d624dc630290ca2b7a0ecce1",
+    "semantic_hash": ""
+  },
+  "server/test/lockout.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232646,
+    "ast_hash": "f4a12e3a4a180e72c244ad845ba5b90e",
+    "semantic_hash": ""
+  },
+  "server/test/perm.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232677,
+    "ast_hash": "40f0d541e9be6396ba3d42e4a6afd704",
+    "semantic_hash": ""
+  },
+  "server/test/review.test.js": {
+    "mtime": 1795499615.2151237,
+    "seen": 1795499892.4326196,
+    "ast_hash": "fd15743ebe55aaeb0ed6f01550978385",
+    "semantic_hash": ""
+  },
+  "server/test/schemas.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232774,
+    "ast_hash": "9d88e1b611d3f632fe5a3d3e1420c8cd",
+    "semantic_hash": ""
+  },
+  "src/lib/api.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233582,
+    "ast_hash": "d51cf1633d6ea7824d04c2f119e02251",
+    "semantic_hash": ""
+  },
+  "docker-compose.yml": {
+    "mtime": 1795500454.899776,
+    "seen": 1795500754.7140338,
+    "ast_hash": "05b7681bc493550bce21f2ebf2afee93",
+    "semantic_hash": ""
+  },
+  "docs/plan-backend.md": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.6234894,
+    "ast_hash": "432e1117a5f968b0d85ee892fa8d6152",
+    "semantic_hash": ""
+  },
+  "src/panel/Admin.jsx": {
+    "mtime": 1795497870.7422843,
+    "seen": 1795497999.7736175,
+    "ast_hash": "acd2b41769f35de73fcec48873a99cc6",
+    "semantic_hash": ""
+  },
+  "src/panel/Auth.jsx": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.6234198,
+    "ast_hash": "c0cec3eed778d95de80dde07e04e4e05",
+    "semantic_hash": ""
+  },
+  "src/panel/Content.jsx": {
+    "mtime": 1795499749.2497818,
+    "seen": 1795499892.4358895,
+    "ast_hash": "233e3cefc02bb5fa219caf4cd2aca3f3",
+    "semantic_hash": ""
+  },
+  "src/panel/Dashboard.jsx": {
+    "mtime": 1795500611.4908814,
+    "seen": 1795500754.722091,
+    "ast_hash": "779e12c170c5d0663b5275711d23086d",
+    "semantic_hash": ""
+  },
+  "src/panel/PanelApp.jsx": {
+    "mtime": 1795500611.4908814,
+    "seen": 1795500754.72233,
+    "ast_hash": "54c9a31d6203c4c619b6dd1ecca2b0f7",
+    "semantic_hash": ""
+  },
+  "src/panel/Review.jsx": {
+    "mtime": 1795499865.2560825,
+    "seen": 1795499892.4362252,
+    "ast_hash": "e460674ddb067eb356277c65d11f4569",
+    "semantic_hash": ""
+  },
+  "src/panel/api.js": {
+    "mtime": 1795499740.5256088,
+    "seen": 1795499892.4363027,
+    "ast_hash": "94eff190d1375ff090303aaab1f5180f",
+    "semantic_hash": ""
+  },
+  "src/panel/resources.jsx": {
+    "mtime": 1795499653.6838865,
+    "seen": 1795499892.4364395,
+    "ast_hash": "2ea27b95db8f773d821a28ab635c5caf",
+    "semantic_hash": ""
+  },
+  "src/panel/session.jsx": {
+    "mtime": 1795500611.4908814,
+    "seen": 1795500754.7230525,
+    "ast_hash": "297328dd632e5e896bcdee24284048a2",
+    "semantic_hash": ""
+  },
+  "src/panel/ui.jsx": {
+    "mtime": 1795499811.6430192,
+    "seen": 1795499892.4365115,
+    "ast_hash": "1336ceefe4d55d743466808523cbb2f6",
+    "semantic_hash": ""
+  },
+  "server/migrations/002_pending_snapshot.sql": {
+    "mtime": 1795457870.7756276,
+    "seen": 1795458281.195034,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  ".github/workflows/ci.yml": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.6230547,
+    "ast_hash": "113cbac562b6404bc9c11cdf1a3d0132",
+    "semantic_hash": ""
+  },
+  "docs/deploy-coolify.md": {
+    "mtime": 1795500740.3254364,
+    "seen": 1795500754.7235343,
+    "ast_hash": "85f63a2f15f402f31f9ba3c7e3ed26f3",
+    "semantic_hash": ""
+  },
+  "server/migrations/003_media.sql": {
+    "mtime": 1795462398.2574768,
+    "seen": 1795462490.534152,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "server/migrations/004_translation.sql": {
+    "mtime": 1795462398.2584763,
+    "seen": 1795462490.5341532,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "docker-compose.local.yml": {
+    "mtime": 1795496504.4090896,
+    "seen": 1795496740.623068,
+    "ast_hash": "82ceb240355286bd1033c68055151752",
+    "semantic_hash": ""
+  },
+  "server/lib/content.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231399,
+    "ast_hash": "12dcc48d40c22efab0ddc06fb3b2f3bf",
+    "semantic_hash": ""
+  },
+  "server/lib/i18n.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623153,
+    "ast_hash": "77fae49a12034eb79aebcfcb75cc0411",
+    "semantic_hash": ""
+  },
+  "server/lib/images.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231568,
+    "ast_hash": "201a543341083b018aad0ede13e8705a",
+    "semantic_hash": ""
+  },
+  "server/lib/media.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623167,
+    "ast_hash": "e735799e59cffb3a266e4b0757558a73",
+    "semantic_hash": ""
+  },
+  "server/lib/seo.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231894,
+    "ast_hash": "d994d926b0ceede4ecbbcced759bd850",
+    "semantic_hash": ""
+  },
+  "server/lib/translate.js": {
+    "mtime": 1795498518.7310982,
+    "seen": 1795498951.7445085,
+    "ast_hash": "1c8e8348400db7da8d9307c248d97b4e",
+    "semantic_hash": ""
+  },
+  "server/lib/translations.js": {
+    "mtime": 1795500085.1644435,
+    "seen": 1795500092.4362128,
+    "ast_hash": "c2c83e13475f048881cbe26e117b1fa0",
+    "semantic_hash": ""
+  },
+  "server/routes/media.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623213,
+    "ast_hash": "41497b242f892523d090d00a8b8c45c2",
+    "semantic_hash": ""
+  },
+  "server/routes/seo.js": {
+    "mtime": 1795500511.6049004,
+    "seen": 1795500754.7169642,
+    "ast_hash": "54c45b16c41f9e08af1bb5561e099534",
+    "semantic_hash": ""
+  },
+  "server/routes/translate.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623228,
+    "ast_hash": "e631c84405566102a527931e6fae4f16",
+    "semantic_hash": ""
+  },
+  "server/test/body.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232407,
+    "ast_hash": "fb9dad058555153795f77f0c6c186629",
+    "semantic_hash": ""
+  },
+  "server/test/i18n.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623258,
+    "ast_hash": "a358691fe1ce7be0cf207190869957bf",
+    "semantic_hash": ""
+  },
+  "server/test/images.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232612,
+    "ast_hash": "bf7cba04d5e7c71cf561f47c0dcf83dd",
+    "semantic_hash": ""
+  },
+  "server/test/seo.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.623283,
+    "ast_hash": "06547a0954c8356095cf79d187b277b7",
+    "semantic_hash": ""
+  },
+  "server/test/translate.test.js": {
+    "mtime": 1795500104.0248175,
+    "seen": 1795500110.1748004,
+    "ast_hash": "ab2ed5157603fe5b1edd4c5cf7173fc5",
+    "semantic_hash": ""
+  },
+  "src/components/Status.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233244,
+    "ast_hash": "c2e988ca807c7cb3456ab015f1137d48",
+    "semantic_hash": ""
+  },
+  "src/i18n/en.js": {
+    "mtime": 1795496749.8827527,
+    "seen": 1795497999.7723305,
+    "ast_hash": "7b4c519693e95e1c73fe0a94f26428c4",
+    "semantic_hash": ""
+  },
+  "src/i18n/es.js": {
+    "mtime": 1795496749.8867514,
+    "seen": 1795497999.7723362,
+    "ast_hash": "00995ccbf2e7e9c0932c4ef79e7ca676",
+    "semantic_hash": ""
+  },
+  "src/i18n/index.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.623352,
+    "ast_hash": "f34be277ef5c374535d0e904f091b1bb",
+    "semantic_hash": ""
+  },
+  "src/i18n/meta.js": {
+    "mtime": 1795496749.8867514,
+    "seen": 1795497999.7724197,
+    "ast_hash": "eb765737535a4043c45c0aac1eff0861",
+    "semantic_hash": ""
+  },
+  "src/lib/catalog.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233616,
+    "ast_hash": "e99a14e14ce4f141eb90ae840553879e",
+    "semantic_hash": ""
+  },
+  "src/lib/dates.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233654,
+    "ast_hash": "aed718d95844be5963f8534e70ecec9a",
+    "semantic_hash": ""
+  },
+  "src/lib/img.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233685,
+    "ast_hash": "23715dc6193a40c5f57d9ca20cb3a4e3",
+    "semantic_hash": ""
+  },
+  "src/pages/PeregrinacionDetalle.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.623399,
+    "ast_hash": "495fcdf2e1acd4bc3207a5242c887b3f",
+    "semantic_hash": ""
+  },
+  "src/panel/BodyEditor.jsx": {
+    "mtime": 1795498790.480487,
+    "seen": 1795498951.7497423,
+    "ast_hash": "d45bb6a76c7b76bc746354ccba9ef894",
+    "semantic_hash": ""
+  },
+  "src/panel/Glossary.jsx": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.623434,
+    "ast_hash": "26e9d441143ce4f0ed3a4a4b01d0008b",
+    "semantic_hash": ""
+  },
+  "src/panel/Media.jsx": {
+    "mtime": 1795499641.3196414,
+    "seen": 1795499892.4360743,
+    "ast_hash": "bc0e7edf60df0506f03c08e0203c2ac9",
+    "semantic_hash": ""
+  },
+  "src/panel/Pending.jsx": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.6234462,
+    "ast_hash": "69a73c7c60c127c54c1015c3ecb32b1f",
+    "semantic_hash": ""
+  },
+  "src/panel/Translation.jsx": {
+    "mtime": 1795498836.3493967,
+    "seen": 1795498951.7503874,
+    "ast_hash": "794d7503dc730c438e77c941b6b6db2d",
+    "semantic_hash": ""
+  },
+  "src/panel/body.js": {
+    "mtime": 1795496504.6250849,
+    "seen": 1795496740.6234584,
+    "ast_hash": "a759d20bccefdde7fbdf731cdb5073f5",
+    "semantic_hash": ""
+  },
+  "server/lib/captcha.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231332,
+    "ast_hash": "9867876b16f9cfdc9637d890183db2de",
+    "semantic_hash": ""
+  },
+  "server/lib/contact.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231368,
+    "ast_hash": "0b00f5f24b6da34162c158dfa122302d",
+    "semantic_hash": ""
+  },
+  "server/lib/crypto.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623143,
+    "ast_hash": "01a7239a4169b8e320ece5c7979f3c6f",
+    "semantic_hash": ""
+  },
+  "server/lib/csv.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.623146,
+    "ast_hash": "5b194697b250b4d410838553d0b81bef",
+    "semantic_hash": ""
+  },
+  "server/lib/regrules.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231756,
+    "ast_hash": "11bafdc6fc03b4333e5e20e8a22c0411",
+    "semantic_hash": ""
+  },
+  "server/lib/regsvc.js": {
+    "mtime": 1795500484.9843726,
+    "seen": 1795500754.7160819,
+    "ast_hash": "6e13614b6b612d1c0d19fda493db5ae8",
+    "semantic_hash": ""
+  },
+  "server/migrations/005_registrations.sql": {
+    "mtime": 1795462398.2594771,
+    "seen": 1795462490.5341544,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "server/migrations/006_contact.sql": {
+    "mtime": 1795462398.2594771,
+    "seen": 1795462490.5341558,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "server/routes/regadmin.js": {
+    "mtime": 1795499610.8710377,
+    "seen": 1795499892.4313483,
+    "ast_hash": "d5740fedd308450db3b833d34bbc1549",
+    "semantic_hash": ""
+  },
+  "server/routes/regpublic.js": {
+    "mtime": 1795500498.924649,
+    "seen": 1795500754.716959,
+    "ast_hash": "2d4c4264079bfd205805ebd3f80e9669",
+    "semantic_hash": ""
+  },
+  "server/test/captcha.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232498,
+    "ast_hash": "e9e9c5ce31e34409e96e7a5dd7ac8620",
+    "semantic_hash": ""
+  },
+  "server/test/contact.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232524,
+    "ast_hash": "5d2f4a6a6c75beaa14811b620e4c67cd",
+    "semantic_hash": ""
+  },
+  "server/test/crypto.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232553,
+    "ast_hash": "1592ee218ac49243087665ab0764c4d8",
+    "semantic_hash": ""
+  },
+  "server/test/regrules.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232708,
+    "ast_hash": "7aac1932db3cb4fb36a5bde75e962b99",
+    "semantic_hash": ""
+  },
+  "src/components/RegistrationForm.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.623321,
+    "ast_hash": "36af7e4d3a780cbe625a65297b93cfe6",
+    "semantic_hash": ""
+  },
+  "src/lib/pub.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233747,
+    "ast_hash": "bafbe664afa73a47967093ac99ab5961",
+    "semantic_hash": ""
+  },
+  "src/pages/Inscripcion.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233926,
+    "ast_hash": "db209e9119991440b0632067a6d621c4",
+    "semantic_hash": ""
+  },
+  "src/pages/SesionDetalle.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6234105,
+    "ast_hash": "06510162d46689be9b8cb2230f6a6bd5",
+    "semantic_hash": ""
+  },
+  "src/panel/Bandeja.jsx": {
+    "mtime": 1795499831.9754224,
+    "seen": 1795499892.4358115,
+    "ast_hash": "f089a31d444902553bac80dcfd6e8f0f",
+    "semantic_hash": ""
+  },
+  "src/panel/Inscripciones.jsx": {
+    "mtime": 1795499816.835122,
+    "seen": 1795499892.4359715,
+    "ast_hash": "b33e9661e2288570eab3d15b6a81aa52",
+    "semantic_hash": ""
+  },
+  "server/lib/bootstrap.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231217,
+    "ast_hash": "1288dcfce1dd233ccea9abe311eece7f",
+    "semantic_hash": ""
+  },
+  "server/lib/bootstrapAdmin.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6231253,
+    "ast_hash": "dd5b237fa61b081b538560e42e9a5008",
+    "semantic_hash": ""
+  },
+  "server/test/bootstrap.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232438,
+    "ast_hash": "20730dc1683da6ab4d10e6ab0c4034de",
+    "semantic_hash": ""
+  },
+  "server/cli/gen-seed-sql.js": {
+    "mtime": 1795496504.5010877,
+    "seen": 1795496740.6230972,
+    "ast_hash": "00270c5a5a249da25c2cbae6b2afd146",
+    "semantic_hash": ""
+  },
+  "server/migrations/007_seed_catalogo.sql": {
+    "mtime": 1795488477.976929,
+    "seen": 1795493760.0825942,
+    "ast_hash": "",
+    "semantic_hash": ""
+  },
+  "server/seed/rows.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.6232376,
+    "ast_hash": "24e3fff4b9662d3779089f35521cd109",
+    "semantic_hash": ""
+  },
+  "server/test/seedsql.test.js": {
+    "mtime": 1795496504.5050874,
+    "seen": 1795496740.62328,
+    "ast_hash": "2a137aa71309a9b3d0d0441637a6781a",
+    "semantic_hash": ""
+  },
+  "src/components/Marquee.jsx": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.623306,
+    "ast_hash": "478a72c60ed70f64c205f524a7cd23ab",
+    "semantic_hash": ""
+  },
+  "src/components/PerPillars.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233094,
+    "ast_hash": "63f8b7505a95e8210df138478fb40536",
+    "semantic_hash": ""
+  },
+  "src/components/PilgrimNext.jsx": {
+    "mtime": 1795496749.8827527,
+    "seen": 1795497999.7716901,
+    "ast_hash": "9380b573a0c9295c3409a361f27727ed",
+    "semantic_hash": ""
+  },
+  "src/components/ProjectPanels.jsx": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.623318,
+    "ast_hash": "530e7a5332c9c0ba8f0c38cc62f5fe90",
+    "semantic_hash": ""
+  },
+  "src/lib/perPhotos.js": {
+    "mtime": 1795496504.621085,
+    "seen": 1795496740.6233716,
+    "ast_hash": "4437988a259b44c01d9651532b8e9690",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/hero-patio.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235328,
+    "ast_hash": "9527a41fc010b0f045332c7f751c0b35",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/hero-velas.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235359,
+    "ast_hash": "76d7d1737491598bcc56b4456054dc12",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/nosotros-comunidad.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235392,
+    "ast_hash": "97abc382adb0a9ee6e70c1332b2aded2",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/nosotros-escalinata.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.623542,
+    "ast_hash": "9655dad749643851f3e1ae631f2f6bc4",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-adoracion.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235452,
+    "ast_hash": "852a01c13580b898d7f4fc1dd6e21d77",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-cruz.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235483,
+    "ast_hash": "4819d9545c4fbf8c340334a244aa833b",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-mesa.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.6235511,
+    "ast_hash": "d36ba92b57fab2bd00e1bdca65798852",
+    "semantic_hash": ""
+  },
+  "src/assets/fotos-web/tira-predicador.webp": {
+    "mtime": 1795496504.5090873,
+    "seen": 1795496740.623554,
+    "ast_hash": "cd7dab3ca8fe47ed81660e02876ba5c6",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/1-encuentro.webp": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6237984,
+    "ast_hash": "6845250a9dd5806f499bcbe7505d20d0",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/2-formacion.webp": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.623801,
+    "ast_hash": "dfbb1459d7a7d95ff0a6b9bcc2b13701",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/3-comunidad.webp": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6238043,
+    "ast_hash": "5acbc2122cc3ed2edc5b6957b13a737c",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos-web/4-mision.webp": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6238072,
+    "ast_hash": "8dc1e1bd4fef15481e5e7fd96073b4d2",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/cerro-del-cubilete-3-peregrinacion-nacional-juvenil-2023-a-cristo-.webp": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6238103,
+    "ast_hash": "ee8d7dec35977e6685d08883bd3a62b0",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images-1.jpg": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6238134,
+    "ast_hash": "ab708df1e7e31618110f66f3e4522423",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images.jpg": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.6238163,
+    "ast_hash": "31b811240b52ac6e018622006be40fe9",
+    "semantic_hash": ""
+  },
+  "src/assets/peregrinos/images2.jpg": {
+    "mtime": 1795496504.617085,
+    "seen": 1795496740.623819,
+    "ast_hash": "26f3a6ae288826afc134b2e30c997e24",
+    "semantic_hash": ""
+  },
+  "server/test/panelnav.test.js": {
+    "mtime": 1795497971.7242668,
+    "seen": 1795497999.7706728,
+    "ast_hash": "9b0d12cda916a28bd4fd8a2c050990e4",
+    "semantic_hash": ""
+  },
+  "src/panel/Mas.jsx": {
+    "mtime": 1795500611.4908814,
+    "seen": 1795500754.722248,
+    "ast_hash": "10e030faeb3d81b8dc1699d9818d6354",
+    "semantic_hash": ""
+  },
+  "src/panel/Pendientes.jsx": {
+    "mtime": 1795499875.1442785,
+    "seen": 1795499892.4361546,
+    "ast_hash": "8e74bc2e3b080073ab8256183d8b0ef9",
+    "semantic_hash": ""
+  },
+  "src/panel/nav.js": {
+    "mtime": 1795497971.7242668,
+    "seen": 1795497999.7743337,
+    "ast_hash": "23ed0b1f53a670cad681f5e8e132c9d5",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 10.svg": {
+    "mtime": 1795497720.4433863,
+    "seen": 1795497999.782151,
+    "ast_hash": "e201ed87794ca7c65307510a9d53318a",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 11.svg": {
+    "mtime": 1795497720.4953873,
+    "seen": 1795497999.7821577,
+    "ast_hash": "dd42c6960e63af266bbdcccc7b40df8d",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 12.svg": {
+    "mtime": 1795497720.5553885,
+    "seen": 1795497999.7821627,
+    "ast_hash": "c5f3fe690e19af9d1fad70ab85b179d1",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 13.svg": {
+    "mtime": 1795497720.5913892,
+    "seen": 1795497999.7821681,
+    "ast_hash": "d9ef73fec4f416182ff3707263642cde",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 7.svg": {
+    "mtime": 1795497720.3393846,
+    "seen": 1795497999.7821727,
+    "ast_hash": "9151bfaa148536c67c4ffacf07de34e6",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 8.svg": {
+    "mtime": 1795497720.375385,
+    "seen": 1795497999.7821774,
+    "ast_hash": "c5743cd42091061f3351d36219eeb78c",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/peregrinos-logo.svg": {
+    "mtime": 1795497720.2953837,
+    "seen": 1795497999.782433,
+    "ast_hash": "7d81d4bb1d792948512aa46d177d687c",
+    "semantic_hash": ""
+  },
+  "server/test/wizard.test.js": {
+    "mtime": 1795499875.1522787,
+    "seen": 1795499892.4329019,
+    "ast_hash": "1999d6c8dbd8e8883f05f68f4c0737ff",
+    "semantic_hash": ""
+  },
+  "src/panel/Wizard.jsx": {
+    "mtime": 1795499638.323582,
+    "seen": 1795499892.436297,
+    "ast_hash": "d78694628887ece4f1097810d809ebaf",
+    "semantic_hash": ""
+  },
+  "src/panel/wizard.js": {
+    "mtime": 1795498641.2735283,
+    "seen": 1795498951.7507033,
+    "ast_hash": "8cc684e8e33a24c0a7f9690ec56a06e8",
+    "semantic_hash": ""
+  },
+  "server/test/regs.test.js": {
+    "mtime": 1795499631.7834523,
+    "seen": 1795499892.4326131,
+    "ast_hash": "2fd394626c7a821c110c0c18d32af60e",
+    "semantic_hash": ""
+  },
+  "src/panel/regs.js": {
+    "mtime": 1795499622.7552733,
+    "seen": 1795499892.4364343,
+    "ast_hash": "b59038cdd554cbdc4a420799c62fc191",
+    "semantic_hash": ""
+  },
+  "public/panel/sw.js": {
+    "mtime": 1795500699.3006227,
+    "seen": 1795500754.7142003,
+    "ast_hash": "ae5adfc50bdc16a568a33b06ad038ab1",
+    "semantic_hash": ""
+  },
+  "server/cli/gen-panel-icons.js": {
+    "mtime": 1795500416.7910202,
+    "seen": 1795500754.7143009,
+    "ast_hash": "6bcda1d518ded83c69ee8e4fd4cd5f75",
+    "semantic_hash": ""
+  },
+  "server/lib/push.js": {
+    "mtime": 1795500467.19602,
+    "seen": 1795500754.715961,
+    "ast_hash": "206cfe24b4b485e2ff4d8421ca932cfc",
+    "semantic_hash": ""
+  },
+  "server/lib/pushsvc.js": {
+    "mtime": 1795500699.3006227,
+    "seen": 1795500754.7159674,
+    "ast_hash": "cd47dc8cc04174465ac956c25f0ea448",
+    "semantic_hash": ""
+  },
+  "server/lib/pwa.js": {
+    "mtime": 1795500523.7771418,
+    "seen": 1795500754.7159727,
+    "ast_hash": "8c88137d55a3735c099f34d6de74e415",
+    "semantic_hash": ""
+  },
+  "server/routes/push.js": {
+    "mtime": 1795500498.9326491,
+    "seen": 1795500754.716868,
+    "ast_hash": "7f33677f1fc06b32b9939b4b6fbfa973",
+    "semantic_hash": ""
+  },
+  "server/test/push.test.js": {
+    "mtime": 1795500679.9722395,
+    "seen": 1795500754.7181225,
+    "ast_hash": "4aaa578f9489a26d8aaad31b0b2617f1",
+    "semantic_hash": ""
+  },
+  "src/panel/Avisos.jsx": {
+    "mtime": 1795500611.4628808,
+    "seen": 1795500754.7218673,
+    "ast_hash": "f691ee1cc3220bb50d7565138ca532cd",
+    "semantic_hash": ""
+  },
+  "src/panel/Instalar.jsx": {
+    "mtime": 1795500591.862492,
+    "seen": 1795500754.7222428,
+    "ast_hash": "95dc761d2856e76de837ea35ee9b85ce",
+    "semantic_hash": ""
+  },
+  "src/panel/env.js": {
+    "mtime": 1795500679.9722395,
+    "seen": 1795500754.7228231,
+    "ast_hash": "3a3f4e2b9c4b04a0a3147e263fc10ddc",
+    "semantic_hash": ""
+  },
+  "src/panel/pwa.js": {
+    "mtime": 1795500679.9722395,
+    "seen": 1795500754.7229023,
+    "ast_hash": "9d4baf2e820a354991cc9fb4a840f729",
+    "semantic_hash": ""
+  },
+  "public/panel/icons/apple-touch-icon.png": {
+    "mtime": 1795500417.0710256,
+    "seen": 1795500754.724542,
+    "ast_hash": "1e22cf8370cfc01e928b55ef55d7a85a",
+    "semantic_hash": ""
+  },
+  "public/panel/icons/icon-192.png": {
+    "mtime": 1795500416.9670236,
+    "seen": 1795500754.7245476,
+    "ast_hash": "8b5c70add43d578c30428812ce0cff26",
+    "semantic_hash": ""
+  },
+  "public/panel/icons/icon-512.png": {
+    "mtime": 1795500417.0030243,
+    "seen": 1795500754.7245524,
+    "ast_hash": "aff43b0598b207bfec7a735f905f2240",
+    "semantic_hash": ""
+  },
+  "public/panel/icons/maskable-512.png": {
+    "mtime": 1795500417.0510254,
+    "seen": 1795500754.7245574,
+    "ast_hash": "f11bd3b820d165800f538660fab387d6",
+    "semantic_hash": ""
+  },
+  "package-lock.json": {
+    "mtime": 1795500394.1225705,
+    "seen": 1795500754.732858,
+    "ast_hash": "354979bc9c096a208d8dc5c7a9111cbd",
+    "semantic_hash": ""
+  }
+}

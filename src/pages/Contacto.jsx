@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { WHATSAPP_DISPLAY, WHATSAPP_URL, INSTAGRAM_URL } from '../data/site';
+import { INSTAGRAM_URL } from '../data/site';
 import { useLang, useMeta } from '../i18n';
 import { useData } from '../lib/api';
 import { captchaToken, issueMap, pubPost } from '../lib/pub';
@@ -58,7 +58,6 @@ export default function Contacto() {
             <p>{t('con.place')}</p>
             <h2 className="d">{t('con.write')}</h2>
             <ul>
-              <li><a href={WHATSAPP_URL} target="_blank" rel="noreferrer"><b>WhatsApp</b>{WHATSAPP_DISPLAY}</a></li>
               <li><a href={INSTAGRAM_URL} target="_blank" rel="noreferrer"><b>Instagram</b>@micaminoesjesus</a></li>
               {/* shortcut: URL desconocida, agregar cuando el cliente la dé (Facebook, TikTok) */}
             </ul>
@@ -111,7 +110,6 @@ export default function Contacto() {
                   <E k="consent" />
                 </div>
                 <button type="submit" className="btn" disabled={busy}>{busy ? t('con.sending') : t('con.send')}</button>
-                <p className="fine"><a href={WHATSAPP_URL} target="_blank" rel="noreferrer">{t('con.wa.alt')}</a></p>
               </form>
             )}
           </div>

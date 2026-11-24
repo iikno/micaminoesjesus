@@ -13,7 +13,6 @@ import nosComunidad from '../assets/fotos-web/nosotros-comunidad.webp';
 import nosEscalinata from '../assets/fotos-web/nosotros-escalinata.webp';
 import { PROYECTOS } from '../data/proyectos';
 import { CALENDARIO } from '../data/calendario';
-import { WHATSAPP_URL, WHATSAPP_DISPLAY } from '../data/site';
 import Calendario from '../components/Calendario';
 import Marquee from '../components/Marquee';
 import PerPillars from '../components/PerPillars';
@@ -233,8 +232,7 @@ export default function Home() {
             <h2 className="h2">{t('home.contact.h')}</h2>
           </div>
           <div className="contact-act">
-            <span className="num">{WHATSAPP_DISPLAY}</span>
-            <a className="btn" href={WHATSAPP_URL} target="_blank" rel="noreferrer">{t('home.contact.wa')}</a>
+            <Link className="btn" to={to('/contacto')}>{t('home.contact.form')}</Link>
           </div>
         </div>
       </section>

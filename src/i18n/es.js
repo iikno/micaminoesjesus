@@ -69,7 +69,7 @@ export default {
   'home.team.k': 'El equipo', 'home.team.h': 'Quiénes lo hacen posible',
   'home.cal.k': 'Calendario público', 'home.cal.h': 'Lo que viene', 'home.cal.cta': 'Ver el calendario completo',
   'cal.key': 'Proyecto', 'cal.per.when': 'Próximamente', 'cal.per.t': 'Próximas peregrinaciones',
-  'home.contact.k': 'Contacto', 'home.contact.h': 'Da el primer paso', 'home.contact.wa': 'Escríbenos por WhatsApp',
+  'home.contact.k': 'Contacto', 'home.contact.h': 'Da el primer paso', 'home.contact.form': 'Escríbenos',
 
   'nos.k': 'Nosotros', 'nos.h': 'Quiénes *somos*',
   'nos.p1': 'Mi Camino es Jesús nace con raíz joven, pero su vocación es más grande: ser una escuela de Nueva Evangelización que acompaña a personas de toda edad en un encuentro personal y transformador con Cristo, dentro de la vida de la Iglesia católica.',
@@ -133,7 +133,7 @@ export default {
   'pg.sig.0.t': 'Cruz de Jerusalén', 'pg.sig.0.d': 'Presente en el emblema.', 'pg.sig.1.t': 'PER', 'pg.sig.1.d': 'Significa “a través de”.',
   'pg.sig.2.t': 'Arco', 'pg.sig.2.d': 'El arco del camino recorrido.', 'pg.sig.3.t': 'Franja diagonal', 'pg.sig.3.d': 'La misma franja diagonal de XP Lev.',
   'pg.resp.k': 'Responsable', 'pg.resp.role': 'Responsable de Peregrinos', 'pg.resp.bio': 'Agente de viajes certificada y ex agente de la Pastoral Vocacional de Piedras Negras, Coahuila.',
-  'pg.next.k': 'Próximas peregrinaciones', 'pg.next.h': 'Próximamente', 'pg.next.p': 'Aún no publicamos fechas ni destinos. Escríbenos y te avisamos en cuanto estén listos.', 'pg.next.wa': 'Escríbenos por WhatsApp',
+  'pg.next.k': 'Próximas peregrinaciones', 'pg.next.h': 'Próximamente', 'pg.next.p': 'Aún no publicamos fechas ni destinos. Escríbenos y te avisamos en cuanto estén listos.', 'pg.next.contact': 'Escríbenos',
   'pg.list.h': 'Salidas publicadas', 'pg.open': 'Ver detalle', 'pg.state.abierta': 'Inscripción abierta', 'pg.state.llena': 'Cupo lleno', 'pg.state.cerrada': 'Inscripción cerrada', 'pg.state.cancelada': 'Cancelada',
   'pgd.k': 'Peregrinos', 'pgd.where': 'Destino', 'pgd.when': 'Fechas', 'pgd.cost': 'Costo', 'pgd.state': 'Estado', 'pgd.itin': 'Itinerario', 'pgd.day': 'Día {n}', 'pgd.free': 'Entrada libre, sin inscripción',
   'pgd.cta.h': '¿Quieres más información sobre esta peregrinación?', 'pgd.back': 'Todas las peregrinaciones', 'pgd.cover': 'Foto de {title}',
@@ -170,7 +170,7 @@ export default {
   'con.name': 'Nombre', 'con.name.ph': 'Tu nombre', 'con.email': 'Correo', 'con.phone': 'Teléfono', 'con.subject': 'Asunto', 'con.subject.ph': 'Elige un asunto', 'con.msg': 'Mensaje', 'con.msg.ph': 'Cuéntanos en qué podemos ayudarte',
   'con.subj.informacion': 'Información general', 'con.subj.retiros': 'Retiros y talleres', 'con.subj.peregrinaciones': 'Peregrinaciones', 'con.subj.voluntariado': 'Servir o ser voluntario', 'con.subj.arco': 'Derechos ARCO', 'con.subj.otro': 'Otro',
   'con.arco.note': 'Para ejercer tus derechos de acceso, rectificación, cancelación u oposición, describe tu solicitud y cómo identificarte. Te responderemos en el plazo que marca la ley.',
-  'con.consent': 'He leído y acepto el *aviso de privacidad*.', 'con.send': 'Enviar mensaje', 'con.sending': 'Enviando…', 'con.wa.alt': 'O escríbenos directo por WhatsApp',
-  'con.err.summary': 'Revisa los campos marcados.', 'con.err.captcha': 'No pudimos verificar que eres una persona. Inténtalo de nuevo o escríbenos por WhatsApp.', 'con.err.rate': 'Demasiados intentos. Espera unos minutos.', 'con.err.generic': 'No pudimos enviar tu mensaje. Inténtalo de nuevo o escríbenos por WhatsApp.',
+  'con.consent': 'He leído y acepto el *aviso de privacidad*.', 'con.send': 'Enviar mensaje', 'con.sending': 'Enviando…',
+  'con.err.summary': 'Revisa los campos marcados.', 'con.err.captcha': 'No pudimos verificar que eres una persona. Inténtalo de nuevo más tarde.', 'con.err.rate': 'Demasiados intentos. Espera unos minutos.', 'con.err.generic': 'No pudimos enviar tu mensaje. Inténtalo de nuevo más tarde.',
   'legal.en': 'This notice is currently available in Spanish only. The Spanish text below is the valid version.',
 };
