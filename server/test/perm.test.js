@@ -26,8 +26,9 @@ test('only admin manages users; writers cannot approve', () => {
   assert.ok(!can('unknown-role', 'retreats', 'read'));
 });
 
-test('nobody approves their own submission, even admin', () => {
-  assert.ok(!canDecide({ id: 1, role: 'admin' }, 'retreats', 1));
+test('only admin approves their own submission', () => {
+  assert.ok(canDecide({ id: 1, role: 'admin' }, 'retreats', 1)); // admin may decide their own
+  assert.ok(!canDecide({ id: 3, role: 'asesor' }, 'pilgrimages', 3));
   assert.ok(canDecide({ id: 2, role: 'admin' }, 'retreats', 1));
   assert.ok(canDecide({ id: 3, role: 'asesor' }, 'pilgrimages', 1));
   assert.ok(!canDecide({ id: 4, role: 'pastoral' }, 'retreats', 1));

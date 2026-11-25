@@ -840,9 +840,9 @@
     "semantic_hash": ""
   },
   "server/lib/review.js": {
-    "mtime": 1795532080.4473622,
-    "seen": 1795533171.5776536,
-    "ast_hash": "f22f7be3482dd6d7c5f44675b054dad8",
+    "mtime": 1795584060.6695306,
+    "seen": 1795584066.429488,
+    "ast_hash": "63e8dd2724ef1d4674138688ce453515",
     "semantic_hash": ""
   },
   "server/lib/schemas.js": {
@@ -870,9 +870,9 @@
     "semantic_hash": ""
   },
   "server/routes/admin.js": {
-    "mtime": 1795532080.479634,
-    "seen": 1795533171.5776799,
-    "ast_hash": "b55e3fe09f55c4d0d723e05845bf1c1a",
+    "mtime": 1795584060.6695306,
+    "seen": 1795584066.4295158,
+    "ast_hash": "19fc7ee8bb4ed3cec5dd78c96371b5fd",
     "semantic_hash": ""
   },
   "server/routes/auth.js": {
@@ -912,9 +912,9 @@
     "semantic_hash": ""
   },
   "server/test/perm.test.js": {
-    "mtime": 1795457870.8192873,
-    "seen": 1795533171.5777137,
-    "ast_hash": "fb67d012ff8674a59b62abad0dfbb05b",
+    "mtime": 1795584060.6705365,
+    "seen": 1795584066.4295528,
+    "ast_hash": "62d22fd3360cce83ec16e7f244649184",
     "semantic_hash": ""
   },
   "server/test/review.test.js": {
@@ -1806,9 +1806,9 @@
     "semantic_hash": ""
   },
   "tarjetas/build.py": {
-    "mtime": 1795540110.3693323,
-    "seen": 1795540113.1612241,
-    "ast_hash": "4a5fb912b3f68f299a1d7c684bd1ffee",
+    "mtime": 1795542421.270134,
+    "seen": 1795584035.4211397,
+    "ast_hash": "cadfbe2652466dcc5ee357ddc29ebe48",
     "semantic_hash": ""
   },
   "src/assets/logos/Recurso 14.svg": {
@@ -1821,6 +1821,312 @@
     "mtime": 1789745227.4369876,
     "seen": 1795540113.1614513,
     "ast_hash": "99227e15132bc0c900dffde3ab6b792d",
+    "semantic_hash": ""
+  },
+  "tarjetas/qr.py": {
+    "mtime": 1795542253.5553026,
+    "seen": 1795584035.4211411,
+    "ast_hash": "8556ee30669f178aab4f408b54668d3c",
+    "semantic_hash": ""
+  },
+  "tarjetas/LEEME.md": {
+    "mtime": 1795542481.111606,
+    "seen": 1795584035.4211788,
+    "ast_hash": "873af5dc1904e3850da0c3dbf1e09a04",
+    "semantic_hash": ""
+  },
+  "tarjetas/A-sereno/tarjeta.pdf": {
+    "mtime": 1795541000.7777727,
+    "seen": 1795584035.4212127,
+    "ast_hash": "fe5415b72202a79c7eea1e07c1cc6629",
+    "semantic_hash": ""
+  },
+  "tarjetas/B-camino/tarjeta.pdf": {
+    "mtime": 1795541001.6126804,
+    "seen": 1795584035.4212148,
+    "ast_hash": "d291dab738ba4f15f6de40b0409d4846",
+    "semantic_hash": ""
+  },
+  "tarjetas/C-credencial/tarjeta.pdf": {
+    "mtime": 1795541002.4701898,
+    "seen": 1795584035.421217,
+    "ast_hash": "6163cd3e312257127fc5c37f866b616d",
+    "semantic_hash": ""
+  },
+  "tarjetas/D-estela/tarjeta.pdf": {
+    "mtime": 1795541431.1643767,
+    "seen": 1795584035.421219,
+    "ast_hash": "70ddc393bc7ea36d14a48fed2552c7a3",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/mcj/tarjeta-nombre-largo.pdf": {
+    "mtime": 1795542492.4964035,
+    "seen": 1795584035.4212205,
+    "ast_hash": "f14518001cd0d901d7b857a3efaccede",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/mcj/tarjeta.pdf": {
+    "mtime": 1795542491.6122506,
+    "seen": 1795584035.4212227,
+    "ast_hash": "220850f531949d3705e9c42b415543e2",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/peregrinos/tarjeta-nombre-largo.pdf": {
+    "mtime": 1795542494.2083237,
+    "seen": 1795584035.421224,
+    "ast_hash": "5cf5dca379024217cd8abed9b2d03092",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/peregrinos/tarjeta.pdf": {
+    "mtime": 1795542493.3623188,
+    "seen": 1795584035.4212255,
+    "ast_hash": "806000b860436a8e80ae3fac90a4310a",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/xp-lev/tarjeta-nombre-largo.pdf": {
+    "mtime": 1795542496.0051906,
+    "seen": 1795584035.421227,
+    "ast_hash": "613f8b92efcd5d4c12dc0a25414000a3",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/xp-lev/tarjeta.pdf": {
+    "mtime": 1795542495.1592872,
+    "seen": 1795584035.4212282,
+    "ast_hash": "eea7e65f8c42e1eb5f908c1bd9be1b4d",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/1-sereno/tarjeta.pdf": {
+    "mtime": 1795541947.1280837,
+    "seen": 1795584035.4212298,
+    "ast_hash": "806de8bf696e01026e5401b0e7cf835b",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/2-credencial/tarjeta.pdf": {
+    "mtime": 1795541948.0843403,
+    "seen": 1795584035.421231,
+    "ast_hash": "cc93a7aa1842273167ea11cde4a6fbb6",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/3-estela/tarjeta.pdf": {
+    "mtime": 1795541949.017437,
+    "seen": 1795584035.4212325,
+    "ast_hash": "8d7ddd457f82384e5902763badb19b99",
+    "semantic_hash": ""
+  },
+  "tarjetas/A-sereno/frente.svg": {
+    "mtime": 1795540999.2410953,
+    "seen": 1795584035.421431,
+    "ast_hash": "0d0a8362be0ee27dfc039fa5a8c7c420",
+    "semantic_hash": ""
+  },
+  "tarjetas/A-sereno/vuelta.svg": {
+    "mtime": 1795540999.2430978,
+    "seen": 1795584035.4214323,
+    "ast_hash": "f80403e8012d678499aee386ef45374f",
+    "semantic_hash": ""
+  },
+  "tarjetas/B-camino/frente.svg": {
+    "mtime": 1795540999.283631,
+    "seen": 1795584035.4214337,
+    "ast_hash": "3c31fb3b2a9c1df75d4521a37453b41c",
+    "semantic_hash": ""
+  },
+  "tarjetas/B-camino/vuelta.svg": {
+    "mtime": 1795540999.2866287,
+    "seen": 1795584035.421435,
+    "ast_hash": "8ebe5504919e5ac98c440e08cbd439bb",
+    "semantic_hash": ""
+  },
+  "tarjetas/C-credencial/frente.svg": {
+    "mtime": 1795540999.347248,
+    "seen": 1795584035.4214363,
+    "ast_hash": "df5a1c0925ae198a206872e3db12f639",
+    "semantic_hash": ""
+  },
+  "tarjetas/C-credencial/vuelta.svg": {
+    "mtime": 1795540999.3512523,
+    "seen": 1795584035.4214375,
+    "ast_hash": "2b09672f3878d9680d12839d152b0d31",
+    "semantic_hash": ""
+  },
+  "tarjetas/D-estela/frente.svg": {
+    "mtime": 1795540999.3612516,
+    "seen": 1795584035.4214385,
+    "ast_hash": "6fbe0bdb505c6b5b75701fcef541c508",
+    "semantic_hash": ""
+  },
+  "tarjetas/D-estela/vuelta.svg": {
+    "mtime": 1795540999.3642538,
+    "seen": 1795584035.4214396,
+    "ast_hash": "62ba4fecff219eed2b4e67f0c4b84c84",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/mcj/frente.svg": {
+    "mtime": 1795542490.7166,
+    "seen": 1795584035.4214408,
+    "ast_hash": "6fbe0bdb505c6b5b75701fcef541c508",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/mcj/vuelta-nombre-largo.svg": {
+    "mtime": 1795542490.7215998,
+    "seen": 1795584035.421442,
+    "ast_hash": "5a40beb90fc3af8c2f30b6910e48380f",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/mcj/vuelta.svg": {
+    "mtime": 1795542490.718599,
+    "seen": 1795584035.421443,
+    "ast_hash": "986540d7240230903f268cf1fe8b57a0",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/peregrinos/frente.svg": {
+    "mtime": 1795542492.5089111,
+    "seen": 1795584035.4214442,
+    "ast_hash": "d60db3f09aea56814e66214316a56358",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/peregrinos/vuelta-nombre-largo.svg": {
+    "mtime": 1795542492.5154269,
+    "seen": 1795584035.4214454,
+    "ast_hash": "45364a4f61136e9fc1c2c1fd95426729",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/peregrinos/vuelta.svg": {
+    "mtime": 1795542492.5119123,
+    "seen": 1795584035.4214463,
+    "ast_hash": "4136f8f3cbbbc0c5af22f5c11d2954fe",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/preview/mcj.png": {
+    "mtime": 1795542497.5101905,
+    "seen": 1795584035.4214478,
+    "ast_hash": "8e92b3b3ec022843314c7e46f99a54e6",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/preview/peregrinos.png": {
+    "mtime": 1795542498.2881014,
+    "seen": 1795584035.421449,
+    "ast_hash": "50273194fab6d09d4861e6d6bcae8011",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/preview/xp-lev.png": {
+    "mtime": 1795542499.0687375,
+    "seen": 1795584035.42145,
+    "ast_hash": "c4e5083494a319272dbc3595d280a77b",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/propuestas.png": {
+    "mtime": 1795542500.5714657,
+    "seen": 1795584035.4214513,
+    "ast_hash": "5eb6c0da27a9ff17480c7cf11179813c",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/xp-lev/frente.svg": {
+    "mtime": 1795542494.2998817,
+    "seen": 1795584035.4214523,
+    "ast_hash": "d2b4423696257329893cde8cb52e1c1a",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/xp-lev/vuelta-nombre-largo.svg": {
+    "mtime": 1795542494.30539,
+    "seen": 1795584035.4214532,
+    "ast_hash": "3e6f70733d929f8fe6e0bd4be8a66d64",
+    "semantic_hash": ""
+  },
+  "tarjetas/final/xp-lev/vuelta.svg": {
+    "mtime": 1795542494.302386,
+    "seen": 1795584035.4214544,
+    "ast_hash": "f8ef1eb563a0a5150f3ee33f94acdfa5",
+    "semantic_hash": ""
+  },
+  "tarjetas/preview/A.png": {
+    "mtime": 1795541432.0480843,
+    "seen": 1795584035.4214556,
+    "ast_hash": "546f9cbd6f2951e483d52fc98f87eda4",
+    "semantic_hash": ""
+  },
+  "tarjetas/preview/B.png": {
+    "mtime": 1795541432.9126313,
+    "seen": 1795584035.4214566,
+    "ast_hash": "86d74c92e49039d947db52e02525019f",
+    "semantic_hash": ""
+  },
+  "tarjetas/preview/C.png": {
+    "mtime": 1795541433.8178504,
+    "seen": 1795584035.4214673,
+    "ast_hash": "9032e9b10b0268e837f4c95657e216c2",
+    "semantic_hash": ""
+  },
+  "tarjetas/preview/D.png": {
+    "mtime": 1795541434.5851104,
+    "seen": 1795584035.4214685,
+    "ast_hash": "79a70c1921018369d4913568f61ffe59",
+    "semantic_hash": ""
+  },
+  "tarjetas/propuestas.png": {
+    "mtime": 1795541437.8376687,
+    "seen": 1795584035.4214697,
+    "ast_hash": "06a0beb3be69c4281c72604cb51f00ac",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/1-sereno/frente.svg": {
+    "mtime": 1795541945.551407,
+    "seen": 1795584035.4214709,
+    "ast_hash": "0d0a8362be0ee27dfc039fa5a8c7c420",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/1-sereno/vuelta.svg": {
+    "mtime": 1795541945.553407,
+    "seen": 1795584035.421472,
+    "ast_hash": "4466de21411c7afa41166fe8a7af8e2a",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/2-credencial/frente.svg": {
+    "mtime": 1795541945.645562,
+    "seen": 1795584035.421473,
+    "ast_hash": "df5a1c0925ae198a206872e3db12f639",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/2-credencial/vuelta.svg": {
+    "mtime": 1795541945.6495626,
+    "seen": 1795584035.421474,
+    "ast_hash": "ee208f89a38ccd998a06f52cf3e582d6",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/3-estela/frente.svg": {
+    "mtime": 1795541945.6863754,
+    "seen": 1795584035.4214754,
+    "ast_hash": "6fbe0bdb505c6b5b75701fcef541c508",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/3-estela/vuelta.svg": {
+    "mtime": 1795541945.6893766,
+    "seen": 1795584035.4214764,
+    "ast_hash": "eb545190023398552491a68aa83ded0f",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/preview/1.png": {
+    "mtime": 1795541949.5615609,
+    "seen": 1795584035.4214773,
+    "ast_hash": "205ad31975615344183ba84b57a3704d",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/preview/2.png": {
+    "mtime": 1795541950.1535707,
+    "seen": 1795584035.4214787,
+    "ast_hash": "7c3d950018894745df1eded607112722",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/preview/3.png": {
+    "mtime": 1795541950.7033381,
+    "seen": 1795584035.4214797,
+    "ast_hash": "ba764f22f3c4f32d87c7cbd3b543d014",
+    "semantic_hash": ""
+  },
+  "tarjetas/ronda2/propuestas.png": {
+    "mtime": 1795541951.5770936,
+    "seen": 1795584035.4214807,
+    "ast_hash": "0d1f8fe504dfa78ad12796ec6bb432cd",
     "semantic_hash": ""
   }
 }

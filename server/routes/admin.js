@@ -87,7 +87,7 @@ export default async function adminRoutes(app) {
            FROM reviews r JOIN ${e.table} t ON t.id = r.entity_id LEFT JOIN users u ON u.id = r.submitted_by WHERE r.entity = ? AND r.decision = 'pendiente' ORDER BY r.created_at`, [key]);
       for (const r of rows) {
         out.push({ review_id: r.review_id, entity: key, id: r.entity_id, label: labelOf(r), version: r.rv_version,
-          submitted_by: r.rv_by, submitted_by_name: r.rv_name, own: r.rv_by === req.user.id, hours: Math.floor((Date.now() - new Date(r.rv_at)) / 3600e3) });
+          submitted_by: r.rv_by, submitted_by_name: r.rv_name, own: r.rv_by === req.user.id && req.user.role !== 'admin', hours: Math.floor((Date.now() - new Date(r.rv_at)) / 3600e3) });
       }
     }
     return out;

@@ -36,9 +36,9 @@ export function nextStatus(status, event, { publishAt = null, now = new Date(), 
   }
 }
 
-// One approval is enough, but never from the author, and only from a role allowed on that resource.
+// One approval is enough, only from a role allowed on that resource; nobody but admin decides their own submission.
 export function canDecide(user, resource, submittedBy) {
-  return can(user.role, resource, 'approve') && user.id !== submittedBy;
+  return can(user.role, resource, 'approve') && (user.role === 'admin' || user.id !== submittedBy);
 }
 
 export const REMINDER_HOURS = 48;

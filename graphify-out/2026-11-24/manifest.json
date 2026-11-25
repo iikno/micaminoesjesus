@@ -960,9 +960,9 @@
     "semantic_hash": ""
   },
   "src/panel/Content.jsx": {
-    "mtime": 1795537793.1149418,
-    "seen": 1795539442.4860725,
-    "ast_hash": "d9526809990694d88b606960e3959abd",
+    "mtime": 1795540057.8807354,
+    "seen": 1795540113.1611855,
+    "ast_hash": "a3f2e90e1402dc712437a19b7e48ca51",
     "semantic_hash": ""
   },
   "src/panel/Dashboard.jsx": {
@@ -1338,9 +1338,9 @@
     "semantic_hash": ""
   },
   "src/panel/Inscripciones.jsx": {
-    "mtime": 1795537793.429499,
-    "seen": 1795539442.4860766,
-    "ast_hash": "a13693a74754412850b7469494b70118",
+    "mtime": 1795540057.888737,
+    "seen": 1795540113.1611905,
+    "ast_hash": "e91e5ae831032a2151585b7ca33f5551",
     "semantic_hash": ""
   },
   "server/lib/bootstrap.js": {
@@ -1362,9 +1362,9 @@
     "semantic_hash": ""
   },
   "server/cli/gen-seed-sql.js": {
-    "mtime": 1795488477.97593,
-    "seen": 1795533171.577612,
-    "ast_hash": "1be70ed1f07f37ddea409b24443a4511",
+    "mtime": 1795540090.7438986,
+    "seen": 1795540113.16097,
+    "ast_hash": "b096c0d5ecb0436f411717ff15bb3946",
     "semantic_hash": ""
   },
   "server/migrations/007_seed_catalogo.sql": {
@@ -1578,21 +1578,15 @@
     "semantic_hash": ""
   },
   "server/test/wizard.test.js": {
-    "mtime": 1795532080.5437293,
-    "seen": 1795533171.5777261,
-    "ast_hash": "67826f73f5efc7c652fdbddfa6f5e9db",
+    "mtime": 1795540058.0055976,
+    "seen": 1795540113.1611059,
+    "ast_hash": "af2248bdc5c4c8e9a282d9dafbf41868",
     "semantic_hash": ""
   },
   "src/panel/Wizard.jsx": {
-    "mtime": 1795532080.6969469,
-    "seen": 1795533171.5778055,
-    "ast_hash": "a833b568b22564224e96b35ebb01a03c",
-    "semantic_hash": ""
-  },
-  "src/panel/wizard.js": {
-    "mtime": 1795532080.7658615,
-    "seen": 1795533171.5778184,
-    "ast_hash": "fde1c1f3fabc348edcaa1e2c69cf05dc",
+    "mtime": 1795540057.894735,
+    "seen": 1795540113.161206,
+    "ast_hash": "764c1d2d7f1746c887ca62824535f094",
     "semantic_hash": ""
   },
   "server/test/regs.test.js": {
@@ -1803,6 +1797,30 @@
     "mtime": 1795537742.281,
     "seen": 1795539442.486179,
     "ast_hash": "c366be6c89d02c78c8539addc28d9df7",
+    "semantic_hash": ""
+  },
+  "src/panel/wizardLogic.js": {
+    "mtime": 1795532080.7658615,
+    "seen": 1795540113.161223,
+    "ast_hash": "fde1c1f3fabc348edcaa1e2c69cf05dc",
+    "semantic_hash": ""
+  },
+  "tarjetas/build.py": {
+    "mtime": 1795540110.3693323,
+    "seen": 1795540113.1612241,
+    "ast_hash": "4a5fb912b3f68f299a1d7c684bd1ffee",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/Recurso 14.svg": {
+    "mtime": 1795539433.5952916,
+    "seen": 1795540113.1614382,
+    "ast_hash": "1a1520363c121b77d8677c391fbd862f",
+    "semantic_hash": ""
+  },
+  "src/assets/logos/xp lev.png": {
+    "mtime": 1789745227.4369876,
+    "seen": 1795540113.1614513,
+    "ast_hash": "99227e15132bc0c900dffde3ab6b792d",
     "semantic_hash": ""
   }
 }
